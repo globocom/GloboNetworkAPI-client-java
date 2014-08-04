@@ -1,0 +1,6 @@
+.classpath
+.project
+.settings
+/target
+*.orig
+src/main/java/com/globo/globonetwork/client/IntegrationTest.java
