@@ -89,4 +89,21 @@ public class IpAPITest {
 		this.api.deleteIpv4(ipv4Id);
 	}
 
+   @Test
+    public void testGetAvailableIp4ForVip() throws GloboNetworkException {
+        Long environmentVip = 23l;
+        String name = "testcloud2";
+                
+        this.rp.registerFakeRequest(HttpMethod.POST, "/ip/availableip4/vip/" + environmentVip + "/",
+                "<?xml version=\"1.0\" encoding=\"UTF-8\"?><networkapi versao=\"1.0\"><ip><oct4>36</oct4><oct2>170</oct2><oct3>1</oct3><oct1>200</oct1><networkipv4>1645</networkipv4><id>50335</id><descricao>testcloud2</descricao></ip></networkapi>");
+        
+        Ip ip = this.api.getAvailableIp4ForVip(environmentVip, name);
+        assertNotNull(ip);
+        assertEquals(Integer.valueOf(36), ip.getOct4());
+        assertEquals(Integer.valueOf(1), ip.getOct3());
+        assertEquals(Integer.valueOf(170), ip.getOct2());
+        assertEquals(Integer.valueOf(200), ip.getOct1());
+        assertEquals(Long.valueOf(50335), ip.getId());
+    }
+
 }

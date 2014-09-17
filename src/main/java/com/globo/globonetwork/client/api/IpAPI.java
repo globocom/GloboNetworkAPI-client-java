@@ -88,7 +88,7 @@ public class IpAPI extends BaseAPI<Ip> {
 		this.post("/ipv4/assoc/", globoNetworkRootPayload);
 	}
 
-	public List<Ip> findIpsByEquipment(Long equipId) throws GloboNetworkException {
+    public List<Ip> findIpsByEquipment(Long equipId) throws GloboNetworkException {
 		
 		GloboNetworkRoot<GenericXml> globoNetworkRoot = this.getTransport().get("/ip/getbyequip/" + equipId + "/", GenericXml.class);
 
@@ -101,7 +101,10 @@ public class IpAPI extends BaseAPI<Ip> {
 		// NetworkAPI findIps interface is not compatible with all others objects, so I need to convert
 		// data from api to IP object.
 		List<Ip> ips = new ArrayList<Ip>();
-		for (ArrayMap<String, List<ArrayMap<String, String>>> genericIp : ((List<ArrayMap<String, List<ArrayMap<String, String>>>>) globoNetworkRoot.getFirstObject().get("ipv4"))) {
+		@SuppressWarnings("unchecked")
+		List<ArrayMap<String, List<ArrayMap<String, String>>>> rawIps = ((List<ArrayMap<String, List<ArrayMap<String, String>>>>) globoNetworkRoot.getFirstObject().get("ipv4"));
+
+		for (ArrayMap<String, List<ArrayMap<String, String>>> genericIp : rawIps) {
 			if (genericIp.isEmpty()) {
 				break;
 			}
@@ -116,5 +119,25 @@ public class IpAPI extends BaseAPI<Ip> {
 		}
 		return ips;
 	}
+    
+    public Ip getAvailableIp4ForVip(long environmentVip, String name) throws GloboNetworkException {
+        
+        GenericXml ip_map = new GenericXml();
+        ip_map.put("id_evip", String.valueOf(environmentVip));
+        ip_map.put("name", name);
+        
+        GloboNetworkRoot<GenericXml> globoNetworkRootPayload = new GloboNetworkRoot<GenericXml>();
+        globoNetworkRootPayload.getObjectList().add(ip_map);
+        globoNetworkRootPayload.set("ip_map", ip_map);
+        
+        GloboNetworkRoot<Ip> globoNetworkRoot = (GloboNetworkRoot<Ip>) this.getTransport().post("/ip/availableip4/vip/" + environmentVip + "/", ip_map, Ip.class);
+        if (globoNetworkRoot == null) {
+            // Problems reading the XML
+            throw new GloboNetworkException("Invalid XML response");
+        } else if (globoNetworkRoot.getObjectList() == null) {
+            return null;
+        }
+        return globoNetworkRoot.getFirstObject();
+   }
 	
 }
