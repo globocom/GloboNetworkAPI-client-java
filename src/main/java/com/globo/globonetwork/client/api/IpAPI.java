@@ -130,7 +130,7 @@ public class IpAPI extends BaseAPI<Ip> {
         globoNetworkRootPayload.getObjectList().add(ip_map);
         globoNetworkRootPayload.set("ip_map", ip_map);
         
-        GloboNetworkRoot<Ip> globoNetworkRoot = (GloboNetworkRoot<Ip>) this.getTransport().post("/ip/availableip4/vip/" + environmentVip + "/", ip_map, Ip.class);
+        GloboNetworkRoot<Ip> globoNetworkRoot = this.post("/ip/availableip4/vip/" + environmentVip + "/", ip_map);
         if (globoNetworkRoot == null) {
             // Problems reading the XML
             throw new GloboNetworkException("Invalid XML response");

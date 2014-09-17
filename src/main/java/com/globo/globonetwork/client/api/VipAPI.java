@@ -9,6 +9,7 @@ import com.globo.globonetwork.client.exception.GloboNetworkException;
 import com.globo.globonetwork.client.model.GloboNetworkRoot;
 import com.globo.globonetwork.client.model.Real.RealIP;
 import com.globo.globonetwork.client.model.Vip;
+import com.globo.globonetwork.client.model.Vip.VipRequest;
 import com.google.api.client.http.ByteArrayContent;
 import com.google.api.client.http.GenericUrl;
 import com.google.api.client.http.HttpContent;
@@ -42,7 +43,7 @@ public class VipAPI extends BaseAPI<Vip> {
                 return null;
             } else if (globoNetworkRoot.getObjectList().size() > 1) {
                 // Something is wrong, id should be unique
-                throw new RuntimeException();
+                throw new GloboNetworkException("Multiple VIPs returned with single ID");
             } else {
                 return globoNetworkRoot.getObjectList().get(0);
             }
@@ -91,18 +92,18 @@ public class VipAPI extends BaseAPI<Vip> {
         payload.getObjectList().add(vip);
         payload.set("vip", vip);
 
-        GloboNetworkRoot<Vip> globoNetworkRoot = this.post("/requestvip/", payload);
+        GloboNetworkRoot<VipRequest> globoNetworkRoot = this.getTransport().post("/requestvip/", payload, VipRequest.class);
         if (globoNetworkRoot == null) {
             // Problems reading the XML
             throw new GloboNetworkException("Invalid XML response");
-        } else if (globoNetworkRoot.getObjectList() == null || globoNetworkRoot.getObjectList().isEmpty()) {
-            return null;
-        } else if (globoNetworkRoot.getObjectList().size() > 1) {
-            // Something is wrong, id should be unique
-            throw new RuntimeException();
-        } else {
-            return globoNetworkRoot.getObjectList().get(0);
         }
+        
+        VipRequest vipRequest = globoNetworkRoot.getFirstObject();
+        if (vipRequest == null || vipRequest.getId() == null) {
+            throw new GloboNetworkException("Invalid vip request response or ID");
+        }
+        
+        return this.getById(vipRequest.getId());
     }
 
     public void create(Long vipId) throws GloboNetworkException {

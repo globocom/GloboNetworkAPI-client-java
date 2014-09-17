@@ -2,6 +2,9 @@ package com.globo.globonetwork.client.api;
 
 import static org.junit.Assert.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -9,10 +12,9 @@ import org.junit.runners.JUnit4;
 
 import com.globo.globonetwork.client.TestRequestProcessor;
 import com.globo.globonetwork.client.TestRequestProcessor.HttpMethod;
-import com.globo.globonetwork.client.api.VipAPI;
 import com.globo.globonetwork.client.exception.GloboNetworkException;
-import com.globo.globonetwork.client.model.Vip;
 import com.globo.globonetwork.client.model.Real.RealIP;
+import com.globo.globonetwork.client.model.Vip;
 
 @RunWith(JUnit4.class)
 public class VipAPITest {
@@ -76,5 +78,50 @@ public class VipAPITest {
 		assertEquals(Integer.valueOf(80), firstRealIP.getVipPort());
 		assertEquals("172.10.0.2", firstRealIP.getRealIp());
 	}
-
+	
+	@Test
+	public void testAddVipReturnsVip() throws GloboNetworkException {
+	    Long vipId = 9999L;
+	    String port = "80:8080";
+	    String purpose = "Purpose";
+	    String client = "Client";
+	    String environment = "Test";
+	    String cache = "(none)";
+	    String methodBal = "least-conn";
+	    String stickness = "(none)";
+	    String healthcheckType = "TCP";
+	    Integer timeout = 10;
+	    String host = "host";
+	    Integer maxConn = 5;
+	    String businessArea = "viptest";
+	    String service = "viptest";
+	    
+	    this.rp.registerFakeRequest(HttpMethod.POST, "/requestvip/", 
+	            "<networkapi versao=\"1.0\"><requisicao_vip><id>" + vipId + "</id></requisicao_vip></networkapi>");
+	    this.rp.registerFakeRequest(HttpMethod.GET, "/requestvip/getbyid/" + vipId + "/", 
+	            "<?xml version=\"1.0\" encoding=\"UTF-8\"?><networkapi versao=\"1.0\">"
+                + "<vip><persistencia>" + stickness + "</persistencia><metodo_bal>"
+	                    + methodBal + "</metodo_bal><environments>" + environment + "</environments>"
+                + "<id>" + vipId + "</id><maxcon>" + maxConn + "</maxcon>"
+                + "<portas_servicos><porta>" + port + "</porta></portas_servicos>"
+                + "<healthcheck_type>" + healthcheckType + "</healthcheck_type>"
+                + "<host>" + host + "</host></vip>"
+                + "</networkapi>");
+	    
+	    List<String> ports = new ArrayList<String>();
+	    ports.add(port);
+	    Vip vip = this.api.add(9876L, null, null, purpose, client, environment,
+                cache, methodBal, stickness, healthcheckType, null,
+                timeout, host, maxConn, businessArea, service, null,
+                new ArrayList<RealIP>(), null, null, ports, null);
+	    assertNotNull(vip);
+	    
+	    assertEquals(vipId, vip.getId());
+        assertEquals(host, vip.getHost());
+        assertEquals(stickness, vip.getPersistence());
+        assertEquals(methodBal, vip.getMethod());
+        assertEquals(maxConn, vip.getMaxConn());
+        assertEquals(1, vip.getPorts().size());
+        assertEquals(port, vip.getPorts().get(0));
+	}
 }
