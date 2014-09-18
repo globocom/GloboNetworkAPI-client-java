@@ -12,6 +12,7 @@ import com.globo.globonetwork.client.TestRequestProcessor;
 import com.globo.globonetwork.client.TestRequestProcessor.HttpMethod;
 import com.globo.globonetwork.client.api.NetworkAPI;
 import com.globo.globonetwork.client.exception.GloboNetworkException;
+import com.globo.globonetwork.client.model.IPv4Network;
 import com.globo.globonetwork.client.model.Network;
 
 @RunWith(JUnit4.class)
@@ -58,4 +59,23 @@ public class NetworkAPITest {
 		
 		this.netApi.createNetworks(networkId, vlanId);
 	}
+
+    @Test
+    public void testGetNetworkIpv4() throws GloboNetworkException {
+        this.rp.registerFakeRequest(HttpMethod.GET, "/network/ipv4/id/1645/", 
+                "<?xml version='1.0' encoding='utf-8'?><networkapi versao=\"1.0\"><network><mask_oct1>255</mask_oct1><mask_oct2>255</mask_oct2><mask_oct3>255</mask_oct3><mask_oct4>0</mask_oct4><oct4>0</oct4><vlan>2399</vlan><oct2>170</oct2><oct3>1</oct3><oct1>200</oct1><broadcast>200.170.1.255</broadcast><ambient_vip>23</ambient_vip><active>True</active><network_type>8</network_type><id>1645</id><block>24</block></network></networkapi>");
+        
+        Long networkId = 1645L;
+        
+        IPv4Network network = this.netApi.getNetworkIpv4(networkId);
+        assertEquals(networkId, network.getId());
+        assertEquals("255.255.255.0", network.getMaskAsString());
+        assertEquals("200.170.1.0", network.getNetworkAddressAsString());
+        assertEquals(true, network.getActive());
+        assertEquals(Long.valueOf(8), network.getNetworkTypeId());
+        assertEquals(Integer.valueOf(24), network.getBlock());
+        assertEquals("200.170.1.255", network.getBroadcast());
+        assertEquals(Long.valueOf(2399), network.getVlanId());
+    }
+
 }

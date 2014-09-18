@@ -104,6 +104,10 @@ public class IPv4Network extends Network {
 	public void setOct4(Integer oct4) {
 		this.oct4 = oct4;
 	}
+	
+	public String getNetworkAddressAsString() {
+	    return String.format("%d.%d.%d.%d", getOct1(), getOct2(), getOct3(), getOct4());
+	}
 
 	public Integer getMaskOct1() {
 		return maskOct1;
@@ -131,6 +135,10 @@ public class IPv4Network extends Network {
 
 	public Integer getMaskOct4() {
 		return maskOct4;
+	}
+	
+	public String getMaskAsString() {
+	    return String.format("%d.%d.%d.%d", getMaskOct1(), getMaskOct2(), getMaskOct3(), getMaskOct4());
 	}
 
 	public void setMaskOct4(Integer maskOct4) {
@@ -172,4 +180,5 @@ public class IPv4Network extends Network {
 	public IPv4Network() {
 		super.name = "redeipv4";
 	}
+	
 }
