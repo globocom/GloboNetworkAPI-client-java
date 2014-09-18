@@ -123,8 +123,8 @@ public class IpAPI extends BaseAPI<Ip> {
     public Ip getAvailableIp4ForVip(long environmentVip, String name) throws GloboNetworkException {
         
         GenericXml ip_map = new GenericXml();
-        ip_map.put("id_evip", String.valueOf(environmentVip));
-        ip_map.put("name", name);
+        ip_map.set("id_evip", String.valueOf(environmentVip));
+        ip_map.set("name", name);
         
         GloboNetworkRoot<GenericXml> globoNetworkRootPayload = new GloboNetworkRoot<GenericXml>();
         globoNetworkRootPayload.getObjectList().add(ip_map);
@@ -150,8 +150,8 @@ public class IpAPI extends BaseAPI<Ip> {
     public Ip checkVipIp(String ip, long environmentVipId) throws GloboNetworkException {
         
         GenericXml ip_map = new GenericXml();
-        ip_map.put("id_evip", String.valueOf(environmentVipId));
-        ip_map.put("ip", ip);
+        ip_map.set("id_evip", String.valueOf(environmentVipId));
+        ip_map.set("ip", ip);
         
         GloboNetworkRoot<GenericXml> globoNetworkRootPayload = new GloboNetworkRoot<GenericXml>();
         globoNetworkRootPayload.getObjectList().add(ip_map);
