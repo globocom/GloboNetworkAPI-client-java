@@ -104,6 +104,7 @@ public class IpAPITest {
         assertEquals(Integer.valueOf(170), ip.getOct2());
         assertEquals(Integer.valueOf(200), ip.getOct1());
         assertEquals(Long.valueOf(50335), ip.getId());
+        assertEquals(Long.valueOf(1645), ip.getNetworkId());
     }
 
 }
