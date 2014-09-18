@@ -139,5 +139,32 @@ public class IpAPI extends BaseAPI<Ip> {
         }
         return globoNetworkRoot.getFirstObject();
    }
-	
+
+    /**
+     * Check if ip is can used to a new vip.
+     * @param environmentVip
+     * @param name
+     * @return
+     * @throws GloboNetworkException
+     */
+    public Ip checkVipIp(String ip, long environmentVipId) throws GloboNetworkException {
+        
+        GenericXml ip_map = new GenericXml();
+        ip_map.put("id_evip", String.valueOf(environmentVipId));
+        ip_map.put("ip", ip);
+        
+        GloboNetworkRoot<GenericXml> globoNetworkRootPayload = new GloboNetworkRoot<GenericXml>();
+        globoNetworkRootPayload.getObjectList().add(ip_map);
+        globoNetworkRootPayload.set("ip_map", ip_map);
+        
+        GloboNetworkRoot<Ip> globoNetworkRoot = this.post("/ip/checkvipip/", ip_map);
+        if (globoNetworkRoot == null) {
+            // Problems reading the XML
+            throw new GloboNetworkException("Invalid XML response");
+        } else if (globoNetworkRoot.getObjectList() == null) {
+            return null;
+        }
+        return globoNetworkRoot.getFirstObject();
+   }
+
 }
