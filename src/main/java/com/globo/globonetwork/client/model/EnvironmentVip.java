@@ -12,7 +12,7 @@ public class EnvironmentVip extends GenericXml {
 	private String finality;
 	
 	@Key("cliente_txt")
-	private Long client;
+	private String client;
 	
 	@Key("ambiente_p44_txt")
 	private String environmentName;
@@ -33,11 +33,11 @@ public class EnvironmentVip extends GenericXml {
 		this.finality = finality;
 	}
 
-	public Long getClient() {
+	public String getClient() {
 		return client;
 	}
 
-	public void setClient(Long client) {
+	public void setClient(String client) {
 		this.client = client;
 	}
 

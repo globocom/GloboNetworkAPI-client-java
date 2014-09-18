@@ -8,6 +8,7 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
 import com.globo.globonetwork.client.api.EnvironmentAPI;
+import com.globo.globonetwork.client.api.EnvironmentVipAPI;
 import com.globo.globonetwork.client.api.EquipmentAPI;
 import com.globo.globonetwork.client.api.IpAPI;
 import com.globo.globonetwork.client.api.NetworkAPI;
@@ -134,6 +135,10 @@ public abstract class RequestProcessor {
 	
 	public VipAPI getVipAPI() {
 		return new VipAPI(this);
+	}
+	
+	public EnvironmentVipAPI getEnvironmentVipAPI() {
+	    return new EnvironmentVipAPI(this);
 	}
 }
 
