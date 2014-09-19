@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.globo.globonetwork.client.model.Real.RealIP;
+import com.google.api.client.util.GenericData;
 import com.google.api.client.util.Key;
 import com.google.api.client.xml.GenericXml;
 
@@ -37,7 +38,7 @@ public class Vip extends GenericXml {
     private String persistence;
 
     @Key("id_healthcheck_expect")
-    private Long expectedHealthcheckId;
+    private final ObjectWithNullTag<Long> expectedHealthcheckId = new ObjectWithNullTag<Long>(null);
 
     @Key("healthcheck_type")
     private String healthcheckType;
@@ -358,11 +359,11 @@ public class Vip extends GenericXml {
     }
 
     public Long getExpectedHealthcheckId() {
-        return expectedHealthcheckId;
+        return expectedHealthcheckId.getValue();
     }
 
     public void setExpectedHealthcheckId(Long expectedHealthcheckId) {
-        this.expectedHealthcheckId = expectedHealthcheckId;
+        this.expectedHealthcheckId.setValue(expectedHealthcheckId);
     }
 
     public String getFinality() {
@@ -448,6 +449,20 @@ public class Vip extends GenericXml {
     public static class VipRequest extends Vip {
         public VipRequest() {
             this.name = "requisicao_vip";
+        }
+    }
+    
+    public static class ObjectWithNullTag<T> extends GenericData {
+        @Key("text()")
+        private T value;
+        public ObjectWithNullTag(T value) {
+            this.value = value;
+        }
+        public void setValue(T value) {
+            this.value = value;
+        }
+        public T getValue() {
+            return this.value;
         }
     }
 }

@@ -5,8 +5,8 @@ import java.util.List;
 
 import com.globo.globonetwork.client.RequestProcessor;
 import com.globo.globonetwork.client.exception.GloboNetworkException;
-import com.globo.globonetwork.client.model.VipEnvironment;
 import com.globo.globonetwork.client.model.GloboNetworkRoot;
+import com.globo.globonetwork.client.model.VipEnvironment;
 import com.google.api.client.xml.GenericXml;
 
 public class VipEnvironmentAPI extends BaseAPI<VipEnvironment> {

@@ -8,11 +8,11 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
 import com.globo.globonetwork.client.api.EnvironmentAPI;
-import com.globo.globonetwork.client.api.VipEnvironmentAPI;
 import com.globo.globonetwork.client.api.EquipmentAPI;
 import com.globo.globonetwork.client.api.IpAPI;
 import com.globo.globonetwork.client.api.NetworkAPI;
 import com.globo.globonetwork.client.api.VipAPI;
+import com.globo.globonetwork.client.api.VipEnvironmentAPI;
 import com.globo.globonetwork.client.api.VlanAPI;
 import com.globo.globonetwork.client.exception.GloboNetworkErrorCodeException;
 import com.globo.globonetwork.client.exception.GloboNetworkException;
