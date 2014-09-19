@@ -38,7 +38,7 @@ public class Vip extends GenericXml {
     private String persistence;
 
     @Key("id_healthcheck_expect")
-    private final ObjectWithNullTag<Long> expectedHealthcheckId = new ObjectWithNullTag<Long>(null);
+    private ObjectWithNullTag<Long> expectedHealthcheckId = new ObjectWithNullTag<Long>();
 
     @Key("healthcheck_type")
     private String healthcheckType;
@@ -457,6 +457,9 @@ public class Vip extends GenericXml {
         private T value;
         public ObjectWithNullTag(T value) {
             this.value = value;
+        }
+        public ObjectWithNullTag() {
+            this(null);
         }
         public void setValue(T value) {
             this.value = value;
