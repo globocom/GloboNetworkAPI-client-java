@@ -7,6 +7,7 @@ import com.globo.globonetwork.client.RequestProcessor;
 import com.globo.globonetwork.client.exception.GloboNetworkException;
 import com.globo.globonetwork.client.model.VipEnvironment;
 import com.globo.globonetwork.client.model.GloboNetworkRoot;
+import com.google.api.client.xml.GenericXml;
 
 public class VipEnvironmentAPI extends BaseAPI<VipEnvironment> {
 	
@@ -26,13 +27,13 @@ public class VipEnvironmentAPI extends BaseAPI<VipEnvironment> {
 	}
 	
 	public VipEnvironment search(Long environmentVipId, String finality, String client, String environment) throws GloboNetworkException {
-	    VipEnvironment envVip = new VipEnvironment();
-	    envVip.setId(environmentVipId);
-	    envVip.setFinality(finality);
-	    envVip.setClient(client);
-	    envVip.setEnvironmentName(environment);
+	    GenericXml envVip = new GenericXml();
+	    envVip.set("id_environment_vip", environmentVipId);
+	    envVip.set("finalidade_txt", finality);
+	    envVip.set("cliente_txt", client);
+	    envVip.set("ambiente_p44_txt", environment);
 	    
-	    GloboNetworkRoot<VipEnvironment> payload = new GloboNetworkRoot<VipEnvironment>();
+	    GloboNetworkRoot<GenericXml> payload = new GloboNetworkRoot<GenericXml>();
 	    payload.getObjectList().add(envVip);
 	    payload.set("environment_vip", envVip);
 	    
