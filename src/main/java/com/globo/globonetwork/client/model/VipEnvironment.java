@@ -3,7 +3,7 @@ package com.globo.globonetwork.client.model;
 import com.google.api.client.util.Key;
 import com.google.api.client.xml.GenericXml;
 
-public class EnvironmentVip extends GenericXml {
+public class VipEnvironment extends GenericXml {
 	
 	@Key
 	private Long id;	
@@ -49,7 +49,7 @@ public class EnvironmentVip extends GenericXml {
 		this.environmentName = environmentName;
 	}
 
-	public EnvironmentVip() {
+	public VipEnvironment() {
 		super.name = "environment_vip";
 	}
 	
