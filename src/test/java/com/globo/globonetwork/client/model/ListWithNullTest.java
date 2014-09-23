@@ -5,6 +5,7 @@ import static org.junit.Assert.*;
 import java.io.Reader;
 import java.io.StringReader;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import org.junit.Test;
@@ -25,10 +26,24 @@ public class ListWithNullTest {
     }
 
     @Test
+    public void testUnmarshallNullValue() {
+        String xml = "<?xml version=\"1.0\"?><x xmlns=\"http://unknown/\"><tag><tag_per_element /></tag></x>";
+        X x = read(xml);
+        assertEquals(Collections.emptyList(), x.getList());
+    }
+
+    @Test
     public void testMarshall1Element() {
         X x = new X();
-        x.setList(Arrays.asList(1));
-        assertEquals("<?xml version=\"1.0\"?><x xmlns=\"http://unknown/\"><tag><tag_per_element>1</tag_per_element></tag></x>", x.toString());
+        x.setList(Arrays.asList(10));
+        assertEquals("<?xml version=\"1.0\"?><x xmlns=\"http://unknown/\"><tag><tag_per_element>10</tag_per_element></tag></x>", x.toString());
+    }
+    
+    @Test
+    public void testUnmarshall1Element() {
+        String xml = "<?xml version=\"1.0\"?><x xmlns=\"http://unknown/\"><tag><tag_per_element>10</tag_per_element></tag></x>";
+        X x = read(xml);
+        assertEquals(Arrays.asList(10), x.getList());
     }
 
     @Test
@@ -39,7 +54,7 @@ public class ListWithNullTest {
     }
     
     @Test
-    public void testUnmarshallNullValue() {
+    public void testUnmarshall2Elements() {
         String xml = "<?xml version=\"1.0\"?><x xmlns=\"http://unknown/\"><tag><tag_per_element>1</tag_per_element><tag_per_element>5</tag_per_element></tag></x>";
         X x = read(xml);
         assertEquals(Arrays.asList(1, 5), x.getList());
@@ -74,7 +89,6 @@ public class ListWithNullTest {
         public List<Integer> getList() {
             return this.list.getValues();
         }
-        
         public static class TagPerElement extends ListWithNullTag<Integer> {
             public TagPerElement() {
                 super("tag_per_element");
