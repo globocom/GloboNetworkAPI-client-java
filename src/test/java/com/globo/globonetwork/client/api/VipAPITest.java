@@ -3,6 +3,7 @@ package com.globo.globonetwork.client.api;
 import static org.junit.Assert.*;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.junit.Before;
@@ -13,6 +14,7 @@ import org.junit.runners.JUnit4;
 import com.globo.globonetwork.client.TestRequestProcessor;
 import com.globo.globonetwork.client.TestRequestProcessor.HttpMethod;
 import com.globo.globonetwork.client.exception.GloboNetworkException;
+import com.globo.globonetwork.client.model.GloboNetworkRoot;
 import com.globo.globonetwork.client.model.Real.RealIP;
 import com.globo.globonetwork.client.model.Vip;
 
@@ -123,5 +125,50 @@ public class VipAPITest {
         assertEquals(maxConn, vip.getMaxConn());
         assertEquals(1, vip.getServicePorts().size());
         assertEquals(port, vip.getServicePorts().get(0));
+	}
+	
+	@Test
+	public void testBasicVipObjectSerialization() {
+	    Vip vip = new Vip();
+	    vip.setPersistence("(nenhum)");
+	    vip.setMethod("least-conn");
+	    vip.setMaxConn(5);
+	    vip.setServicePorts(Arrays.asList("80:8080"));
+	    vip.setCache("(nenhum)");
+	    vip.setEnvironment("QA BE-TESTE API");
+	    vip.setHealthcheckType("TCP");
+	    vip.setFinality("Homologacao");
+	    vip.setClient("Usuario Interno");
+	    vip.setIpv4Id(50000l);
+	    vip.setServiceName("cloud");
+	    vip.setTimeout(10);
+	    vip.setBusinessArea("cloud");
+	    vip.addReal("vm_xpto", "10.20.30.40");
+	    
+	    GloboNetworkRoot<Vip> gnroot = new GloboNetworkRoot<Vip>();
+	    gnroot.getObjectList().add(vip);
+	    gnroot.set("vip", vip);
+	    
+	    assertEquals("<?xml version=\"1.0\"?><networkapi xmlns=\"http://unknown/\"><vip>"
+                + "<ambiente>QA BE-TESTE API</ambiente>"
+                + "<areanegocio>cloud</areanegocio>"
+                + "<cache>(nenhum)</cache>"
+                + "<cliente>Usuario Interno</cliente>"
+                + "<finalidade>Homologacao</finalidade>"
+                + "<healthcheck_type>TCP</healthcheck_type>"
+                + "<id_healthcheck_expect />"
+                + "<id_ipv4>50000</id_ipv4>"
+                + "<maxcon>5</maxcon>"
+                + "<metodo_bal>least-conn</metodo_bal>"
+                + "<nome_servico>cloud</nome_servico>"
+                + "<persistencia>(nenhum)</persistencia>"
+                + "<portas_servicos><porta>80:8080</porta></portas_servicos>"
+                + "<reals><real><real_ip>10.20.30.40</real_ip><real_name>vm_xpto</real_name></real></reals>"
+                + "<reals_prioritys><reals_priority /></reals_prioritys>"
+                + "<reals_weights><reals_weight /></reals_weights>"
+                + "<timeout>10</timeout>"
+	            + "</vip></networkapi>",
+	            gnroot.toString());
+	    
 	}
 }

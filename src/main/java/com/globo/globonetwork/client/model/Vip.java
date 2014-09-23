@@ -139,6 +139,9 @@ public class Vip extends GenericXml {
     }
 
     protected Real getReals() {
+        if (this.reals == null) {
+            this.reals = new Real();
+        }
         return reals;
     }
 
@@ -160,6 +163,14 @@ public class Vip extends GenericXml {
     public void setRealsIp(List<RealIP> realsIp) {
         this.getRealsIp().clear();
         this.getRealsIp().addAll(realsIp);
+    }
+    
+    public Vip addReal(String name, String ip) {
+        RealIP real = new RealIP();
+        real.setName(name);
+        real.setRealIp(ip);
+        getReals().getRealIps().add(real);
+        return this;
     }
 
     public String getCache() {
