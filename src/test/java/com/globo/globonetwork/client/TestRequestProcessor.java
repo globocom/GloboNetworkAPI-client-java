@@ -3,7 +3,6 @@ package com.globo.globonetwork.client;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.globo.globonetwork.client.RequestProcessor;
 import com.globo.globonetwork.client.exception.GloboNetworkException;
 import com.globo.globonetwork.client.model.GloboNetworkRoot;
 import com.google.api.client.xml.GenericXml;

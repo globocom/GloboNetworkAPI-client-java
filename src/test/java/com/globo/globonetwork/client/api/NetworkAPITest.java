@@ -1,7 +1,6 @@
 package com.globo.globonetwork.client.api;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -10,7 +9,6 @@ import org.junit.runners.JUnit4;
 
 import com.globo.globonetwork.client.TestRequestProcessor;
 import com.globo.globonetwork.client.TestRequestProcessor.HttpMethod;
-import com.globo.globonetwork.client.api.NetworkAPI;
 import com.globo.globonetwork.client.exception.GloboNetworkException;
 import com.globo.globonetwork.client.model.IPv4Network;
 import com.globo.globonetwork.client.model.Network;

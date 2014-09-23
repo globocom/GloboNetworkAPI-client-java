@@ -1,5 +1,6 @@
 package com.globo.globonetwork.client.model;
 
+import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,16 +9,11 @@ import com.google.api.client.xml.GenericXml;
 
 public class ListWithNullTag<T> extends GenericXml {
     
-    public ListWithNullTag(String tagName) {
+    protected ListWithNullTag(String tagName) {
         super.name = tagName;
         setValues(null);
     }
     
-//    public ListWithNullTag() {
-//        setValues(null);
-//    }
-    
-    @SuppressWarnings("unchecked")
     public List<T> getValues() {
         List<ArrayMap<String, String>> internalList = getInternalList();
         List<T> result = new ArrayList<T>();
@@ -29,9 +25,26 @@ public class ListWithNullTag<T> extends GenericXml {
         }
         return result;
     }
-    
+
+    @SuppressWarnings("unchecked")
+    protected Class<T> getBaseClass() {
+        return (Class<T>) ((ParameterizedType) this.getClass().getGenericSuperclass()).getActualTypeArguments()[0];
+    }
+
+    @SuppressWarnings("unchecked")
     private T convert(String rawValue) {
-        return (T) Integer.valueOf(rawValue);
+        if (rawValue == null) {
+            return null;
+        }
+        Class<T> baseClass = getBaseClass();
+        if (baseClass == Integer.class) {
+            return (T) Integer.valueOf(rawValue);
+        } else if (baseClass == Long.class) {
+            return (T) Long.valueOf(rawValue);
+        } else if (baseClass == String.class) {
+            return (T) rawValue;
+        }
+        throw new IllegalArgumentException("Unsupported type: " + baseClass);
     }
     
     @SuppressWarnings({"rawtypes", "unchecked"})
@@ -43,10 +56,6 @@ public class ListWithNullTag<T> extends GenericXml {
         if (l1 == null) {
             l1 = new ArrayList();
             this.getUnknownKeys().put(super.name, l1);
-        }
-        ArrayMap<String, List> a2 = null;
-        if (!l1.isEmpty()) {
-            a2 = (ArrayMap) l1.get(0);
         }
         return l1;
     }
