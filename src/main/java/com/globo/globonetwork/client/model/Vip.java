@@ -49,16 +49,16 @@ public class Vip extends GenericXml {
     private Integer maxConn;
 
     @Key("portas_servicos")
-    private final ListWithNullTag<String> servicePorts = new ListWithNullTag<String>("porta");
+    private ServicePorts servicePorts = new ServicePorts();
 
     @Key
     private Real reals;
 
     @Key("reals_weights")
-    private final ListWithNullTag<Integer> realsWeights = new ListWithNullTag<Integer>("reals_weight");
+    private RealsWeights realsWeights = new RealsWeights();
 
     @Key("reals_prioritys")
-    private final ListWithNullTag<Integer> realsPriorities = new ListWithNullTag<Integer>("reals_priority");
+    private RealsPriorities realsPriorities = new RealsPriorities();
 
     @Key("finalidade")
     private String finality;
@@ -333,6 +333,24 @@ public class Vip extends GenericXml {
     public static class VipRequest extends Vip {
         public VipRequest() {
             this.name = "requisicao_vip";
+        }
+    }
+    
+    public static class ServicePorts extends ListWithNullTag<String> {
+        public ServicePorts() {
+            super("porta");
+        }
+    }
+
+    public static class RealsPriorities extends ListWithNullTag<Integer> {
+        public RealsPriorities() {
+            super("reals_priority");
+        }
+    }
+
+    public static class RealsWeights extends ListWithNullTag<Integer> {
+        public RealsWeights() {
+            super("reals_weight");
         }
     }
 }
