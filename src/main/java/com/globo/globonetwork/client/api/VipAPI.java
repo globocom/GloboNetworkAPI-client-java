@@ -83,9 +83,9 @@ public class VipAPI extends BaseAPI<Vip> {
         vip.setServiceName(serviceName);
         vip.setL7Filter(l7Filter);
         vip.setRealsIp(realsIp);
-        vip.setRealsPrioritiesValues(realsPriorities);
-        vip.setRealsWeightsValues(realsWeights);
-        vip.setPorts(ports);
+        vip.setRealsPriorities(realsPriorities);
+        vip.setRealsWeights(realsWeights);
+        vip.setServicePorts(ports);
         vip.setRuleId(ruleId);
 
         GloboNetworkRoot<Vip> payload = new GloboNetworkRoot<Vip>();

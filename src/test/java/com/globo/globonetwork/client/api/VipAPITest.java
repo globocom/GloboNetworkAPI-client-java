@@ -66,7 +66,7 @@ public class VipAPITest {
 		assertEquals("cookie", vip.getPersistence());
 		assertEquals("least-conn", vip.getMethod());
 		assertEquals((Integer) 300, vip.getMaxConn());
-		assertEquals(1, vip.getPorts().size());
+		assertEquals(1, vip.getServicePorts().size());
 		
 		assertNotNull(vip.getRealsIp());
 		assertEquals(2, vip.getRealsIp().size());
@@ -121,7 +121,7 @@ public class VipAPITest {
         assertEquals(stickness, vip.getPersistence());
         assertEquals(methodBal, vip.getMethod());
         assertEquals(maxConn, vip.getMaxConn());
-        assertEquals(1, vip.getPorts().size());
-        assertEquals(port, vip.getPorts().get(0));
+        assertEquals(1, vip.getServicePorts().size());
+        assertEquals(port, vip.getServicePorts().get(0));
 	}
 }

@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.globo.globonetwork.client.model.Real.RealIP;
-import com.google.api.client.util.GenericData;
 import com.google.api.client.util.Key;
 import com.google.api.client.xml.GenericXml;
 
@@ -50,16 +49,16 @@ public class Vip extends GenericXml {
     private Integer maxConn;
 
     @Key("portas_servicos")
-    private ServicePorts servicePorts;
+    private final ListWithNullTag<String> servicePorts = new ListWithNullTag<String>("porta");
 
     @Key
     private Real reals;
 
-    @Key
-    private RealsWeights realsWeights;
+    @Key("reals_weights")
+    private final ListWithNullTag<Integer> realsWeights = new ListWithNullTag<Integer>("reals_weight");
 
-    @Key
-    private RealsPriorities realsPriorities;
+    @Key("reals_prioritys")
+    private final ListWithNullTag<Integer> realsPriorities = new ListWithNullTag<Integer>("reals_priority");
 
     @Key("finalidade")
     private String finality;
@@ -211,80 +210,28 @@ public class Vip extends GenericXml {
         this.maxConn = maxConn;
     }
 
-    protected ServicePorts getServicePorts() {
-        return servicePorts;
+    public List<String> getServicePorts() {
+        return servicePorts.getValues();
     }
 
-    protected void setServicePorts(ServicePorts servicePorts) {
-        this.servicePorts = servicePorts;
+    public void setServicePorts(List<String> servicePorts) {
+        this.servicePorts.setValues(servicePorts);
     }
 
-    public List<String> getPorts() {
-        // ensure never returns null.
-        if (this.getServicePorts() == null) {
-            this.setServicePorts(new ServicePorts());
-        }
-        if (this.getServicePorts().getPorts() == null) {
-            this.getServicePorts().setPorts(new ArrayList<String>());
-        }
-        return this.getServicePorts().getPorts();
+    public List<Integer> getRealsPriorities() {
+        return realsPriorities.getValues();
     }
 
-    public void setPorts(List<String> ports) {
-        this.getPorts().clear();
-        this.getPorts().addAll(ports);
+    public void setRealsPriorities(List<Integer> realsPriorities) {
+        this.realsPriorities.setValues(realsPriorities);
+    }
+    
+    public List<Integer> getRealsWeights() {
+        return realsWeights.getValues();
     }
 
-    protected RealsWeights getRealsWeights() {
-        return realsWeights;
-    }
-
-    protected void setRealsWeights(RealsWeights realsWeights) {
-        this.realsWeights = realsWeights;
-    }
-
-    public List<Integer> getRealsWeightsValues() {
-        // ensure never returns null.
-        if (this.getRealsWeights() == null) {
-            this.setRealsWeights(new RealsWeights());
-        }
-        if (this.getRealsWeights().getRealsWeights() == null) {
-            this.getRealsWeights().setRealsWeights(new ArrayList<Integer>());
-        }
-        return this.getRealsWeights().getRealsWeights();
-    }
-
-    public void setRealsWeightsValues(List<Integer> weights) {
-        this.getRealsWeightsValues().clear();
-        if (weights != null) {
-            this.getRealsWeightsValues().addAll(weights);
-        }
-    }
-
-    protected RealsPriorities getRealsPriorities() {
-        return realsPriorities;
-    }
-
-    protected void setRealsPriorities(RealsPriorities realsPriorities) {
-        this.realsPriorities = realsPriorities;
-    }
-
-    public List<Integer> getRealsPrioritiesValues() {
-        // ensure never returns null.
-        if (this.getRealsPriorities() == null) {
-            this.setRealsPriorities(new RealsPriorities());
-        }
-        if (this.getRealsPriorities().getRealsPriorities() == null) {
-            this.getRealsPriorities().setRealsPriorities(new ArrayList<Integer>());
-        }
-        return this.getRealsPriorities().getRealsPriorities();
-    }
-
-    public void setRealsPrioritiesValues(List<Integer> priorities) {
-        this.getRealsPrioritiesValues().clear();
-        if (priorities != null) {
-            this.getRealsPrioritiesValues().addAll(priorities);
-        }
+    public void setRealsWeights(List<Integer> realsWeights) {
+        this.realsWeights.setValues(realsWeights);
     }
 
     public Vip() {
@@ -293,69 +240,6 @@ public class Vip extends GenericXml {
 
     public String superName() {
         return super.name;
-    }
-
-    public static class ServicePorts extends GenericXml {
-        @Key("porta")
-        List<String> ports;
-
-        public List<String> getPorts() {
-            return ports;
-        }
-
-        public void setPorts(List<String> ports) {
-            this.ports = ports;
-        }
-
-        public ServicePorts() {
-            super.name = "portas_servicos";
-        }
-
-        public String superName() {
-            return super.name;
-        }
-    }
-
-    public static class RealsWeights extends GenericXml {
-        @Key("reals_weight")
-        private List<Integer> realsWeights;
-
-        public RealsWeights() {
-            super.name = "reals_weights";
-        }
-
-        public String superName() {
-            return super.name;
-        }
-
-        public List<Integer> getRealsWeights() {
-            return realsWeights;
-        }
-
-        public void setRealsWeights(List<Integer> realsWeights) {
-            this.realsWeights = realsWeights;
-        }
-    }
-
-    public static class RealsPriorities extends GenericXml {
-        @Key("reals_priority")
-        private List<Integer> realsPriorities;
-
-        public RealsPriorities() {
-            super.name = "reals_prioritys";
-        }
-
-        public String superName() {
-            return super.name;
-        }
-
-        public List<Integer> getRealsPriorities() {
-            return realsPriorities;
-        }
-
-        public void setRealsPriorities(List<Integer> realsPriorities) {
-            this.realsPriorities = realsPriorities;
-        }
     }
 
     public Long getExpectedHealthcheckId() {
@@ -449,23 +333,6 @@ public class Vip extends GenericXml {
     public static class VipRequest extends Vip {
         public VipRequest() {
             this.name = "requisicao_vip";
-        }
-    }
-    
-    public static class ObjectWithNullTag<T> extends GenericData {
-        @Key("text()")
-        private T value;
-        public ObjectWithNullTag(T value) {
-            this.value = value;
-        }
-        public ObjectWithNullTag() {
-            this(null);
-        }
-        public void setValue(T value) {
-            this.value = value;
-        }
-        public T getValue() {
-            return this.value;
         }
     }
 }
