@@ -1,6 +1,7 @@
 package com.globo.globonetwork.client.api;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.globo.globonetwork.client.RequestProcessor;
@@ -22,6 +23,8 @@ import com.google.api.client.json.GenericJson;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.JsonObjectParser;
 import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.client.util.ArrayMap;
+import com.google.api.client.xml.GenericXml;
 
 public class VipAPI extends BaseAPI<Vip> {
 
@@ -54,6 +57,42 @@ public class VipAPI extends BaseAPI<Vip> {
 
             throw ex;
         }
+    }
+
+    public List<Vip> getByIp(String ip) throws GloboNetworkException {
+
+        GenericXml data = new GenericXml();
+        data.set("ip", ip);
+        data.set("start_record", 0);
+        data.set("end_record", 100);
+        data.set("custom_search", "");
+        data.set("create", "");
+        data.set("asorting_cols", "");
+        data.set("searchable_columns", "");
+        
+        GloboNetworkRoot<Vip> payload = new GloboNetworkRoot<Vip>();
+        payload.set("vip", data);
+
+        List<Vip> result = new ArrayList<Vip>();
+        GloboNetworkRoot<GenericXml> globoNetworkRoot = this.getTransport().post("/requestvip/get_by_ip_id/", payload, GenericXml.class);
+        if (globoNetworkRoot == null) {
+            // Problems reading the XML
+            throw new GloboNetworkException("Invalid XML response");
+        } else if (globoNetworkRoot.getObjectList() != null) {
+            for (GenericXml rawVip: globoNetworkRoot.getObjectList()) {
+                // because this vip object there is not all information about the vip, 
+                // I search vip by id before put in list
+                if ("vips".equals(rawVip.name) && rawVip.containsKey("id")) {
+                    @SuppressWarnings("unchecked")
+                    ArrayMap<String, String> rawId = (ArrayMap<String, String>)  ((List<ArrayMap<String, String>>) rawVip.get("id")).get(0);
+                    Vip completeVip = this.getById(Long.valueOf(rawId.getValue(0)));
+                    if (completeVip != null) {
+                        result.add(completeVip);
+                    }
+                }
+            }
+        }
+        return result;
     }
 
     public void validate(Long vipId) throws GloboNetworkException {

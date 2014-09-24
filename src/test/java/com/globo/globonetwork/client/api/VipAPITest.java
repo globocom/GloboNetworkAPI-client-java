@@ -4,6 +4,7 @@ import static org.junit.Assert.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import org.junit.Before;
@@ -80,7 +81,41 @@ public class VipAPITest {
 		assertEquals(Integer.valueOf(80), firstRealIP.getVipPort());
 		assertEquals("172.10.0.2", firstRealIP.getRealIp());
 	}
-	
+
+   @Test
+    public void testGetByIpReturnsEmptyWhenNotFound() throws GloboNetworkException {
+        this.rp.registerFakeRequest(HttpMethod.POST, "/requestvip/get_by_ip_id/", 200, 
+                "<?xml version=\"1.0\" encoding=\"UTF-8\"?><networkapi versao=\"1.0\"><total>0</total><vips></vips></networkapi>");
+        
+        assertEquals(Collections.emptyList(), this.api.getByIp("200.170.1.199"));
+    }
+
+   @Test
+   public void testGetByIpReturnsValidList() throws GloboNetworkException {
+       this.rp.registerFakeRequest(HttpMethod.POST, "/requestvip/get_by_ip_id/", 200, 
+               "<?xml version=\"1.0\" encoding=\"UTF-8\"?><networkapi versao=\"1.0\"><vips><id>999</id></vips></networkapi>");
+       this.rp.registerFakeRequest(HttpMethod.GET, "/requestvip/getbyid/999/", 
+               "<?xml version=\"1.0\" encoding=\"UTF-8\"?><networkapi versao=\"1.0\">"
+                       + "<vip><persistencia>cookie</persistencia><metodo_bal>least-conn</metodo_bal><environments>PROD</environments><ips>192.168.90.130</ips>"
+                       + "<expect_string>WORKING</expect_string><match_list>WORKING</match_list><ipv6_description/><id>6374</id><maxcon>300</maxcon>"
+                       + "<portas_servicos><porta>80:8180</porta></portas_servicos><ipv4_description>test.networkapi.globoi.com</ipv4_description>"
+                       + "<vip_criado>True</vip_criado><id_healthcheck_expect>6</id_healthcheck_expect><reals>"
+                       + "<real><id_ip>44401</id_ip><port_real>8080</port_real><real_name>real_name_1</real_name><port_vip>80</port_vip><real_ip>172.10.0.2</real_ip></real>"
+                       + "<real><id_ip>44401</id_ip><port_real>8443</port_real><real_name>real_name_2</real_name><port_vip>443</port_vip><real_ip>172.10.0.2</real_ip></real>"
+                       + "</reals><healthcheck_type>HTTP</healthcheck_type><healthcheck>GET /healthcheck HTTP/1.0\\r\\nHost:teste.networkapi.globoi.com\\r\\n\\r\\n</healthcheck>"
+                       + "<host>test.networkapi.globoi.com</host><validado>True</validado></vip>"
+                       + "</networkapi>");
+       
+       List<Vip> result = this.api.getByIp("200.170.1.199");
+       assertEquals(1, result.size());
+       for (Vip vip : result) {
+           assertNotNull(vip);
+           assertNotNull(vip.getId());
+           assertNotNull(vip.getValidated());
+           assertNotNull(vip.getCreated());
+       }
+   }
+
 	@Test
 	public void testAddVipReturnsVip() throws GloboNetworkException {
 	    Long vipId = 9999L;
