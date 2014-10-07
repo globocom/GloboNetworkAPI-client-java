@@ -281,6 +281,17 @@ public class VipAPI extends BaseAPI<Vip> {
         this.put("/vip/" + vipId + "/healthcheck/", payload);
     }
 
+    public void alterPersistence(Long vipId, String persistence) throws GloboNetworkException {
+        Vip vip = new Vip();
+        vip.setPersistence(persistence);
+        
+        GloboNetworkRoot<Vip> payload = new GloboNetworkRoot<Vip>();
+        payload.getObjectList().add(vip);
+        payload.set("vip", vip);
+
+        this.put("/vip/" + vipId + "/persistence/", payload);
+    }
+
     public String generateVipEditingUrl(Long vipId, String vipServerUrl) throws GloboNetworkException {
 
         if (vipServerUrl == null || "".equals(vipServerUrl)) {
