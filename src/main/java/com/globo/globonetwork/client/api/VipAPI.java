@@ -267,6 +267,19 @@ public class VipAPI extends BaseAPI<Vip> {
 
         this.post("/vip/real/", payload);
     }
+    
+    public void alterHealthcheck(Long vipId, String healthcheckType, String healthcheck, Long expectedHealthcheckId) throws GloboNetworkException {
+        Vip vip = new Vip();
+        vip.setHealthcheckType(healthcheckType);
+        vip.setHealthcheck(healthcheck);
+        vip.setExpectedHealthcheckId(expectedHealthcheckId);
+        
+        GloboNetworkRoot<Vip> payload = new GloboNetworkRoot<Vip>();
+        payload.getObjectList().add(vip);
+        payload.set("vip", vip);
+
+        this.put("/vip/" + vipId + "/healthcheck/", payload);
+    }
 
     public String generateVipEditingUrl(Long vipId, String vipServerUrl) throws GloboNetworkException {
 
