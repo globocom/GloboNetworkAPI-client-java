@@ -144,6 +144,44 @@ public class VipAPI extends BaseAPI<Vip> {
         
         return this.getById(vipRequest.getId());
     }
+    
+    public void alter(Long vipId, Long ipv4Id, Long ipv6Id, Long expectedHealthcheckId, Boolean validated, Boolean created, String finality, String client, String environment, 
+            String cache, String balancingMethod, String persistence, String healthcheckType, String healthcheck, Integer timeout, String host, Integer maxConn, String businessArea, String serviceName,
+            String l7Filter, List<RealIP> realsIp, List<Integer> realsPriorities, List<Integer> realsWeights, List<String> ports, Long ruleId) throws GloboNetworkException {
+
+        Vip vip = new Vip();
+        vip.setId(vipId);
+        vip.setIpv4Id(ipv4Id);
+        vip.setIpv6Id(ipv6Id);
+        vip.setExpectedHealthcheckId(expectedHealthcheckId);
+        vip.setValidated(validated);
+        vip.setCreated(created);
+        vip.setFinality(finality);
+        vip.setClient(client);
+        vip.setEnvironment(environment);
+        vip.setCache(cache);
+        vip.setMethod(balancingMethod);
+        vip.setPersistence(persistence);
+        vip.setHealthcheckType(healthcheckType);
+        vip.setHealthcheck(healthcheck);
+        vip.setTimeout(timeout);
+        vip.setHost(host);
+        vip.setMaxConn(maxConn);
+        vip.setBusinessArea(businessArea);
+        vip.setServiceName(serviceName);
+        vip.setL7Filter(l7Filter);
+        vip.setRealsIp(realsIp);
+        vip.setRealsPriorities(realsPriorities);
+        vip.setRealsWeights(realsWeights);
+        vip.setServicePorts(ports);
+        vip.setRuleId(ruleId);
+
+        GloboNetworkRoot<Vip> payload = new GloboNetworkRoot<Vip>();
+        payload.getObjectList().add(vip);
+        payload.set("vip", vip);
+
+        this.put("/requestvip/" + vipId + "/", payload);
+    }
 
     public void create(Long vipId) throws GloboNetworkException {
         Vip vip = new Vip();

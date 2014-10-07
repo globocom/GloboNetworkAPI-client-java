@@ -19,10 +19,10 @@ public class Vip extends GenericXml {
     private String ipv4Description;
 
     @Key("vip_criado")
-    private Boolean created;
+    private String created;
 
     @Key("validado")
-    private Boolean validated;
+    private String validated;
 
     @Key
     private String host;
@@ -115,19 +115,31 @@ public class Vip extends GenericXml {
     }
 
     public Boolean getCreated() {
-        return created;
+        return Boolean.valueOf(created);
     }
 
     public void setCreated(Boolean created) {
-        this.created = created;
+        if (created == null) {
+            this.created = null;
+        } else if (created) {
+            this.created = "True";
+        } else {
+            this.created = "False";
+        }
     }
 
     public Boolean getValidated() {
-        return validated;
+        return Boolean.valueOf(validated);
     }
 
     public void setValidated(Boolean validated) {
-        this.validated = validated;
+        if (validated == null) {
+            this.validated = null;
+        } else if (validated) {
+            this.validated = "True";
+        } else {
+            this.validated = "False";
+        }
     }
 
     public String getHost() {

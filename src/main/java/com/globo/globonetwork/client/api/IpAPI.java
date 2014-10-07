@@ -148,23 +148,30 @@ public class IpAPI extends BaseAPI<Ip> {
      * @throws GloboNetworkException
      */
     public Ip checkVipIp(String ip, long environmentVipId) throws GloboNetworkException {
-        
-        GenericXml ip_map = new GenericXml();
-        ip_map.set("id_evip", String.valueOf(environmentVipId));
-        ip_map.set("ip", ip);
-        
-        GloboNetworkRoot<GenericXml> globoNetworkRootPayload = new GloboNetworkRoot<GenericXml>();
-        globoNetworkRootPayload.getObjectList().add(ip_map);
-        globoNetworkRootPayload.set("ip_map", ip_map);
-        
-        GloboNetworkRoot<Ip> globoNetworkRoot = this.post("/ip/checkvipip/", globoNetworkRootPayload);
-        if (globoNetworkRoot == null) {
-            // Problems reading the XML
-            throw new GloboNetworkException("Invalid XML response");
-        } else if (globoNetworkRoot.getObjectList() == null) {
-            return null;
+        try {
+            GenericXml ip_map = new GenericXml();
+            ip_map.set("id_evip", String.valueOf(environmentVipId));
+            ip_map.set("ip", ip);
+            
+            GloboNetworkRoot<GenericXml> globoNetworkRootPayload = new GloboNetworkRoot<GenericXml>();
+            globoNetworkRootPayload.getObjectList().add(ip_map);
+            globoNetworkRootPayload.set("ip_map", ip_map);
+            
+            GloboNetworkRoot<Ip> globoNetworkRoot = this.post("/ip/checkvipip/", globoNetworkRootPayload);
+            if (globoNetworkRoot == null) {
+                // Problems reading the XML
+                throw new GloboNetworkException("Invalid XML response");
+            } else if (globoNetworkRoot.getObjectList() == null) {
+                return null;
+            }
+            return globoNetworkRoot.getFirstObject();
+        } catch (GloboNetworkErrorCodeException ex) {
+            if (ex.getCode() == GloboNetworkErrorCodeException.IPV4_NOT_IN_ENVIRONMENT_VIP) {
+                return null;
+            }
+            
+            throw ex;
         }
-        return globoNetworkRoot.getFirstObject();
    }
 
 }

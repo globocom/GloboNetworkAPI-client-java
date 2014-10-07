@@ -11,7 +11,6 @@ import org.junit.runners.JUnit4;
 
 import com.globo.globonetwork.client.TestRequestProcessor;
 import com.globo.globonetwork.client.TestRequestProcessor.HttpMethod;
-import com.globo.globonetwork.client.exception.GloboNetworkErrorCodeException;
 import com.globo.globonetwork.client.exception.GloboNetworkException;
 import com.globo.globonetwork.client.model.Ip;
 
@@ -130,13 +129,8 @@ public class IpAPITest {
        this.rp.registerFakeRequest(HttpMethod.POST, "/ip/checkvipip/", 500,
                "<?xml version=\"1.0\" encoding=\"UTF-8\"?><networkapi versao=\"1.0\"><erro><codigo>0334</codigo><descricao>Ipv4 não está relacionado ao Ambiente Vip: Homologacao - Usuario Interno - Homologacao BE-TESTE API.</descricao></erro></networkapi>");
        
-       try {
-           Ip ip = this.api.checkVipIp(ipAddr, environmentVipId);
-           // can't reach this code
-           assertFalse(true);
-       } catch (GloboNetworkErrorCodeException e) {
-           assertEquals(334, e.getCode());
-       }
+       Ip ip = this.api.checkVipIp(ipAddr, environmentVipId);
+       assertNull(ip);
    }
 
 }
