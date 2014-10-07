@@ -199,6 +199,14 @@ public class VipAPI extends BaseAPI<Vip> {
         this.delete("/vip/delete/" + vipId + "/");
     }
 
+    public void removeVip(Long vipId, boolean keepIp) throws GloboNetworkException {
+        String url = "/vip/delete/" + vipId + "/";
+        if (keepIp) {
+            url += "?keep_ip=1";
+        }
+        this.delete(url);
+    }
+
     // remove VIP from network device removeScriptVip
     public void removeScriptVip(Long vipId) throws GloboNetworkException {
         Vip vip = new Vip();
