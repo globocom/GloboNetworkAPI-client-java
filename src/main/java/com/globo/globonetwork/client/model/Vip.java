@@ -37,7 +37,7 @@ public class Vip extends GenericXml {
     private String persistence;
 
     @Key("id_healthcheck_expect")
-    private ObjectWithNullTag<Long> expectedHealthcheckId = new ObjectWithNullTag<Long>();
+    private LongWithNullTag expectedHealthcheckId = new LongWithNullTag();
 
     @Key("healthcheck_type")
     private String healthcheckType;
@@ -374,6 +374,19 @@ public class Vip extends GenericXml {
     public static class RealsWeights extends ListWithNullTag<Integer> {
         public RealsWeights() {
             super("reals_weight");
+        }
+    }
+    
+    public static class LongWithNullTag extends ObjectWithNullTag<Long> {
+        @Override
+        public Long getValue() {
+            if (super.getValue() == null) {
+                return null;
+            }
+            if (super.getValue() instanceof Long) {
+                return (Long) super.getValue();
+            }
+            return Long.valueOf(this.getValue().toString());
         }
     }
 }
