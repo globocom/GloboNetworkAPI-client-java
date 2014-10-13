@@ -390,3 +390,4 @@ public class Vip extends GenericXml {
         }
     }
 }
+
