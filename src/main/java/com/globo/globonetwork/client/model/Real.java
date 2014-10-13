@@ -16,6 +16,7 @@
 */
 package com.globo.globonetwork.client.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.google.api.client.util.Key;
@@ -24,7 +25,7 @@ import com.google.api.client.xml.GenericXml;
 public class Real extends GenericXml {
 
 	@Key("real")
-	private List<RealIP> realIps;
+	private List<RealIP> realIps = new ArrayList<RealIP>();
 	
 	public List<RealIP> getRealIps() {
 		return realIps;

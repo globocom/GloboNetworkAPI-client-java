@@ -19,6 +19,7 @@ package com.globo.globonetwork.client.api;
 import com.globo.globonetwork.client.RequestProcessor;
 import com.globo.globonetwork.client.exception.GloboNetworkException;
 import com.globo.globonetwork.client.model.GloboNetworkRoot;
+import com.globo.globonetwork.client.model.IPv4Network;
 import com.globo.globonetwork.client.model.Network;
 import com.globo.globonetwork.client.model.Vlan;
 import com.google.api.client.xml.GenericXml;
@@ -61,6 +62,20 @@ public class NetworkAPI extends BaseAPI<Network> {
 		globoNetworkRoot.set(network.name, network);
 
 		this.put("/network/create/", globoNetworkRoot);
+	}
+	
+	public IPv4Network getNetworkIpv4(Long networkId) throws GloboNetworkException {
+	    GloboNetworkRoot<GenericXml> globoNetworkRoot = (GloboNetworkRoot<GenericXml>) this.getTransport().get("/network/ipv4/id/" + networkId + "/", GenericXml.class);
+	    if (globoNetworkRoot.getFirstObject() == null) {
+            throw new GloboNetworkException("Network not found");
+	    } else if (globoNetworkRoot.size() > 1) {
+            throw new GloboNetworkException("Multiples networks returned. This is an error in search by id");
+	    }
+	    
+	    GenericXml genericObj = globoNetworkRoot.getFirstObject();
+	    IPv4Network net = new IPv4Network();
+	    assignTo(genericObj, net);
+	    return net;
 	}
 	
 }

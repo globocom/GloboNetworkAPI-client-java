@@ -22,8 +22,8 @@ import java.util.List;
 
 import com.globo.globonetwork.client.RequestProcessor;
 import com.globo.globonetwork.client.exception.GloboNetworkException;
-import com.globo.globonetwork.client.model.IPv4Network;
 import com.globo.globonetwork.client.model.GloboNetworkRoot;
+import com.globo.globonetwork.client.model.IPv4Network;
 import com.globo.globonetwork.client.model.Vlan;
 
 public class VlanAPI extends BaseAPI<Vlan> {

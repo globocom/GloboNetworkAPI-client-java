@@ -35,9 +35,14 @@ public class Ip extends GenericXml {
 	private List<String> equipments;
 	@Key
 	private Long id;
+	@Key("networkipv4")
+	private Long networkId;
 	
 	public Ip() {
 		this.name = "ip";
+	}
+	public String getIpString() {
+	    return String.format("%d.%d.%d.%d", this.getOct1(), this.getOct2(), this.getOct3(), this.getOct4());
 	}
 
 	public Integer getOct1() {
@@ -76,11 +81,16 @@ public class Ip extends GenericXml {
 	public void setId(Long id) {
 		this.id = id;
 	}
+    public Long getNetworkId() {
+        return networkId;
+    }
+    public void setNetworkId(Long networkId) {
+        this.networkId = networkId;
+    }
 	
 	public static class Ipv4 extends Ip {
 		public Ipv4() {
 			this.name = "ipv4";
 		}
 	}
-	
 }

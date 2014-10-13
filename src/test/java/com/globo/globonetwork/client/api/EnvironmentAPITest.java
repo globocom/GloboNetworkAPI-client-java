@@ -16,8 +16,7 @@
 */
 package com.globo.globonetwork.client.api;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -28,7 +27,6 @@ import org.junit.runners.JUnit4;
 
 import com.globo.globonetwork.client.TestRequestProcessor;
 import com.globo.globonetwork.client.TestRequestProcessor.HttpMethod;
-import com.globo.globonetwork.client.api.EnvironmentAPI;
 import com.globo.globonetwork.client.exception.GloboNetworkException;
 import com.globo.globonetwork.client.model.Environment;
 
