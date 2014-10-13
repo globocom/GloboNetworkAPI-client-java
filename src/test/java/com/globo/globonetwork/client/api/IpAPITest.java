@@ -11,7 +11,6 @@ import org.junit.runners.JUnit4;
 
 import com.globo.globonetwork.client.TestRequestProcessor;
 import com.globo.globonetwork.client.TestRequestProcessor.HttpMethod;
-import com.globo.globonetwork.client.api.IpAPI;
 import com.globo.globonetwork.client.exception.GloboNetworkException;
 import com.globo.globonetwork.client.model.Ip;
 
@@ -88,5 +87,50 @@ public class IpAPITest {
 		
 		this.api.deleteIpv4(ipv4Id);
 	}
+
+   @Test
+    public void testGetAvailableIp4ForVip() throws GloboNetworkException {
+        Long environmentVip = 23l;
+        String name = "testcloud2";
+                
+        this.rp.registerFakeRequest(HttpMethod.POST, "/ip/availableip4/vip/" + environmentVip + "/",
+                "<?xml version=\"1.0\" encoding=\"UTF-8\"?><networkapi versao=\"1.0\"><ip><oct4>36</oct4><oct2>170</oct2><oct3>1</oct3><oct1>200</oct1><networkipv4>1645</networkipv4><id>50335</id><descricao>testcloud2</descricao></ip></networkapi>");
+        
+        Ip ip = this.api.getAvailableIp4ForVip(environmentVip, name);
+        assertNotNull(ip);
+        assertEquals(Integer.valueOf(36), ip.getOct4());
+        assertEquals(Integer.valueOf(1), ip.getOct3());
+        assertEquals(Integer.valueOf(170), ip.getOct2());
+        assertEquals(Integer.valueOf(200), ip.getOct1());
+        assertEquals(Long.valueOf(50335), ip.getId());
+        assertEquals(Long.valueOf(1645), ip.getNetworkId());
+    }
+
+   @Test
+   public void testCheckVipIp() throws GloboNetworkException {
+       Long environmentVipId = 23l;
+       String ipAddr = "200.12.3.4";
+               
+       this.rp.registerFakeRequest(HttpMethod.POST, "/ip/checkvipip/",
+               "<?xml version=\"1.0\" encoding=\"UTF-8\"?><networkapi versao=\"1.0\"><ip><oct4>4</oct4><oct2>12</oct2><oct3>3</oct3><oct1>200</oct1><networkipv4>1645</networkipv4><id>50438</id><descricao>testcloud2</descricao></ip></networkapi>");
+       
+       Ip ip = this.api.checkVipIp(ipAddr, environmentVipId);
+       assertNotNull(ip);
+       assertEquals(ipAddr, ip.getIpString());
+       assertEquals(Long.valueOf(50438), ip.getId());
+       assertEquals(Long.valueOf(1645), ip.getNetworkId());
+   }
+
+   @Test
+   public void testCheckVipIpWhenIpDoesnotExist() throws GloboNetworkException {
+       Long environmentVipId = 23l;
+       String ipAddr = "200.12.3.4";
+               
+       this.rp.registerFakeRequest(HttpMethod.POST, "/ip/checkvipip/", 500,
+               "<?xml version=\"1.0\" encoding=\"UTF-8\"?><networkapi versao=\"1.0\"><erro><codigo>0334</codigo><descricao>Ipv4 não está relacionado ao Ambiente Vip: Homologacao - Usuario Interno - Homologacao BE-TESTE API.</descricao></erro></networkapi>");
+       
+       Ip ip = this.api.checkVipIp(ipAddr, environmentVipId);
+       assertNull(ip);
+   }
 
 }

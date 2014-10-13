@@ -33,4 +33,6 @@ public class GloboNetworkErrorCodeException extends GloboNetworkException {
 	public static final int EQUIPMENT_NOT_REGISTERED = 117;
 	public static final int IP_NOT_REGISTERED = 119;
 	public static final int VIP_NOT_REGISTERED = 152;
+	public static final int NO_PARAMETERS = 287;
+	public static final int IPV4_NOT_IN_ENVIRONMENT_VIP = 334;
 }

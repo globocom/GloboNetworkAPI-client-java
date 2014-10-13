@@ -12,6 +12,7 @@ import com.globo.globonetwork.client.api.EquipmentAPI;
 import com.globo.globonetwork.client.api.IpAPI;
 import com.globo.globonetwork.client.api.NetworkAPI;
 import com.globo.globonetwork.client.api.VipAPI;
+import com.globo.globonetwork.client.api.VipEnvironmentAPI;
 import com.globo.globonetwork.client.api.VlanAPI;
 import com.globo.globonetwork.client.exception.GloboNetworkErrorCodeException;
 import com.globo.globonetwork.client.exception.GloboNetworkException;
@@ -134,6 +135,10 @@ public abstract class RequestProcessor {
 	
 	public VipAPI getVipAPI() {
 		return new VipAPI(this);
+	}
+	
+	public VipEnvironmentAPI getVipEnvironmentAPI() {
+	    return new VipEnvironmentAPI(this);
 	}
 }
 
