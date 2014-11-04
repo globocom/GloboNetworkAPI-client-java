@@ -386,7 +386,7 @@ public class Vip extends GenericXml {
             if (super.getValue() instanceof Long) {
                 return (Long) super.getValue();
             }
-            return Long.valueOf(super.getValue().toString());
+            return Long.valueOf(((Object)super.getValue()).toString());
         }
     }
 }
