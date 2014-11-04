@@ -86,6 +86,7 @@ public class VipAPITest {
 		assertEquals("least-conn", vip.getMethod());
 		assertEquals((Integer) 300, vip.getMaxConn());
 		assertEquals(1, vip.getServicePorts().size());
+		assertEquals(Long.valueOf(6), vip.getExpectedHealthcheckId());
 		
 		assertNotNull(vip.getRealsIp());
 		assertEquals(2, vip.getRealsIp().size());
