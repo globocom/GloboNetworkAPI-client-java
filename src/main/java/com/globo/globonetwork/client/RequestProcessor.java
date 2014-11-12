@@ -69,7 +69,7 @@ public abstract class RequestProcessor {
 				String currentTag = xmlPullParser.getName();
 				if ((tagName == null || (tagName != null && tagName.equals(currentTag))) && xmlPullParser.getDepth() == 2) {
 					T obj = Types.newInstance(dataClass);
-					Xml.parseElement(xmlPullParser, obj, parser.getNamespaceDictionary(), new GloboNetworkCustomizeParser<T>(obj));
+					Xml.parseElement(xmlPullParser, obj, parser.getNamespaceDictionary(), null);
 					globoNetworkRoot.getObjectList().add(obj);
 				}
 				try {
@@ -155,17 +155,5 @@ public abstract class RequestProcessor {
 	
 	public VipEnvironmentAPI getVipEnvironmentAPI() {
 	    return new VipEnvironmentAPI(this);
-	}
-}
-
-class GloboNetworkCustomizeParser<T extends GenericXml> extends CustomizeParser {
-	
-	private T obj;
-	GloboNetworkCustomizeParser(T obj) {
-		this.obj = obj;
-	}
-	
-	public boolean stopAfterEndTag(String namespace, String localName) {
-		return obj.name.equals(localName);
 	}
 }

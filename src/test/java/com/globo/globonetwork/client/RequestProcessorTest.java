@@ -25,6 +25,8 @@ import org.junit.runners.JUnit4;
 
 import com.globo.globonetwork.client.exception.GloboNetworkErrorCodeException;
 import com.globo.globonetwork.client.exception.GloboNetworkException;
+import com.globo.globonetwork.client.model.GloboNetworkRoot;
+import com.globo.globonetwork.client.model.Vlan;
 
 @RunWith(JUnit4.class)
 public class RequestProcessorTest {
@@ -63,6 +65,16 @@ public class RequestProcessorTest {
 		} catch (GloboNetworkException e) {
 			assertEquals(content, e.getMessage());
 		}
+	}
+	
+	@Test
+	public void innerTagWithRootTagNameDoNotStopXMLProcessing() throws GloboNetworkException {
+	    GloboNetworkRoot<Vlan> root = rp.readXML("<?xml version=\"1.0\" encoding=\"UTF-8\"?><networkapi versao=\"1.0\"><vlan><nome>vlan name</nome><vlan>10</vlan><descricao>vlan desc</descricao></vlan></networkapi>", Vlan.class);
+	    assertNotNull(root);
+	    assertNotNull(root.getFirstObject());
+	    Vlan vlan = root.getFirstObject();
+	    assertEquals("vlan name", vlan.getName());
+        assertEquals("vlan desc", vlan.getDescription());
 	}
 
 }
