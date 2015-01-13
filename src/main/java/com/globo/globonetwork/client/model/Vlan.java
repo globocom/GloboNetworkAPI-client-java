@@ -41,6 +41,9 @@ public class Vlan extends GenericXml {
 	
 	@Key("redeipv4")
 	private final List<IPv4Network> ipv4Networks = new ArrayList<IPv4Network>();
+	
+	@Key("redeipv6")
+    private final List<IPv6Network> ipv6Networks = new ArrayList<IPv6Network>();
 
 	public Long getVlanNum() {
 		return vlanNum;
@@ -92,6 +95,17 @@ public class Vlan extends GenericXml {
 			this.ipv4Networks.addAll(ipv4Networks);
 		}
 	}
+	
+    public List<IPv6Network> getIpv6Networks() {
+        return ipv6Networks;
+    }
+
+    public void setIpv6Networks(List<IPv6Network> ipv6Networks) {
+        this.ipv6Networks.clear();
+        if (ipv6Networks != null) {
+            this.ipv6Networks.addAll(ipv6Networks);
+        }
+    }	
 
 	public Vlan() {
 		super.name = "vlan";
