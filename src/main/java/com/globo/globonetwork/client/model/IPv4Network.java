@@ -21,15 +21,6 @@ import com.google.api.client.util.Key;
 public class IPv4Network extends Network {
 	
 	@Key
-	private Long id;
-	
-	@Key("vlan")
-	private Long vlanId;
-	
-	@Key("network_type")
-	private Long networkTypeId;
-
-	@Key
 	private Integer oct1;
 	
 	@Key
@@ -55,39 +46,6 @@ public class IPv4Network extends Network {
 	
 	@Key
 	private String broadcast;
-	
-	@Key("ambient_vip")
-	private Long vipEnvironmentId;
-	
-	@Key
-	private Boolean active;
-	
-	@Key
-	private Integer block;
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	public Long getVlanId() {
-		return vlanId;
-	}
-
-	public void setVlanId(Long vlanId) {
-		this.vlanId = vlanId;
-	}
-
-	public Long getNetworkTypeId() {
-		return networkTypeId;
-	}
-
-	public void setNetworkTypeId(Long networkTypeId) {
-		this.networkTypeId = networkTypeId;
-	}
 
 	public Integer getOct1() {
 		return oct1;
@@ -121,6 +79,7 @@ public class IPv4Network extends Network {
 		this.oct4 = oct4;
 	}
 	
+	@Override
 	public String getNetworkAddressAsString() {
 	    return String.format("%d.%d.%d.%d", getOct1(), getOct2(), getOct3(), getOct4());
 	}
@@ -153,6 +112,7 @@ public class IPv4Network extends Network {
 		return maskOct4;
 	}
 	
+	@Override
 	public String getMaskAsString() {
 	    return String.format("%d.%d.%d.%d", getMaskOct1(), getMaskOct2(), getMaskOct3(), getMaskOct4());
 	}
@@ -167,30 +127,6 @@ public class IPv4Network extends Network {
 
 	public void setBroadcast(String broadcast) {
 		this.broadcast = broadcast;
-	}
-
-	public Long getVipEnvironmentId() {
-		return vipEnvironmentId;
-	}
-
-	public void setVipEnvironmentId(Long vipEnvironmentId) {
-		this.vipEnvironmentId = vipEnvironmentId;
-	}
-
-	public Boolean getActive() {
-		return active;
-	}
-
-	public void setActive(Boolean active) {
-		this.active = active;
-	}
-
-	public Integer getBlock() {
-		return block;
-	}
-
-	public void setBlock(Integer block) {
-		this.block = block;
 	}
 	
 	public IPv4Network() {

@@ -19,16 +19,25 @@ package com.globo.globonetwork.client.model;
 import com.google.api.client.util.Key;
 import com.google.api.client.xml.GenericXml;
 
-public class Network extends GenericXml {
+public abstract class Network extends GenericXml {
 	
 	@Key
 	private Long id;
 	
-	@Key("id_vlan")
+	@Key("vlan")
 	private Long vlanId;
 	
-	@Key("id_tipo_rede")
+	@Key("network_type")
 	private Long networkTypeId;
+
+    @Key("ambient_vip")
+    private Long vipEnvironmentId;
+
+    @Key
+    private Boolean active;
+
+    @Key
+    private Integer block;
 
 	public Long getId() {
 		return id;
@@ -57,4 +66,40 @@ public class Network extends GenericXml {
 	public Network() {
 		super.name = "network";
 	}
+	
+    public Long getVipEnvironmentId() {
+        return vipEnvironmentId;
+    }
+
+    public void setVipEnvironmentId(Long vipEnvironmentId) {
+        this.vipEnvironmentId = vipEnvironmentId;
+    }
+
+    public Boolean getActive() {
+        return active;
+    }
+
+    public void setActive(Boolean active) {
+        this.active = active;
+    }
+
+    public Integer getBlock() {
+        return block;
+    }
+
+    public void setBlock(Integer block) {
+        this.block = block;
+    }
+
+    public abstract String getNetworkAddressAsString();
+
+    public abstract String getMaskAsString();
+    
+    public static Network initNetwork(boolean isv6) {
+        if (isv6) {
+            return new IPv6Network();
+        } else {
+            return new IPv4Network();
+        }
+    }
 }

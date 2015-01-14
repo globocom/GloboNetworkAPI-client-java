@@ -94,7 +94,7 @@ public class CloudstackLayer2FlowTest {
 		assertEquals(allocatedVlan.getDescription(), vlanDescription);
 		
 		// Step 2: Add a network to the allocated VLAN
-		Network addedNetwork = this.netAPI.addNetworkIpv4(allocatedVlan.getId(), networkTypeId, environmentId);
+		Network addedNetwork = this.netAPI.addNetwork(allocatedVlan.getId(), networkTypeId, environmentId, false);
 		
 		assertNotNull(addedNetwork);
 		assertEquals(addedNetwork.getNetworkTypeId(), networkTypeId);
@@ -112,7 +112,7 @@ public class CloudstackLayer2FlowTest {
 		
 		
 		// Step 4: Create the network on the hardware
-		this.netAPI.createNetworks(addedNetworkId, allocatedVlan.getId());
+		this.netAPI.createNetworks(addedNetworkId, allocatedVlan.getId(), false);
 		
 		
 		// Step 5: Remove the VLAN network

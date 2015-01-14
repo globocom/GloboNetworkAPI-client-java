@@ -31,8 +31,8 @@ public class NetworkAPI extends BaseAPI<Network> {
         super(transport);
     }
 
-    private Network addNetwork(Long vlanId, Long networkTypeId, Long vipEnvironmentId, boolean isIpv6) throws GloboNetworkException {
-        Network network = new Network();
+    public Network addNetwork(Long vlanId, Long networkTypeId, Long vipEnvironmentId, boolean isIpv6) throws GloboNetworkException {
+        Network network = Network.initNetwork(isIpv6);
         network.set("id_vlan", vlanId);
         network.set("id_tipo_rede", networkTypeId);
         network.set("id_ambiente_vip", vipEnvironmentId);
@@ -52,17 +52,9 @@ public class NetworkAPI extends BaseAPI<Network> {
         return (isIpv6 ? vlan.getIpv6Networks().get(vlan.getIpv6Networks().size() - 1) : vlan.getIpv4Networks().get(vlan.getIpv4Networks().size() - 1));
     }
 
-    public Network addNetworkIpv4(Long vlanId, Long networkTypeId, Long vipEnvironmentId) throws GloboNetworkException {
-        return this.addNetwork(vlanId, networkTypeId, vipEnvironmentId, false);
-    }
-
-    public Network addNetworkIpv6(Long vlanId, Long networkTypeId, Long vipEnvironmentId) throws GloboNetworkException {
-        return this.addNetwork(vlanId, networkTypeId, vipEnvironmentId, true);
-    }
-
     public void createNetworks(Long networkId, Long vlanId, boolean isv6) throws GloboNetworkException {
 
-        Network network = new Network();
+        Network network = Network.initNetwork(isv6);
         network.set("ids", networkId + (isv6 ? "-v6" : "-v4"));
         network.set("id_vlan", vlanId);
 
@@ -70,11 +62,12 @@ public class NetworkAPI extends BaseAPI<Network> {
         globoNetworkRoot.getObjectList().add(network);
         globoNetworkRoot.set(network.name, network);
 
-        this.put("/network/create/", globoNetworkRoot);
+        this.getTransport().put("/network/create/", globoNetworkRoot, (isv6 ? IPv6Network.class : IPv4Network.class));
     }
+    
+    public Network getNetwork(Long networkId, boolean isv6) throws GloboNetworkException {
+        GloboNetworkRoot<GenericXml> globoNetworkRoot = (GloboNetworkRoot<GenericXml>)this.getTransport().get("/network/" + (isv6 ? "ipv6" : "ipv4") + "/id/" + networkId + "/", GenericXml.class);
 
-    public IPv4Network getNetworkIpv4(Long networkId) throws GloboNetworkException {
-        GloboNetworkRoot<GenericXml> globoNetworkRoot = (GloboNetworkRoot<GenericXml>)this.getTransport().get("/network/ipv4/id/" + networkId + "/", GenericXml.class);
         if (globoNetworkRoot.getFirstObject() == null) {
             throw new GloboNetworkException("Network not found");
         } else if (globoNetworkRoot.size() > 1) {
@@ -82,22 +75,8 @@ public class NetworkAPI extends BaseAPI<Network> {
         }
 
         GenericXml genericObj = globoNetworkRoot.getFirstObject();
-        IPv4Network net = new IPv4Network();
-        assignTo(genericObj, net);
-        return net;
-    }
-
-    public IPv6Network getNetworkIpv6(Long networkId) throws GloboNetworkException {
-        GloboNetworkRoot<GenericXml> globoNetworkRoot = (GloboNetworkRoot<GenericXml>)this.getTransport().get("/network/ipv6/id/" + networkId + "/", GenericXml.class);
-        if (globoNetworkRoot.getFirstObject() == null) {
-            throw new GloboNetworkException("Network not found");
-        } else if (globoNetworkRoot.size() > 1) {
-            throw new GloboNetworkException("Multiple networks returned. This is an error in search by id");
-        }
-
-        GenericXml genericObj = globoNetworkRoot.getFirstObject();
-        IPv6Network net = new IPv6Network();
-        assignTo(genericObj, net);
-        return net;
+        Network network = (isv6 ? new IPv6Network() : new IPv4Network());        
+        assignTo(genericObj, network);
+        return network;
     }
 }

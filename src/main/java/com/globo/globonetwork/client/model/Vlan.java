@@ -105,7 +105,18 @@ public class Vlan extends GenericXml {
         if (ipv6Networks != null) {
             this.ipv6Networks.addAll(ipv6Networks);
         }
-    }	
+    }
+    
+    public List<Network> getNetworks() {
+        List<Network> networks = new ArrayList<Network>();
+        for (IPv4Network ipv4Network : ipv4Networks) {
+             networks.add(ipv4Network);
+        }
+        for (IPv6Network iPv6Network : ipv6Networks) {
+            networks.add(iPv6Network);
+        }
+        return networks;
+    }
 
 	public Vlan() {
 		super.name = "vlan";

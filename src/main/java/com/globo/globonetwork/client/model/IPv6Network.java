@@ -21,15 +21,6 @@ import com.google.api.client.util.Key;
 public class IPv6Network extends Network {
 
     @Key
-    private Long id;
-
-    @Key("vlan")
-    private Long vlanId;
-
-    @Key("network_type")
-    private Long networkTypeId;
-
-    @Key
     private String block1;
 
     @Key
@@ -77,69 +68,14 @@ public class IPv6Network extends Network {
     @Key
     private String mask8;
 
-    @Key("ambiente_vip")
-    private Long vipEnvironmentId;
-
-    @Key
-    private Boolean active;
-
-    @Key
-    private Integer block;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Long getVlanId() {
-        return vlanId;
-    }
-
-    public void setVlanId(Long vlanId) {
-        this.vlanId = vlanId;
-    }
-
-    public Long getNetworkTypeId() {
-        return networkTypeId;
-    }
-
-    public void setNetworkTypeId(Long networkTypeId) {
-        this.networkTypeId = networkTypeId;
-    }
-
+    @Override
     public String getNetworkAddressAsString() {
         return String.format("%s:%s:%s:%s:%s:%s:%s:%s", getBlock1(), getBlock2(), getBlock3(), getBlock4(), getBlock5(), getBlock6(), getBlock7(), getBlock8());
     }
 
+    @Override
     public String getMaskAsString() {
         return String.format("%s:%s:%s:%s:%s:%s:%s:%s", getMask1(), getMask2(), getMask3(), getMask4(), getMask5(), getMask6(), getMask7(), getMask8());
-    }
-
-    public Long getVipEnvironmentId() {
-        return vipEnvironmentId;
-    }
-
-    public void setVipEnvironmentId(Long vipEnvironmentId) {
-        this.vipEnvironmentId = vipEnvironmentId;
-    }
-
-    public Boolean getActive() {
-        return active;
-    }
-
-    public void setActive(Boolean active) {
-        this.active = active;
-    }
-
-    public Integer getBlock() {
-        return block;
-    }
-
-    public void setBlock(Integer block) {
-        this.block = block;
     }
 
     public IPv6Network() {
