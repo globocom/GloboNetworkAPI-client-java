@@ -60,11 +60,10 @@ public class NetworkAPI extends BaseAPI<Network> {
         return this.addNetwork(vlanId, networkTypeId, vipEnvironmentId, true);
     }
 
-    public void createNetworks(Long networkId, Long vlanId) throws GloboNetworkException {
+    public void createNetworks(Long networkId, Long vlanId, boolean isv6) throws GloboNetworkException {
 
         Network network = new Network();
-        // TODO Remove "-v4" ?
-        network.set("ids", networkId + "-v4");
+        network.set("ids", networkId + (isv6 ? "-v6" : "-v4"));
         network.set("id_vlan", vlanId);
 
         GloboNetworkRoot<Network> globoNetworkRoot = new GloboNetworkRoot<Network>();
