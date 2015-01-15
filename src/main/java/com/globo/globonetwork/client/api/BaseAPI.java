@@ -18,6 +18,8 @@ package com.globo.globonetwork.client.api;
 
 import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import com.globo.globonetwork.client.RequestProcessor;
 import com.globo.globonetwork.client.exception.GloboNetworkException;
@@ -76,6 +78,9 @@ public class BaseAPI<T> {
 	        Object rawValue = mapValue.getValue(0);
 	        
             FieldInfo fieldInfo = dest.getClassInfo().getFieldInfo(key);
+            if(fieldInfo == null){
+            	continue;
+            }
             Object value = null;
             if (rawValue == null || fieldInfo.getType().isAssignableFrom(rawValue.getClass())) {
                 value = rawValue;
@@ -85,6 +90,8 @@ public class BaseAPI<T> {
                 value = Long.valueOf((String.valueOf(rawValue)));
             } else if (fieldInfo.getType() == Boolean.class) {
                 value = Boolean.valueOf(String.valueOf(rawValue));
+            } else if (fieldInfo.getType() == List.class){
+            	value = Arrays.asList(rawValue);
             }
             fieldInfo.setValue(dest, value);
 	    }

@@ -16,41 +16,66 @@
 */
 package com.globo.globonetwork.client.model;
 
-import java.util.List;
-
 import com.google.api.client.util.Key;
-import com.google.api.client.xml.GenericXml;
 
-public abstract class Ip extends GenericXml {
-
-	@Key("equipamentos")
-	private List<String> equipments;
+public class Ipv4 extends Ip{
+	
 	@Key
-	private Long id;
-
-	public Ip() {
+	private Integer oct1;
+	@Key
+	private Integer oct2;
+	@Key
+	private Integer oct3;
+	@Key
+	private Integer oct4;
+	@Key("networkipv4")
+	private Long networkId;
+	
+	public Ipv4() {
 		this.name = "ip";
 	}
-
-	public List<String> getEquipments() {
-		return equipments;
-	}
-
-	public void setEquipments(List<String> equipments) {
-		this.equipments = equipments;
-	}
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
+	
+	public Integer getOct1() {
+		return oct1;
 	}
 	
-	public abstract String getIpString();
+	public void setOct1(Integer oct1) {
+		this.oct1 = oct1;
+	}
 	
-	public abstract Long getNetworkId();
+	public Integer getOct2() {
+		return oct2;
+	}
 	
-	public abstract void setNetworkId(Long networkId);
+	public void setOct2(Integer oct2) {
+		this.oct2 = oct2;
+	}
+	
+	public Integer getOct3() {
+		return oct3;
+	}
+	
+	public void setOct3(Integer oct3) {
+		this.oct3 = oct3;
+	}
+	
+	public Integer getOct4() {
+		return oct4;
+	}
+	
+	public void setOct4(Integer oct4) {
+		this.oct4 = oct4;
+	}
+	
+	public Long getNetworkId() {
+		return networkId;
+	}
+
+	public void setNetworkId(Long networkId) {
+		this.networkId = networkId;
+	}
+
+	public String getIpString() {
+	    return String.format("%d.%d.%d.%d", this.getOct1(), this.getOct2(), this.getOct3(), this.getOct4());
+	}
 }

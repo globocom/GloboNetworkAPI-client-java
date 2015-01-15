@@ -24,7 +24,8 @@ import com.globo.globonetwork.client.exception.GloboNetworkErrorCodeException;
 import com.globo.globonetwork.client.exception.GloboNetworkException;
 import com.globo.globonetwork.client.model.GloboNetworkRoot;
 import com.globo.globonetwork.client.model.Ip;
-import com.globo.globonetwork.client.model.Ip.Ipv4;
+import com.globo.globonetwork.client.model.Ipv4;
+import com.globo.globonetwork.client.model.Ipv6;
 import com.google.api.client.util.ArrayMap;
 import com.google.api.client.xml.GenericXml;
 
@@ -34,29 +35,30 @@ public class IpAPI extends BaseAPI<Ip> {
 		super(transport);
 	}
 	
-	public Ip getIpv4(Long idIp) throws GloboNetworkException {
-		
-		GloboNetworkRoot<Ipv4> globoNetworkRoot = (GloboNetworkRoot<Ipv4>) this.getTransport().get("/ip/get-ipv4/" + idIp + "/", Ipv4.class);
+	public Ip getIp(Long idIp, Boolean isIpv6)  throws GloboNetworkException {
+		//Use of GenericXml necessary due to out of standards root xml node (' tipv4')
+		String uri = isIpv6 ? "/ip/get-ipv6/" + idIp + "/" : "/ip/get-ipv4/" + idIp + "/";
+		GloboNetworkRoot<GenericXml> globoNetworkRoot = (GloboNetworkRoot<GenericXml>) this.getTransport().get(uri, GenericXml.class);
 		if (globoNetworkRoot == null) {
 			// Problems reading the XML
 			throw new GloboNetworkException("Invalid XML response");
 		} else if (globoNetworkRoot.getObjectList() == null) {
 			return null;
 		}
-		return globoNetworkRoot.getFirstObject();
+		
+		GenericXml genericObj = globoNetworkRoot.getFirstObject();
+		Ip ip =  isIpv6 ? new Ipv6() : new Ipv4();
+		assignTo(genericObj, ip);
+		return ip;
 	}
-	
-	public Ip findByIpAndEnvironment(String ip, Long idEnvironment) throws GloboNetworkException {
-		try {
-			GloboNetworkRoot<Ip> globoNetworkRoot = this.get("/ip/" + ip + "/ambiente/" + idEnvironment + "/");
 
-			if (globoNetworkRoot == null) {
-				// Problems reading the XML
-				throw new GloboNetworkException("Invalid XML response");
-			} else if (globoNetworkRoot.getObjectList() == null) {
-				return null;
+	public Ip findByIpAndEnvironment(String ip, Long idEnvironment, Boolean isIpv6) throws GloboNetworkException {
+		try {
+			if(isIpv6){
+				return findByIpv6AndEnvironment(ip, idEnvironment);
+			}else{
+				return findByIpv4AndEnvironment(ip, idEnvironment);
 			}
-			return globoNetworkRoot.getFirstObject();
 		} catch (GloboNetworkErrorCodeException ex) {
 			if (ex.getCode() == GloboNetworkErrorCodeException.IP_NOT_REGISTERED) {
 				return null;
@@ -66,9 +68,41 @@ public class IpAPI extends BaseAPI<Ip> {
 		}
 	}
 	
-	public Ip saveIpv4(String ipv4, Long equipId, String nicDescription, Long networkId) throws GloboNetworkException {
-		Ip ip = new Ip();
-		ip.set("ip4", ipv4);
+	private Ipv4 findByIpv4AndEnvironment(String ip, Long idEnvironment) throws GloboNetworkException{
+		GloboNetworkRoot<Ipv4> globoNetworkRoot = this.getTransport().get("/ip/" + ip + "/ambiente/" + idEnvironment + "/", Ipv4.class);
+		
+		if (globoNetworkRoot == null) {
+			// Problems reading the XML
+			throw new GloboNetworkException("Invalid XML response");
+		} else if (globoNetworkRoot.getObjectList() == null) {
+			return null;
+		}
+		return globoNetworkRoot.getFirstObject();
+	}
+	
+	private Ipv6 findByIpv6AndEnvironment(String ip, Long idEnvironment) throws GloboNetworkException{
+		Ipv6 ipv6 = new Ipv6();
+		ipv6.set("id_environment", idEnvironment);
+		ipv6.set("ipv6", ipv6);
+		GloboNetworkRoot<Ipv6> globoNetworkRootPayload = new GloboNetworkRoot<Ipv6>();
+		globoNetworkRootPayload.getObjectList().add(ipv6);
+		globoNetworkRootPayload.set("ip_map", ipv6);
+		
+		GloboNetworkRoot<Ipv6> globoNetworkRoot = this.getTransport().get("/ipv6/environment/", Ipv6.class);
+		
+		if (globoNetworkRoot == null) {
+			// Problems reading the XML
+			throw new GloboNetworkException("Invalid XML response");
+		} else if (globoNetworkRoot.getObjectList() == null) {
+			return null;
+		}
+		
+		return globoNetworkRoot.getFirstObject();
+	}
+	
+	public Ip saveIp(String ipAddress, Long equipId, String nicDescription, Long networkId, Boolean isIpv6) throws GloboNetworkException {
+		Ip ip = isIpv6 ? new Ipv6() : new Ipv4();
+		ip.set("ip4", ipAddress);
 		ip.set("id_equip", equipId);
 		ip.set("descricao", nicDescription);
 		ip.set("id_net", networkId);
@@ -77,7 +111,9 @@ public class IpAPI extends BaseAPI<Ip> {
 		globoNetworkRootPayload.getObjectList().add(ip);
 		globoNetworkRootPayload.set("ip_map", ip);
 		
-		GloboNetworkRoot<Ip> globoNetworkRoot = this.post("/ipv4/save/", globoNetworkRootPayload);
+		String uri = isIpv6 ? "/ipv6/save/" : "/ipv4/save/";
+		@SuppressWarnings("unchecked")
+		GloboNetworkRoot<Ip> globoNetworkRoot =  (GloboNetworkRoot<Ip>) this.getTransport().post(uri, globoNetworkRootPayload, isIpv6 ? Ipv6.class : Ipv4.class);
 		if (globoNetworkRoot == null) {
 			// Problems reading the XML
 			throw new GloboNetworkException("Invalid XML response");
@@ -87,13 +123,14 @@ public class IpAPI extends BaseAPI<Ip> {
 		return globoNetworkRoot.getFirstObject(); 
 	}
 
-	public void deleteIpv4(Long idIpv4) throws GloboNetworkException {
-		this.get("/ip4/delete/" + idIpv4 + "/");
+	public void deleteIp(Long idIp, Boolean isIpv6) throws GloboNetworkException {
+		String uri = isIpv6 ? "/ip6/delete/" + idIp + "/" : "/ip4/delete/" + idIp + "/" ;
+		this.getTransport().get(uri, GenericXml.class);
 	}
 	
-	public void assocIpv4(Long idIpv4, Long equipId, Long networkId) throws GloboNetworkException {
-		Ip ip = new Ip();
-		ip.set("id_ip", idIpv4);
+	public void assocIp(Long idIp, Long equipId, Long networkId, Boolean isIpv6) throws GloboNetworkException {
+		Ip ip = isIpv6 ? new Ipv6() : new Ipv4();
+		ip.set("id_ip", idIp);
 		ip.set("id_equip", equipId);
 		ip.set("id_net", networkId);
 		
@@ -101,11 +138,11 @@ public class IpAPI extends BaseAPI<Ip> {
 		globoNetworkRootPayload.getObjectList().add(ip);
 		globoNetworkRootPayload.set("ip_map", ip);
 		
-		this.post("/ipv4/assoc/", globoNetworkRootPayload);
+		String uri = isIpv6 ? "/ipv6/assoc/" : "/ipv4/assoc/";
+		this.post(uri, globoNetworkRootPayload);
 	}
 
 	public List<Ip> findIpsByEquipment(Long equipId) throws GloboNetworkException {
-		
 		GloboNetworkRoot<GenericXml> globoNetworkRoot = this.getTransport().get("/ip/getbyequip/" + equipId + "/", GenericXml.class);
 
 		if (globoNetworkRoot == null) {
@@ -118,14 +155,24 @@ public class IpAPI extends BaseAPI<Ip> {
 		// data from api to IP object.
 		List<Ip> ips = new ArrayList<Ip>();
 		@SuppressWarnings("unchecked")
-		List<ArrayMap<String, List<ArrayMap<String, String>>>> rawIps = ((List<ArrayMap<String, List<ArrayMap<String, String>>>>) globoNetworkRoot.getFirstObject().get("ipv4"));
+		List<ArrayMap<String, List<ArrayMap<String, String>>>> rawIpv4s = ((List<ArrayMap<String, List<ArrayMap<String, String>>>>) globoNetworkRoot.getFirstObject().get("ipv4"));
+		@SuppressWarnings("unchecked")
+		List<ArrayMap<String, List<ArrayMap<String, String>>>> rawIpv6s = ((List<ArrayMap<String, List<ArrayMap<String, String>>>>) globoNetworkRoot.getFirstObject().get("ipv6"));
 
-		for (ArrayMap<String, List<ArrayMap<String, String>>> genericIp : rawIps) {
+		ips.addAll(buildIpv4(rawIpv4s));
+		ips.addAll(buildIpv6(rawIpv6s));
+		return ips;
+	}
+	
+	private List<Ipv4> buildIpv4(List<ArrayMap<String, List<ArrayMap<String, String>>>> rawIpv6s){
+		List<Ipv4> ips = new ArrayList<Ipv4>();
+		// Interates and converts all IPv4 xml nodes
+		for (ArrayMap<String, List<ArrayMap<String, String>>> genericIp : rawIpv6s) {
 			if (genericIp.isEmpty()) {
 				break;
 			}
 			
-			Ip ip = new Ip();
+			Ipv4 ip = new Ipv4();
 			ip.setId(Long.valueOf(genericIp.get("id").get(0).getValue(0)));
 			ip.setOct1(Integer.valueOf(genericIp.get("oct1").get(0).getValue(0)));
 			ip.setOct2(Integer.valueOf(genericIp.get("oct2").get(0).getValue(0)));
@@ -135,9 +182,31 @@ public class IpAPI extends BaseAPI<Ip> {
 		}
 		return ips;
 	}
+	
+	private List<Ipv6> buildIpv6(List<ArrayMap<String, List<ArrayMap<String, String>>>> rawIpv6s){
+		List<Ipv6> ips = new ArrayList<Ipv6>();
+		// Interates and converts all IPv6 xml nodes
+		for (ArrayMap<String, List<ArrayMap<String, String>>> genericIp : rawIpv6s) {
+			if (genericIp.isEmpty()) {
+				break;
+			}
+			
+			Ipv6 ip = new Ipv6();
+			ip.setId(Long.valueOf(genericIp.get("id").get(0).getValue(0)));
+			ip.setBlock1(genericIp.get("block1").get(0).getValue(0));
+			ip.setBlock2(genericIp.get("block2").get(0).getValue(0));
+			ip.setBlock3(genericIp.get("block3").get(0).getValue(0));
+			ip.setBlock4(genericIp.get("block4").get(0).getValue(0));
+			ip.setBlock5(genericIp.get("block5").get(0).getValue(0));
+			ip.setBlock6(genericIp.get("block6").get(0).getValue(0));
+			ip.setBlock7(genericIp.get("block7").get(0).getValue(0));
+			ip.setBlock8(genericIp.get("block8").get(0).getValue(0));
+			ips.add(ip);
+		}
+		return ips;
+	}
     
-    public Ip getAvailableIp4ForVip(long environmentVip, String name) throws GloboNetworkException {
-        
+    public Ip getAvailableIpForVip(long environmentVip, String name, Boolean isIpv6) throws GloboNetworkException {
         GenericXml ip_map = new GenericXml();
         ip_map.set("id_evip", String.valueOf(environmentVip));
         ip_map.set("name", name);
@@ -146,7 +215,9 @@ public class IpAPI extends BaseAPI<Ip> {
         globoNetworkRootPayload.getObjectList().add(ip_map);
         globoNetworkRootPayload.set("ip_map", ip_map);
         
-        GloboNetworkRoot<Ip> globoNetworkRoot = this.post("/ip/availableip4/vip/" + environmentVip + "/", globoNetworkRootPayload);
+        String uri = isIpv6 ? "/ip/availableip6/vip/" : "/ip/availableip4/vip/";
+        @SuppressWarnings("unchecked")
+		GloboNetworkRoot<Ip> globoNetworkRoot = (GloboNetworkRoot<Ip>) this.getTransport().post(uri + environmentVip + "/", globoNetworkRootPayload, isIpv6? Ipv6.class : Ipv4.class);
         if (globoNetworkRoot == null) {
             // Problems reading the XML
             throw new GloboNetworkException("Invalid XML response");
@@ -154,16 +225,16 @@ public class IpAPI extends BaseAPI<Ip> {
             return null;
         }
         return globoNetworkRoot.getFirstObject();
-   }
+    }
 
     /**
-     * Check if ip is can used to a new vip.
+     * Check if an Ip address(IpV4 or IpV6) can be used to a new vip.
      * @param environmentVip
      * @param name
      * @return
      * @throws GloboNetworkException
      */
-    public Ip checkVipIp(String ip, long environmentVipId) throws GloboNetworkException {
+    public Ip checkVipIp(String ip, long environmentVipId, Boolean isIpv6) throws GloboNetworkException {
         try {
             GenericXml ip_map = new GenericXml();
             ip_map.set("id_evip", String.valueOf(environmentVipId));
@@ -173,14 +244,15 @@ public class IpAPI extends BaseAPI<Ip> {
             globoNetworkRootPayload.getObjectList().add(ip_map);
             globoNetworkRootPayload.set("ip_map", ip_map);
             
-            GloboNetworkRoot<Ip> globoNetworkRoot = this.post("/ip/checkvipip/", globoNetworkRootPayload);
-            if (globoNetworkRoot == null) {
-                // Problems reading the XML
-                throw new GloboNetworkException("Invalid XML response");
-            } else if (globoNetworkRoot.getObjectList() == null) {
-                return null;
-            }
-            return globoNetworkRoot.getFirstObject();
+            @SuppressWarnings("unchecked")
+			GloboNetworkRoot<Ip> globoNetworkRoot = (GloboNetworkRoot<Ip>) this.getTransport().post("/ip/checkvipip/", globoNetworkRootPayload, isIpv6 ? Ipv6.class : Ipv4.class);
+        	if (globoNetworkRoot == null) {
+        		// Problems reading the XML
+        		throw new GloboNetworkException("Invalid XML response");
+        	} else if (globoNetworkRoot.getObjectList() == null) {
+        		return null;
+        	}
+        	return globoNetworkRoot.getFirstObject();
         } catch (GloboNetworkErrorCodeException ex) {
             if (ex.getCode() == GloboNetworkErrorCodeException.IPV4_NOT_IN_ENVIRONMENT_VIP) {
                 return null;
@@ -189,5 +261,4 @@ public class IpAPI extends BaseAPI<Ip> {
             throw ex;
         }
    }
-
 }
