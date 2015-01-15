@@ -36,7 +36,7 @@ public class IpAPI extends BaseAPI<Ip> {
 	}
 	
 	public Ip getIp(Long idIp, Boolean isIpv6)  throws GloboNetworkException {
-		//Use of GenericXml necessary due to out of standards root xml node (' tipv4')
+		//Use of GenericXml necessary due to out of standards root xml node ('ipv4')
 		String uri = isIpv6 ? "/ip/get-ipv6/" + idIp + "/" : "/ip/get-ipv4/" + idIp + "/";
 		GloboNetworkRoot<GenericXml> globoNetworkRoot = (GloboNetworkRoot<GenericXml>) this.getTransport().get(uri, GenericXml.class);
 		if (globoNetworkRoot == null) {
@@ -47,7 +47,7 @@ public class IpAPI extends BaseAPI<Ip> {
 		}
 		
 		GenericXml genericObj = globoNetworkRoot.getFirstObject();
-		Ip ip =  isIpv6 ? new Ipv6() : new Ipv4();
+		Ip ip = Ip.createIp(isIpv6);
 		assignTo(genericObj, ip);
 		return ip;
 	}
@@ -101,7 +101,7 @@ public class IpAPI extends BaseAPI<Ip> {
 	}
 	
 	public Ip saveIp(String ipAddress, Long equipId, String nicDescription, Long networkId, Boolean isIpv6) throws GloboNetworkException {
-		Ip ip = isIpv6 ? new Ipv6() : new Ipv4();
+		Ip ip = Ip.createIp(isIpv6);
 		ip.set("ip4", ipAddress);
 		ip.set("id_equip", equipId);
 		ip.set("descricao", nicDescription);
@@ -129,7 +129,7 @@ public class IpAPI extends BaseAPI<Ip> {
 	}
 	
 	public void assocIp(Long idIp, Long equipId, Long networkId, Boolean isIpv6) throws GloboNetworkException {
-		Ip ip = isIpv6 ? new Ipv6() : new Ipv4();
+		Ip ip = Ip.createIp(isIpv6);
 		ip.set("id_ip", idIp);
 		ip.set("id_equip", equipId);
 		ip.set("id_net", networkId);
