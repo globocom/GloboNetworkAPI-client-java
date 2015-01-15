@@ -53,4 +53,8 @@ public abstract class Ip extends GenericXml {
 	public abstract Long getNetworkId();
 	
 	public abstract void setNetworkId(Long networkId);
+	
+    public static Ip createIp(Boolean isIpv6){
+    	return isIpv6 ? new Ipv6() : new Ipv4();
+    }
 }
