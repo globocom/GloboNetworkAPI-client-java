@@ -95,6 +95,8 @@ public abstract class Network extends GenericXml {
 
     public abstract String getMaskAsString();
     
+    public abstract boolean isv6();
+    
     public static Network initNetwork(boolean isv6) {
         if (isv6) {
             return new IPv6Network();

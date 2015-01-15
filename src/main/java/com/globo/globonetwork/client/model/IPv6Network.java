@@ -81,6 +81,11 @@ public class IPv6Network extends Network {
     public IPv6Network() {
         super.name = "redeipv6";
     }
+    
+    @Override
+    public boolean isv6() {
+        return true;
+    }
 
     public String getBlock1() {
         return block1;

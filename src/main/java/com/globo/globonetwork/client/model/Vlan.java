@@ -110,10 +110,14 @@ public class Vlan extends GenericXml {
     public List<Network> getNetworks() {
         List<Network> networks = new ArrayList<Network>();
         for (IPv4Network ipv4Network : ipv4Networks) {
-             networks.add(ipv4Network);
+            if (ipv4Network.getId() != null) {
+                networks.add(ipv4Network);
+            }
         }
-        for (IPv6Network iPv6Network : ipv6Networks) {
-            networks.add(iPv6Network);
+        for (IPv6Network ipv6Network : ipv6Networks) {
+            if (ipv6Network.getId() != null) {
+                networks.add(ipv6Network);
+            }
         }
         return networks;
     }

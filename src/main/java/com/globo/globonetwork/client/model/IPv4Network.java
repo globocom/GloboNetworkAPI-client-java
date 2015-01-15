@@ -133,4 +133,8 @@ public class IPv4Network extends Network {
 		super.name = "redeipv4";
 	}
 
+	@Override
+	public boolean isv6() {
+	    return false;
+	}
 }
