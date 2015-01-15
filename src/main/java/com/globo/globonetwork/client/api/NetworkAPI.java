@@ -60,7 +60,7 @@ public class NetworkAPI extends BaseAPI<Network> {
 
         GloboNetworkRoot<Network> globoNetworkRoot = new GloboNetworkRoot<Network>();
         globoNetworkRoot.getObjectList().add(network);
-        globoNetworkRoot.set(network.name, network);
+        globoNetworkRoot.set("network", network);
 
         this.getTransport().put("/network/create/", globoNetworkRoot, (isv6 ? IPv6Network.class : IPv4Network.class));
     }
