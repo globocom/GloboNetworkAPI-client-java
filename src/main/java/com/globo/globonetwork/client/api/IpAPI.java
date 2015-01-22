@@ -81,14 +81,14 @@ public class IpAPI extends BaseAPI<Ip> {
 	}
 	
 	private Ipv6 findByIpv6AndEnvironment(String ip, Long idEnvironment) throws GloboNetworkException{
-		Ipv6 ipv6 = new Ipv6();
+	    GenericXml ipv6 = new GenericXml();
 		ipv6.set("id_environment", idEnvironment);
-		ipv6.set("ipv6", ipv6);
-		GloboNetworkRoot<Ipv6> globoNetworkRootPayload = new GloboNetworkRoot<Ipv6>();
-		globoNetworkRootPayload.getObjectList().add(ipv6);
-		globoNetworkRootPayload.set("ip_map", ipv6);
+		ipv6.set("ipv6", ip);
 		
-		GloboNetworkRoot<Ipv6> globoNetworkRoot = this.getTransport().get("/ipv6/environment/", Ipv6.class);
+		GloboNetworkRoot<GenericXml> globoNetworkRootPayload = new GloboNetworkRoot<GenericXml>();
+		globoNetworkRootPayload.set("ipv6_map", ipv6);
+		
+		GloboNetworkRoot<Ipv6> globoNetworkRoot = this.getTransport().post("/ipv6/environment/", globoNetworkRootPayload, Ipv6.class);
 		
 		if (globoNetworkRoot == null) {
 			// Problems reading the XML
@@ -102,7 +102,7 @@ public class IpAPI extends BaseAPI<Ip> {
 	
 	public Ip saveIp(String ipAddress, Long equipId, String nicDescription, Long networkId, Boolean isIpv6) throws GloboNetworkException {
 		Ip ip = Ip.createIp(isIpv6);
-		ip.set("ip4", ipAddress);
+		ip.set(isIpv6 ? "ip6" : "ip4", ipAddress);
 		ip.set("id_equip", equipId);
 		ip.set("descricao", nicDescription);
 		ip.set("id_net", networkId);

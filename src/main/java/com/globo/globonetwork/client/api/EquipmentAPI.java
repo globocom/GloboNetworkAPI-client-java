@@ -65,8 +65,8 @@ public class EquipmentAPI extends BaseAPI<Equipment> {
 		this.delete("/equipamento/" + equipmentId + "/");
 	}
 	
-	public void removeIP(Long equipId, Long idIp) throws GloboNetworkException {
-		this.delete("/ip/" + idIp + "/equipamento/" + equipId + "/");
+	public void removeIP(Long equipId, Long idIp, boolean isIpv6) throws GloboNetworkException {
+	    String uri = isIpv6 ? "/ipv6/" + idIp + "/equipment/" + equipId + "/remove/" : "/ip/" + idIp + "/equipamento/" + equipId + "/" ;
+		this.delete(uri);
 	}
-
 }

@@ -95,5 +95,22 @@ public class EquipmentAPITest {
 		
 		this.equipmentApi.delete(13259l);
 	}
-
+	
+	@Test
+	public void testRemoveIpv4FromEquipment() throws GloboNetworkException {
+	    this.rp.registerFakeRequest(HttpMethod.DELETE, "/ip/1/equipamento/2/",
+	            "<?xml version='1.0' encoding='utf-8'?>" +
+	            "<networkapi versao=\"1.0\"/>");
+	    
+	    this.equipmentApi.removeIP(2L, 1L, false);
+	}
+	
+	@Test
+	public void testRemoveIpv6FromEquipment() throws GloboNetworkException {
+	    this.rp.registerFakeRequest(HttpMethod.DELETE, "/ipv6/1/equipment/2/remove/",
+	            "<?xml version='1.0' encoding='utf-8'?>" +
+	            "<networkapi versao=\"1.0\"/>");
+	    
+	    this.equipmentApi.removeIP(2L, 1L, true);
+	}
 }

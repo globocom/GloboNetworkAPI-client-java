@@ -94,7 +94,7 @@ public class IpAPITest {
 	public void testFindByIdAndEnvironmentReturnsIpv6() throws GloboNetworkException {
 		String ipAddr = "2001:0db8:85a3:0042:1000:8a2e:0370:7334";
 		Long environmentId = 120L;
-		this.rp.registerFakeRequest(HttpMethod.GET, "/ipv6/environment/",
+		this.rp.registerFakeRequest(HttpMethod.POST, "/ipv6/environment/",
 				"<?xml version=\"1.0\" encoding=\"UTF-8\"?><networkapi versao=\"1.0\"><ipv6><id>1</id><idvlan>1</idvlan><block1>2001</block1><block2>0db8</block2><block3>85a3</block3><block4>0042</block4><block5>1000</block5><block6>8a2e</block6><block7>0370</block7><block8>7334</block8><descricao>teste</descricao></ipv6></networkapi>");
 		
 		Ipv6 ip = (Ipv6) this.api.findByIpAndEnvironment(ipAddr, environmentId, true);
