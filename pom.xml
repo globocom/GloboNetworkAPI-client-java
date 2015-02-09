@@ -3,7 +3,7 @@
 
   <groupId>com.globo.globonetwork</groupId>
   <artifactId>globonetwork-client</artifactId>
-  <version>0.0.21-SNAPSHOT</version>
+  <version>0.0.21</version>
   <packaging>jar</packaging>
 
   <name>globonetwork-client</name>
@@ -36,6 +36,12 @@
         <email>snbuback@gmail.com</email>
         <organization>Globo.com</organization>
         <organizationUrl>https://github.com/snbuback</organizationUrl>
+    </developer>    
+    <developer>
+        <name>Victor Mendes Eduardo</name>
+        <email>victor.mendes.eduardo@gmail.com</email>
+        <organization>Globo.com</organization>
+        <organizationUrl>https://github.com/victor-mendes-eduardo</organizationUrl>
     </developer>
   </developers>
   

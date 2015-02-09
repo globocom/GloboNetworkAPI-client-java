@@ -139,7 +139,7 @@ public class IpAPI extends BaseAPI<Ip> {
 		globoNetworkRootPayload.set("ip_map", ip);
 		
 		String uri = isIpv6 ? "/ipv6/assoc/" : "/ipv4/assoc/";
-		this.post(uri, globoNetworkRootPayload);
+		this.getTransport().post(uri, globoNetworkRootPayload, isIpv6 ? Ipv6.class : Ipv4.class);
 	}
 
 	public List<Ip> findIpsByEquipment(Long equipId) throws GloboNetworkException {
