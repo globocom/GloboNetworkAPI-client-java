@@ -43,6 +43,12 @@
         <organization>Globo.com</organization>
         <organizationUrl>https://github.com/victor-mendes-eduardo</organizationUrl>
     </developer>
+    <developer>
+      <name>Lucas De Luca Castro</name>
+      <email>lucasirc@gmail.com</email>
+      <organization>Globo.com</organization>
+      <organizationUrl>https://github.com/lucasirc</organizationUrl>
+    </developer>
   </developers>
   
   <scm>
