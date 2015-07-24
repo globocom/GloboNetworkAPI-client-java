@@ -40,7 +40,7 @@ public class RequestProcessorTest {
 
 	@Test
 	public void handleExceptionDoNothingWhenStatusCodeIs200() throws GloboNetworkException {
-		rp.handleExceptionIfNeeded(200, "sdjds");
+		rp.handleExceptionIfNeeded(200, "sdjds", 0L);
 	}
 
 	@Test
@@ -48,7 +48,7 @@ public class RequestProcessorTest {
 		String code = "0108";
 		String description = "the VLAN name duplicated within an environment informed";
 		try {
-			rp.handleExceptionIfNeeded(500, "<networkapi versao=\"1.0\"><erro><codigo>" + code + "</codigo><descricao>" + description + "</descricao></erro></networkapi>");
+			rp.handleExceptionIfNeeded(500, "<networkapi versao=\"1.0\"><erro><codigo>" + code + "</codigo><descricao>" + description + "</descricao></erro></networkapi>", 0L);
 			fail();
 		} catch (GloboNetworkErrorCodeException e) {
 			assertEquals(Integer.parseInt(code), e.getCode());
@@ -60,7 +60,7 @@ public class RequestProcessorTest {
 	public void handleExceptionRaisesNetworkAPIExceptionWhenXmlIsInvalid() throws GloboNetworkException {
 		String content = "Request error";
 		try {
-			rp.handleExceptionIfNeeded(500, content);
+			rp.handleExceptionIfNeeded(500, content, 0L);
 			fail();
 		} catch (GloboNetworkException e) {
 			assertEquals(content, e.getMessage());

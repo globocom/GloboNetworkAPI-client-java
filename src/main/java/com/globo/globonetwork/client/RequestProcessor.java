@@ -19,8 +19,11 @@ package com.globo.globonetwork.client;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
+import java.util.HashMap;
+import java.util.Map;
 
 import com.globo.globonetwork.client.api.*;
+import com.newrelic.api.agent.NewRelic;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -92,11 +95,12 @@ public abstract class RequestProcessor {
 	 * @throws IOException
 	 * @throws GloboNetworkException
 	 */
-	protected void handleExceptionIfNeeded(int statusCode, String responseAsString) throws GloboNetworkException {
+	protected void handleExceptionIfNeeded(int statusCode, String responseAsString, Long responseTime) throws GloboNetworkException {
 		if (statusCode == 200) {
 			// Successful return, do nothing
 			return;
 		} else if (statusCode == 400 || statusCode == 500) {
+			recordError(statusCode, responseAsString, responseTime);
 			// This assumes error is well formed and mappable to class ErrorMessage
 			try {
 				GloboNetworkRoot<ErrorMessage> response = this.readXML(responseAsString, ErrorMessage.class);
@@ -114,9 +118,18 @@ public abstract class RequestProcessor {
 				throw e;
 			}
 		} else {
+			recordError(statusCode, responseAsString, responseTime);
 			// Unknown error code, return generic exception with description
 			throw new GloboNetworkException(responseAsString);
 		}
+	}
+
+	private void recordError(Integer statusCode, String message, Long responseTime){
+		Map<String, String> params = new HashMap<String, String>();
+		params.put("statusCode", statusCode != null ? statusCode.toString() : "");
+		params.put("responseTime", responseTime != null ? responseTime.toString() : "");
+		params.put("message", message);
+		NewRelic.noticeError("GloboNetwork API error", params);
 	}
 
 	public abstract String getUsername();

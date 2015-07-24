@@ -57,7 +57,7 @@ public class TestRequestProcessor extends RequestProcessor {
 
 		int httpStatusCode = response.getStatusCode();
 		String content = response.getContent();
-		handleExceptionIfNeeded(httpStatusCode, content);
+		handleExceptionIfNeeded(httpStatusCode, content, 0L);
 		return this.readXML(content, dataClass);
 	}
 

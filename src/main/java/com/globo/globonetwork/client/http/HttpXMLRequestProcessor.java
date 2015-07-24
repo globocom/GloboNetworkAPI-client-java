@@ -18,7 +18,11 @@ package com.globo.globonetwork.client.http;
 
 import java.io.IOException;
 import java.security.InvalidParameterException;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
+import com.newrelic.api.agent.NewRelic;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -119,8 +123,13 @@ public class HttpXMLRequestProcessor extends RequestProcessor {
 	protected String performRequest(HttpRequest request) throws GloboNetworkException, IOException {
 		int httpStatusCode;
 		String responseAsString;
+		Long responseTime = 0L;
+
 		try {
+			Long startTime = new Date().getTime();
 			HttpResponse httpResponse = this.performHttpRequest(request);
+			responseTime = new Date().getTime() - startTime;
+			recordResponseTime(request, responseTime);
 			httpStatusCode = httpResponse.getStatusCode();
 			responseAsString = httpResponse.parseAsString();
 		} catch (HttpResponseException e) {
@@ -128,7 +137,7 @@ public class HttpXMLRequestProcessor extends RequestProcessor {
 			responseAsString = e.getContent();
 		}
 		
-		handleExceptionIfNeeded(httpStatusCode, responseAsString);
+		handleExceptionIfNeeded(httpStatusCode, responseAsString, responseTime);
 		return responseAsString;
 	}
 	
@@ -228,4 +237,7 @@ public class HttpXMLRequestProcessor extends RequestProcessor {
 		return password;
 	}
 
+	private void recordResponseTime(HttpRequest request, Long responseTime) {
+		NewRelic.recordResponseTimeMetric("globonetwork" + request.getUrl().getRawPath(), responseTime);
+	}
 }
