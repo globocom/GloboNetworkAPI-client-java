@@ -24,6 +24,8 @@ import com.globo.globonetwork.client.model.IPv6Network;
 import com.globo.globonetwork.client.model.Network;
 import com.globo.globonetwork.client.model.Vlan;
 import com.google.api.client.xml.GenericXml;
+import com.newrelic.api.agent.NewRelic;
+import com.newrelic.api.agent.Trace;
 
 public class NetworkAPI extends BaseAPI<Network> {
 
@@ -31,7 +33,10 @@ public class NetworkAPI extends BaseAPI<Network> {
         super(transport);
     }
 
+    @Trace
     public Network addNetwork(Long vlanId, Long networkTypeId, Long vipEnvironmentId, boolean isIpv6) throws GloboNetworkException {
+        NewRelic.setTransactionName(null, "/globonetwork/addNetwork");
+
         Network network = Network.initNetwork(isIpv6);
         network.set("id_vlan", vlanId);
         network.set("id_tipo_rede", networkTypeId);
@@ -52,7 +57,9 @@ public class NetworkAPI extends BaseAPI<Network> {
         return (isIpv6 ? vlan.getIpv6Networks().get(vlan.getIpv6Networks().size() - 1) : vlan.getIpv4Networks().get(vlan.getIpv4Networks().size() - 1));
     }
 
+    @Trace
     public void createNetworks(Long networkId, Long vlanId, boolean isv6) throws GloboNetworkException {
+        NewRelic.setTransactionName(null, "/globonetwork/createNetwork");
 
         Network network = Network.initNetwork(isv6);
         network.set("ids", networkId + (isv6 ? "-v6" : "-v4"));
@@ -64,8 +71,11 @@ public class NetworkAPI extends BaseAPI<Network> {
 
         this.getTransport().put("/network/create/", globoNetworkRoot, (isv6 ? IPv6Network.class : IPv4Network.class));
     }
-    
+
+    @Trace
     public Network getNetwork(Long networkId, boolean isv6) throws GloboNetworkException {
+        NewRelic.setTransactionName(null, "/globonetwork/getNetwork");
+
         GloboNetworkRoot<GenericXml> globoNetworkRoot = (GloboNetworkRoot<GenericXml>)this.getTransport().get("/network/" + (isv6 ? "ipv6" : "ipv4") + "/id/" + networkId + "/", GenericXml.class);
 
         if (globoNetworkRoot.getFirstObject() == null) {

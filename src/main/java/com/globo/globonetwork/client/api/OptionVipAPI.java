@@ -9,6 +9,8 @@ import com.globo.globonetwork.client.model.OptionVip;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.JsonObjectParser;
 import com.google.api.client.json.jackson2.JacksonFactory;
+import com.newrelic.api.agent.NewRelic;
+import com.newrelic.api.agent.Trace;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,7 +24,10 @@ public class OptionVipAPI extends BaseAPI<OptionVip> {
         super(transport);
     }
 
+    @Trace
     public List<OptionVip> listCacheGroups(Long envId) throws GloboNetworkException {
+        NewRelic.setTransactionName(null, "/globonetwork/listCacheGroups");
+
         try{
             GloboNetworkRoot<OptionVip> globoNetworkRoot = this.get("/environment-vip/get/grupo-cache/" + envId + "/");
             if (globoNetworkRoot == null) {

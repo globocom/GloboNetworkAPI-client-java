@@ -8,14 +8,19 @@ import com.globo.globonetwork.client.exception.GloboNetworkException;
 import com.globo.globonetwork.client.model.GloboNetworkRoot;
 import com.globo.globonetwork.client.model.VipEnvironment;
 import com.google.api.client.xml.GenericXml;
+import com.newrelic.api.agent.NewRelic;
+import com.newrelic.api.agent.Trace;
 
 public class VipEnvironmentAPI extends BaseAPI<VipEnvironment> {
 	
 	public VipEnvironmentAPI(RequestProcessor transport) {
 		super(transport);
 	}
-	
+
+	@Trace
 	public List<VipEnvironment> listAll() throws GloboNetworkException {
+		NewRelic.setTransactionName(null, "/globonetwork/listVipEnvironments");
+
 		GloboNetworkRoot<VipEnvironment> globoNetworkRoot = this.get("/environmentvip/all/");
 		if (globoNetworkRoot == null) {
 			// Problems reading the XML
@@ -25,9 +30,13 @@ public class VipEnvironmentAPI extends BaseAPI<VipEnvironment> {
 		}
 		return globoNetworkRoot.getObjectList();
 	}
-	
+
+
+	@Trace
 	public VipEnvironment search(Long environmentVipId, String finality, String client, String environment) throws GloboNetworkException {
-	    GenericXml envVip = new GenericXml();
+		NewRelic.setTransactionName(null, "/globonetwork/searchVipEnvironments");
+		
+		GenericXml envVip = new GenericXml();
 	    envVip.set("id_environment_vip", environmentVipId);
 	    envVip.set("finalidade_txt", finality);
 	    envVip.set("cliente_txt", client);

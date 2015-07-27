@@ -21,14 +21,19 @@ import com.globo.globonetwork.client.exception.GloboNetworkErrorCodeException;
 import com.globo.globonetwork.client.exception.GloboNetworkException;
 import com.globo.globonetwork.client.model.Equipment;
 import com.globo.globonetwork.client.model.GloboNetworkRoot;
+import com.newrelic.api.agent.NewRelic;
+import com.newrelic.api.agent.Trace;
 
 public class EquipmentAPI extends BaseAPI<Equipment> {
 	
 	public EquipmentAPI(RequestProcessor transport) {
 		super(transport);
 	}
-	
+
+	@Trace
 	public Equipment listByName(String equipmentName) throws GloboNetworkException {
+		NewRelic.setTransactionName(null, "/globonetwork/listEquipmentByName");
+
 		try {
 			GloboNetworkRoot<Equipment> globoNetworkRoot = this.get("/equipamento/nome/" + equipmentName + "/");
 			if (globoNetworkRoot == null) {
@@ -46,8 +51,11 @@ public class EquipmentAPI extends BaseAPI<Equipment> {
 			throw e;
 		}
 	}
-	
+
+	@Trace
 	public Equipment insert(String name, Long equipmentTypeId, Long modelId, Long groupId) throws GloboNetworkException {
+		NewRelic.setTransactionName(null, "/globonetwork/insertEquipment");
+
 		Equipment equipment = new Equipment();
 		equipment.setName(name);
 		equipment.setEquipmentTypeId(equipmentTypeId);
@@ -61,11 +69,17 @@ public class EquipmentAPI extends BaseAPI<Equipment> {
 		return globoNetworkRoot.getFirstObject();
 	}
 
+	@Trace
 	public void delete(Long equipmentId) throws GloboNetworkException {
+		NewRelic.setTransactionName(null, "/globonetwork/deleteEquipment");
+
 		this.delete("/equipamento/" + equipmentId + "/");
 	}
-	
+
+	@Trace
 	public void removeIP(Long equipId, Long idIp, boolean isIpv6) throws GloboNetworkException {
+		NewRelic.setTransactionName(null, "/globonetwork/removeIpFromEquipment");
+
 	    String uri = isIpv6 ? "/ipv6/" + idIp + "/equipment/" + equipId + "/remove/" : "/ip/" + idIp + "/equipamento/" + equipId + "/" ;
 		this.delete(uri);
 	}

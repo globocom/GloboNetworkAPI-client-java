@@ -129,7 +129,6 @@ public class HttpXMLRequestProcessor extends RequestProcessor {
 			Long startTime = new Date().getTime();
 			HttpResponse httpResponse = this.performHttpRequest(request);
 			responseTime = new Date().getTime() - startTime;
-			recordResponseTime(request, responseTime);
 			httpStatusCode = httpResponse.getStatusCode();
 			responseAsString = httpResponse.parseAsString();
 		} catch (HttpResponseException e) {
@@ -235,9 +234,5 @@ public class HttpXMLRequestProcessor extends RequestProcessor {
 
 	public String getPassword() {
 		return password;
-	}
-
-	private void recordResponseTime(HttpRequest request, Long responseTime) {
-		NewRelic.recordResponseTimeMetric("globonetwork" + request.getUrl().getRawPath(), responseTime);
 	}
 }

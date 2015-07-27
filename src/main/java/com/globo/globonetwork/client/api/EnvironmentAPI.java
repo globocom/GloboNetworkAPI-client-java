@@ -23,14 +23,19 @@ import com.globo.globonetwork.client.RequestProcessor;
 import com.globo.globonetwork.client.exception.GloboNetworkException;
 import com.globo.globonetwork.client.model.Environment;
 import com.globo.globonetwork.client.model.GloboNetworkRoot;
+import com.newrelic.api.agent.NewRelic;
+import com.newrelic.api.agent.Trace;
 
 public class EnvironmentAPI extends BaseAPI<Environment> {
 	
 	public EnvironmentAPI(RequestProcessor transport) {
 		super(transport);
 	}
-	
+
+	@Trace
 	public List<Environment> listAll() throws GloboNetworkException {
+		NewRelic.setTransactionName(null, "/globonetwork/listEnvironments");
+
 		GloboNetworkRoot<Environment> globoNetworkRoot = this.get("/ambiente/list/");
 		if (globoNetworkRoot == null) {
 			// Problems reading the XML

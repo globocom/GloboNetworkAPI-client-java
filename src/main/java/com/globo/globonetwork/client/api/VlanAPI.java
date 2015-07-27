@@ -25,14 +25,19 @@ import com.globo.globonetwork.client.exception.GloboNetworkException;
 import com.globo.globonetwork.client.model.GloboNetworkRoot;
 import com.globo.globonetwork.client.model.IPv4Network;
 import com.globo.globonetwork.client.model.Vlan;
+import com.newrelic.api.agent.NewRelic;
+import com.newrelic.api.agent.Trace;
 
 public class VlanAPI extends BaseAPI<Vlan> {
 	
 	public VlanAPI(RequestProcessor transport) {
 		super(transport);
 	}
-	
+
+	@Trace
 	public List<Vlan> listByEnvironment(Long environmentId) throws GloboNetworkException {
+		NewRelic.setTransactionName(null, "/globonetwork/listVlanByEnvironment");
+
 		GloboNetworkRoot<Vlan> globoNetworkRoot = this.get("/vlan/ambiente/" + environmentId + "/");
 		if (globoNetworkRoot == null) {
 			// Problems reading the XML
@@ -42,8 +47,11 @@ public class VlanAPI extends BaseAPI<Vlan> {
 		}
 		return globoNetworkRoot.getObjectList();
 	}
-	
+
+	@Trace
 	public Vlan allocateWithoutNetwork(Long environmentId, String name, String description) throws GloboNetworkException {
+		NewRelic.setTransactionName(null, "/globonetwork/allocateVlanWithoutNetwork");
+
 		Vlan vlan = new Vlan();
 		// vlan.setEnvironment(environmentId);
 		// vlan.setName(name);
@@ -67,8 +75,11 @@ public class VlanAPI extends BaseAPI<Vlan> {
 			return globoNetworkRootAnswer.getObjectList().get(0);
 		}
 	}
-	
+
+	@Trace
 	public Vlan getById(Long vlanId) throws GloboNetworkException {
+		NewRelic.setTransactionName(null, "/globonetwork/getVlanById");
+
 		GloboNetworkRoot<Vlan> globoNetworkRoot = this.get("/vlan/" + vlanId + "/network/");
 		if (globoNetworkRoot == null) {
 			// Problems reading the XML
@@ -91,12 +102,18 @@ public class VlanAPI extends BaseAPI<Vlan> {
 			return vlan;
 		}
 	}
-	
-	public void remove(Long vlanId) throws GloboNetworkException {			
+
+	@Trace
+	public void remove(Long vlanId) throws GloboNetworkException {
+		NewRelic.setTransactionName(null, "/globonetwork/removeVlan");
+
 		this.delete("/vlan/" + vlanId + "/remove/");
 	}
-	
+
+	@Trace
 	public void deallocate(Long vlanId) throws GloboNetworkException {
+		NewRelic.setTransactionName(null, "/globonetwork/deallocateVlan");
+
 		this.delete("/vlan/" + vlanId + "/deallocate/");
 	}
 }
