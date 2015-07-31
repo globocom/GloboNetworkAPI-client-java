@@ -1,0 +1,34 @@
+{
+  "server_pool": {
+    "id": 123,
+    "lb_method": "connection",
+    "default_port": 80,
+    "default_limit": 32,
+    "identifier": "VIP_777_pool_111",
+    "pool_created": true,
+    "healthcheck": {
+      "healthcheck_type": "TCP",
+      "destination": "_*:*_",
+      "healthcheck_expect": "h_123",
+      "identifier": "h_iii",
+      "id": 155,
+      "healthcheck_request": "h_444"
+    },
+    "environment": {
+      "ipv6_template": null,
+      "divisao_dc": 32,
+      "ipv4_template": null,
+      "ambiente_logico": 32,
+      "filter": null,
+      "min_num_vlan_1": null,
+      "min_num_vlan_2": null,
+      "link": null,
+      "acl_path": null,
+      "max_num_vlan_1": null,
+      "max_num_vlan_2": null,
+      "id": 111,
+      "grupo_l3": 111
+    }
+  },
+  "server_pool_members": []
+}

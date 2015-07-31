@@ -24,7 +24,7 @@ import com.globo.globonetwork.client.model.GloboNetworkRoot;
 import com.newrelic.api.agent.NewRelic;
 import com.newrelic.api.agent.Trace;
 
-public class EquipmentAPI extends BaseAPI<Equipment> {
+public class EquipmentAPI extends BaseXmlAPI<Equipment> {
 	
 	public EquipmentAPI(RequestProcessor transport) {
 		super(transport);

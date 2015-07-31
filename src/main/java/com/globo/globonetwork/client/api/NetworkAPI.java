@@ -27,7 +27,7 @@ import com.google.api.client.xml.GenericXml;
 import com.newrelic.api.agent.NewRelic;
 import com.newrelic.api.agent.Trace;
 
-public class NetworkAPI extends BaseAPI<Network> {
+public class NetworkAPI extends BaseXmlAPI<Network> {
 
     public NetworkAPI(RequestProcessor transport) {
         super(transport);

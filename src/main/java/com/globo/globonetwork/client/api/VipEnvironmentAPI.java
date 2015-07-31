@@ -11,7 +11,7 @@ import com.google.api.client.xml.GenericXml;
 import com.newrelic.api.agent.NewRelic;
 import com.newrelic.api.agent.Trace;
 
-public class VipEnvironmentAPI extends BaseAPI<VipEnvironment> {
+public class VipEnvironmentAPI extends BaseXmlAPI<VipEnvironment> {
 	
 	public VipEnvironmentAPI(RequestProcessor transport) {
 		super(transport);

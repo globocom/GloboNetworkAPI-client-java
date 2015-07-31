@@ -28,7 +28,7 @@ import com.globo.globonetwork.client.model.Vlan;
 import com.newrelic.api.agent.NewRelic;
 import com.newrelic.api.agent.Trace;
 
-public class VlanAPI extends BaseAPI<Vlan> {
+public class VlanAPI extends BaseXmlAPI<Vlan> {
 	
 	public VlanAPI(RequestProcessor transport) {
 		super(transport);

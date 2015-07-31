@@ -28,7 +28,7 @@ import com.google.api.client.xml.GenericXml;
 import com.newrelic.api.agent.NewRelic;
 import com.newrelic.api.agent.Trace;
 
-public class VipAPI extends BaseAPI<Vip> {
+public class VipAPI extends BaseXmlAPI<Vip> {
 
     static final JsonFactory JSON_FACTORY = new JacksonFactory();
     static final JsonObjectParser parser = new JsonObjectParser(JSON_FACTORY);
