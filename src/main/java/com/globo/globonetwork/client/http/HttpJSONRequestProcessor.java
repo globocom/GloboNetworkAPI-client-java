@@ -2,7 +2,6 @@ package com.globo.globonetwork.client.http;
 
 import com.globo.globonetwork.client.exception.GloboNetworkErrorCodeException;
 import com.globo.globonetwork.client.exception.GloboNetworkException;
-import com.google.api.client.http.ByteArrayContent;
 import com.google.api.client.http.GenericUrl;
 import com.google.api.client.http.HttpContent;
 import com.google.api.client.http.HttpRequest;
@@ -21,7 +20,6 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,6 +35,8 @@ public class HttpJSONRequestProcessor {
     private static int DEFAULT_READ_TIMEOUT = 2*60000;
     private static int DEFAULT_CONNECT_TIMEOUT = 1*60000;
     private static int DEFAULT_NUMBER_OF_RETRIES = 0;
+
+    private static final Charset DEFAULT_CHARSET = Charset.forName("UTF-8");
 
     private String baseUrl;
     private String username;
@@ -117,8 +117,8 @@ public class HttpJSONRequestProcessor {
             int  httpStatusCode = httpException.getStatusCode();
             String description;
             try {
-                InputStream stream = new ByteArrayInputStream(httpException.getContent().getBytes(StandardCharsets.UTF_8));
-                GenericJson json = new JsonObjectParser(JSON_FACTORY).parseAndClose(stream, StandardCharsets.UTF_8, GenericJson.class);
+                InputStream stream = new ByteArrayInputStream(httpException.getContent().getBytes(DEFAULT_CHARSET));
+                GenericJson json = new JsonObjectParser(JSON_FACTORY).parseAndClose(stream, DEFAULT_CHARSET, GenericJson.class);
                 description = (String)json.get(FIELD_MESSAGE_ERROR);
             } catch (IOException e1) {
                 description = httpException.getContent();
@@ -227,15 +227,15 @@ public class HttpJSONRequestProcessor {
 
     public static <T extends GenericJson> T parse(InputStream stream, Class<T> dataType) throws IOException {
         com.google.api.client.json.JsonFactory jsonFactory = new JacksonFactory();
-        return new JsonObjectParser(jsonFactory).parseAndClose(stream, Charset.defaultCharset(), dataType);
+        return new JsonObjectParser(jsonFactory).parseAndClose(stream, DEFAULT_CHARSET, dataType);
     }
 
     public static <T extends GenericJson> T parse(String output, Class<T> dataType) throws IOException {
 
-        InputStream stream = new ByteArrayInputStream(output.getBytes(StandardCharsets.UTF_8));
+        InputStream stream = new ByteArrayInputStream(output.getBytes(DEFAULT_CHARSET));
 
         com.google.api.client.json.JsonFactory jsonFactory = new JacksonFactory();
-        return new JsonObjectParser(jsonFactory).parseAndClose(stream, StandardCharsets.UTF_8, dataType);
+        return new JsonObjectParser(jsonFactory).parseAndClose(stream, DEFAULT_CHARSET, dataType);
     }
 
 
