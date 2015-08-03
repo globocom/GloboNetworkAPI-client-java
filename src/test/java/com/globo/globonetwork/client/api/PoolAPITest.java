@@ -1,23 +1,10 @@
 package com.globo.globonetwork.client.api;
 
-
-import com.fasterxml.jackson.core.JsonFactory;
 import com.globo.globonetwork.client.exception.GloboNetworkException;
 import com.globo.globonetwork.client.http.HttpJSONRequestProcessor;
-import com.globo.globonetwork.client.http.HttpJSONRequestProcessorTest;
 import com.globo.globonetwork.client.model.Pool;
-import com.google.api.client.http.HttpRequest;
-import com.google.api.client.http.HttpResponse;
-import com.google.api.client.json.JsonObjectParser;
-import com.google.api.client.json.JsonParser;
-import com.google.api.client.json.jackson2.JacksonFactory;
-import com.javafx.tools.doclets.internal.toolkit.util.DocFinder;
 import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.Charset;
 import junit.framework.TestCase;
-import junit.framework.TestResult;
-import org.apache.commons.io.IOUtils;
 import org.junit.Before;
 
 import static org.mockito.Mockito.mock;
