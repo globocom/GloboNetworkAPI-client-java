@@ -3,15 +3,11 @@ package com.globo.globonetwork.client.api;
 import com.globo.globonetwork.client.exception.GloboNetworkException;
 import com.globo.globonetwork.client.http.HttpJSONRequestProcessor;
 import com.globo.globonetwork.client.model.Pool;
-import com.globo.globonetwork.client.model.Pool.ServerPool;
-import com.globo.globonetwork.client.model.Pool.ServerPool.HealthCheck;
 import com.globo.globonetwork.client.model.Real;
 import com.google.api.client.json.GenericJson;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-
 
 public class PoolAPI extends BaseJsonAPI<Pool>{
 
@@ -19,16 +15,12 @@ public class PoolAPI extends BaseJsonAPI<Pool>{
         super(processor);
     }
 
-    public Pool getByPk(Long pk) throws GloboNetworkException {
-        String suffix = "/api/pools/getbypk/" + pk.toString() + "/";
-        Pool pool = (Pool) getTransport().get(suffix, Pool.class );
-        return pool;
-    }
-
-
-    //id, identifier, default_port, hc, env, balancing, maxconn, id_pool_member
-
-
+    /**
+     *
+     * @param lbmethod -  client python is called balancing
+     * @param defaultLimit - client python is called maxcom
+     * @throws GloboNetworkException
+     */
     public void save(Long id, String identifier, Integer defaultPort, Long environment, String lbmethod,
                      String healthcheckType, String healthcheckExpect, String healthcheckRequest, Integer defaultLimit,
                      List<Real.RealIP> realIps, List<String> equipNames, List<Long> idEquips, List<Integer> priorities,
@@ -67,5 +59,19 @@ public class PoolAPI extends BaseJsonAPI<Pool>{
 
         getTransport().post("/api/pools/save/", serverPool, GenericJson.class);
     }
+
+
+
+    public List<Pool> listByEnvVip(Long envVipId) throws GloboNetworkException, IOException {
+        String uri = "/api/pools/list/by/environment/vip/" + envVipId.toString() + "/";
+
+        String result = getTransport().get(uri);
+
+        Pool.PoolList list = HttpJSONRequestProcessor.parse(result, Pool.PoolList.class);
+
+        return list;
+    }
+
+
 
 }

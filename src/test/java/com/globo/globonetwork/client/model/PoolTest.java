@@ -1,17 +1,16 @@
 package com.globo.globonetwork.client.model;
 
 import com.globo.globonetwork.client.http.HttpJSONRequestProcessor;
-import com.globo.globonetwork.client.http.HttpJSONRequestProcessorTest;
-import com.google.api.client.json.JsonObjectParser;
-import com.google.api.client.json.jackson2.JacksonFactory;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.charset.Charset;
 import junit.framework.TestCase;
 import org.junit.Before;
 import org.junit.Test;
 
 public class PoolTest extends TestCase {
+
+
+    public static final String POOL_LIST_BY_ENV_VIP_JSON = "pool_listByEnvVip.json";
 
     @Before
     public void setUp() {
@@ -19,42 +18,32 @@ public class PoolTest extends TestCase {
     }
 
     @Test
-    public void testParse() throws IOException {
+    public void testListByEnvVipId() throws IOException {
+        InputStream jsonStream = getSample(POOL_LIST_BY_ENV_VIP_JSON);
 
-        InputStream stream = pool_123();
-        Pool po = HttpJSONRequestProcessorTest.parse(stream, Pool.class);
-        assertNotNull(po);
+        Pool.PoolList pools = HttpJSONRequestProcessor.parse(jsonStream, Pool.PoolList.class);
+        assertEquals(2, pools.size());
 
-        Pool.ServerPool serverpool = po.getServerPool();
-        assertNotNull(serverpool);
-        assertEquals( 123l , serverpool.getId().longValue());
-        assertEquals("connection" , serverpool.getLbMethod());
-        assertEquals(80 , serverpool.getDefaultPort());
-        assertEquals(32 , serverpool.getDefaultLimit());
-        assertEquals("VIP_777_pool_111" , serverpool.getIdentifier());
-        assertEquals(true , serverpool.isPoolCreated());
+        Pool serverPool1 = pools.get(0);
+        assertEquals((Long)11111l, serverPool1.getId());
+        assertEquals("DANIEL", serverPool1.getIdentifier());
+        assertEquals(80, serverPool1.getDefaultPort());
+        assertEquals(false, serverPool1.isPoolCreated());
+        assertEquals((Long)121l, serverPool1.getEnvironment());
+        assertEquals((Long)33l, serverPool1.getHealthcheck());
 
-        Pool.ServerPool.HealthCheck healthCheck = serverpool.getHealthCheck();
-        assertNotNull(healthCheck);
-        assertEquals("TCP", healthCheck.getHealthcheckType());
-        assertEquals("_*:*_", healthCheck.getDestination());
-        assertEquals("h_123", healthCheck.getHealthcheckExpect());
-        assertEquals("h_444", healthCheck.getHealthcheckRequest());
-        assertEquals("h_iii", healthCheck.getIdentifier());
-        assertEquals(155l, healthCheck.getId().longValue());
-
-
+        Pool serverPool2 = pools.get(1);
+        assertEquals((Long)22222l, serverPool2.getId());
+        assertEquals("DANIEL_2", serverPool2.getIdentifier());
+        assertEquals(81, serverPool2.getDefaultPort());
+        assertEquals(true, serverPool2.isPoolCreated());
+        assertEquals((Long)121l, serverPool2.getEnvironment());
+        assertEquals((Long)43l, serverPool2.getHealthcheck());
     }
 
 
-
-    public static InputStream pool_123() {
-
-        String pool = null;
-
-        InputStream stream = PoolTest.class.getClassLoader().getResourceAsStream("pool_123.json");
-
-//            pool = IOUtils.toString(stream, "UTF-8");
+    public static InputStream getSample(String value) {
+        InputStream stream = PoolTest.class.getClassLoader().getResourceAsStream(value);
         return stream;
     }
 

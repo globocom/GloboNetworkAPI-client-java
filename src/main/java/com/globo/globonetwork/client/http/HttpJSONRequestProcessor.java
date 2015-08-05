@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.util.Date;
+import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -152,6 +153,17 @@ public class HttpJSONRequestProcessor {
         }
     }
 
+    public String get(String suffixUrl) throws GloboNetworkException {
+        try {
+            GenericUrl url = buildUrl(suffixUrl);
+            HttpRequest request = this.buildRequest("GET", url, null);
+            HttpResponse response = this.performRequest(request);
+            return response.parseAsString();
+        } catch (IOException e) {
+            throw new GloboNetworkException("IOError: " + e, e);
+        }
+    }
+
     public <T extends GenericJson> GenericJson post(String suffixUrl, Object payload, Class<T> dataType) throws GloboNetworkException {
         try {
             GenericUrl url = buildUrl(suffixUrl);
@@ -225,12 +237,12 @@ public class HttpJSONRequestProcessor {
         this.numberOfRetries = numberOfRetries;
     }
 
-    public static <T extends GenericJson> T parse(InputStream stream, Class<T> dataType) throws IOException {
+    public static <T> T parse(InputStream stream, Class<T> dataType) throws IOException {
         com.google.api.client.json.JsonFactory jsonFactory = new JacksonFactory();
         return new JsonObjectParser(jsonFactory).parseAndClose(stream, DEFAULT_CHARSET, dataType);
     }
 
-    public static <T extends GenericJson> T parse(String output, Class<T> dataType) throws IOException {
+    public static <T> T parse(String output, Class<T> dataType) throws IOException {
 
         InputStream stream = new ByteArrayInputStream(output.getBytes(DEFAULT_CHARSET));
 
