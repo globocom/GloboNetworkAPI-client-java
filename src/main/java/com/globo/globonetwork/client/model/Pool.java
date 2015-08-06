@@ -30,6 +30,12 @@ public class Pool extends GenericJson {
     @Key("healthcheck")
     private Long healthcheck;
 
+    public Pool(Long id) {
+        this.id = id;
+    }
+    public Pool() {
+
+    }
     public Long getId() {
         return id;
     }

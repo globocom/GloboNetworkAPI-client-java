@@ -3,391 +3,94 @@ package com.globo.globonetwork.client.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.globo.globonetwork.client.model.Real.RealIP;
-import com.google.api.client.util.Key;
-import com.google.api.client.xml.GenericXml;
+public interface Vip {
 
-public class Vip extends GenericXml {
+    public Long getId();
 
-    @Key
-    private Long id;
+    public void setId(Long id);
 
-    @Key
-    private List<String> ips;
+    public List<String> getIps();
 
-    @Key("ipv4_description")
-    private String ipv4Description;
+    public void setIps(List<String> ips) ;
 
-    @Key("vip_criado")
-    private String created;
+    public String getIpv4Description() ;
 
-    @Key("validado")
-    private String validated;
+    public void setIpv4Description(String ipv4Description) ;
 
-    @Key
-    private String host;
+    public Boolean getCreated() ;
 
-    @Key
-    private String cache;
+    public void setCreated(Boolean created) ;
 
-    @Key("metodo_bal")
-    private String method;
+    public Boolean getValidated() ;
 
-    @Key("persistencia")
-    private String persistence;
+    public void setValidated(Boolean validated) ;
 
-    @Key("id_healthcheck_expect")
-    private LongWithNullTag expectedHealthcheckId = new LongWithNullTag();
+    public void setPersistence(String persistence);
+    public String getHealthcheckType();
 
-    @Key("healthcheck_type")
-    private String healthcheckType;
+    public void setHealthcheckType(String healthcheckType);
+    public String getHealthcheck();
 
-    @Key
-    private String healthcheck;
+    public void setHealthcheck(String healthcheck);
 
-    @Key("maxcon")
-    private Integer maxConn;
+    public Integer getMaxConn();
 
-    @Key("portas_servicos")
-    private ServicePorts servicePorts = new ServicePorts();
+    public void setMaxConn(Integer maxConn);
+    public List<String> getServicePorts();
+    public void setServicePorts(List<String> servicePorts);
+    public List<Integer> getRealsPriorities();
+    public void setRealsPriorities(List<Integer> realsPriorities);
+    public List<Integer> getRealsWeights();
+    public void setRealsWeights(List<Integer> realsWeights);
 
-    @Key
-    private Real reals;
 
-    @Key("reals_weights")
-    private RealsWeights realsWeights = new RealsWeights();
+    public String superName();
+    public Long getExpectedHealthcheckId();
+    public void setExpectedHealthcheckId(Long expectedHealthcheckId) ;
 
-    @Key("reals_prioritys")
-    private RealsPriorities realsPriorities = new RealsPriorities();
+    public String getFinality();
+    public void setFinality(String finality);
+    public String getClient();
 
-    @Key("finalidade")
-    private String finality;
+    public void setClient(String client);
+    public String getEnvironment();
+    public void setEnvironment(String environment);
+    public String getL7Filter();
 
-    @Key("cliente")
-    private String client;
+    public void setL7Filter(String l7Filter);
+    public Long getIpv4Id();
+    public void setIpv4Id(Long ipv4Id);
+    public Long getIpv6Id();
+    public void setIpv6Id(Long ipv6Id);
+    public String getServiceName();
+    public void setServiceName(String serviceName);
+    public String getBusinessArea();
+    public void setBusinessArea(String businessArea);
+    public Integer getTimeout();
 
-    @Key("ambiente")
-    private String environment;
+    public void setTimeout(Integer timeout);
+    public Long getRuleId();
+    public void setRuleId(Long ruleId);
 
-    @Key("l7_filter")
-    private String l7Filter;
 
-    @Key("id_ipv4")
-    private Long ipv4Id;
+    public String getHost();
 
-    @Key("id_ipv6")
-    private Long ipv6Id;
+    public void setHost(String host);
 
-    @Key("nome_servico")
-    private String serviceName;
-
-    @Key("areanegocio")
-    private String businessArea;
-
-    @Key
-    private Integer timeout;
-
-    @Key("rule_id")
-    private Long ruleId;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public List<String> getIps() {
-        return ips;
-    }
-
-    public void setIps(List<String> ips) {
-        this.ips = ips;
-    }
-
-    public String getIpv4Description() {
-        return ipv4Description;
-    }
-
-    public void setIpv4Description(String ipv4Description) {
-        this.ipv4Description = ipv4Description;
-    }
-
-    public Boolean getCreated() {
-        return Boolean.valueOf(created);
-    }
-
-    public void setCreated(Boolean created) {
-        if (created == null) {
-            this.created = null;
-        } else if (created) {
-            this.created = "True";
-        } else {
-            this.created = "False";
-        }
-    }
-
-    public Boolean getValidated() {
-        return Boolean.valueOf(validated);
-    }
-
-    public void setValidated(Boolean validated) {
-        if (validated == null) {
-            this.validated = null;
-        } else if (validated) {
-            this.validated = "True";
-        } else {
-            this.validated = "False";
-        }
-    }
-
-    public String getHost() {
-        return host;
-    }
-
-    public void setHost(String host) {
-        this.host = host;
-    }
-
-    protected Real getReals() {
-        if (this.reals == null) {
-            this.reals = new Real();
-        }
-        return reals;
-    }
-
-    protected void setReals(Real reals) {
-        this.reals = reals;
-    }
-
-    public List<RealIP> getRealsIp() {
-        // ensure never returns null.
-        if (this.getReals() == null) {
-            this.setReals(new Real());
-        }
-        if (this.getReals().getRealIps() == null) {
-            this.getReals().setRealIps(new ArrayList<RealIP>());
-        }
-        return this.getReals().getRealIps();
-    }
-
-    public void setRealsIp(List<RealIP> realsIp) {
-        this.getRealsIp().clear();
-        this.getRealsIp().addAll(realsIp);
-    }
-    
-    public Vip addReal(String name, String ip) {
-        RealIP real = new RealIP();
-        real.setName(name);
-        real.setRealIp(ip);
-        getReals().getRealIps().add(real);
-        return this;
-    }
-
-    public String getCache() {
-        return cache;
-    }
-
-    public void setCache(String cache) {
-        this.cache = cache;
-    }
-
-    public String getMethod() {
-        return method;
-    }
-
-    public void setMethod(String method) {
-        this.method = method;
-    }
-
-    public String getPersistence() {
-        return persistence;
-    }
-
-    public void setPersistence(String persistence) {
-        this.persistence = persistence;
-    }
-
-    public String getHealthcheckType() {
-        return healthcheckType;
-    }
-
-    public void setHealthcheckType(String healthcheckType) {
-        this.healthcheckType = healthcheckType;
-    }
-
-    public String getHealthcheck() {
-        return healthcheck;
-    }
-
-    public void setHealthcheck(String healthcheck) {
-        this.healthcheck = healthcheck;
-    }
-
-    public Integer getMaxConn() {
-        return maxConn;
-    }
-
-    public void setMaxConn(Integer maxConn) {
-        this.maxConn = maxConn;
-    }
-
-    public List<String> getServicePorts() {
-        return servicePorts.getValues();
-    }
-
-    public void setServicePorts(List<String> servicePorts) {
-        this.servicePorts.setValues(servicePorts);
-    }
-
-    public List<Integer> getRealsPriorities() {
-        return realsPriorities.getValues();
-    }
-
-    public void setRealsPriorities(List<Integer> realsPriorities) {
-        this.realsPriorities.setValues(realsPriorities);
-    }
-    
-    public List<Integer> getRealsWeights() {
-        return realsWeights.getValues();
-    }
-
-    public void setRealsWeights(List<Integer> realsWeights) {
-        this.realsWeights.setValues(realsWeights);
-    }
-
-    public Vip() {
-        super.name = "vip";
-    }
-
-    public String superName() {
-        return super.name;
-    }
-
-    public Long getExpectedHealthcheckId() {
-        return expectedHealthcheckId.getValue();
-    }
-
-    public void setExpectedHealthcheckId(Long expectedHealthcheckId) {
-        this.expectedHealthcheckId.setValue(expectedHealthcheckId);
-    }
-
-    public String getFinality() {
-        return finality;
-    }
-
-    public void setFinality(String finality) {
-        this.finality = finality;
-    }
-
-    public String getClient() {
-        return client;
-    }
-
-    public void setClient(String client) {
-        this.client = client;
-    }
-
-    public String getEnvironment() {
-        return environment;
-    }
-
-    public void setEnvironment(String environment) {
-        this.environment = environment;
-    }
-
-    public String getL7Filter() {
-        return l7Filter;
-    }
-
-    public void setL7Filter(String l7Filter) {
-        this.l7Filter = l7Filter;
-    }
-
-    public Long getIpv4Id() {
-        return ipv4Id;
-    }
-
-    public void setIpv4Id(Long ipv4Id) {
-        this.ipv4Id = ipv4Id;
-    }
-
-    public Long getIpv6Id() {
-        return ipv6Id;
-    }
-
-    public void setIpv6Id(Long ipv6Id) {
-        this.ipv6Id = ipv6Id;
-    }
-
-    public String getServiceName() {
-        return serviceName;
-    }
-
-    public void setServiceName(String serviceName) {
-        this.serviceName = serviceName;
-    }
-
-    public String getBusinessArea() {
-        return businessArea;
-    }
-
-    public void setBusinessArea(String businessArea) {
-        this.businessArea = businessArea;
-    }
-
-    public Integer getTimeout() {
-        return timeout;
-    }
-
-    public void setTimeout(Integer timeout) {
-        this.timeout = timeout;
-    }
-
-    public Long getRuleId() {
-        return ruleId;
-    }
-
-    public void setRuleId(Long ruleId) {
-        this.ruleId = ruleId;
-    }
-    
-    public static class VipRequest extends Vip {
-        public VipRequest() {
-            this.name = "requisicao_vip";
-        }
-    }
-    
-    public static class ServicePorts extends ListWithNullTag<String> {
-        public ServicePorts() {
-            super("porta");
-        }
-    }
-
-    public static class RealsPriorities extends ListWithNullTag<Integer> {
-        public RealsPriorities() {
-            super("reals_priority");
-        }
-    }
-
-    public static class RealsWeights extends ListWithNullTag<Integer> {
-        public RealsWeights() {
-            super("reals_weight");
-        }
-    }
-    
-    public static class LongWithNullTag extends ObjectWithNullTag<Long> {
-        @Override
-        public Long getValue() {
-            if (super.getValue() == null) {
-                return null;
-            }
-            if (super.getValue() instanceof Long) {
-                return (Long) super.getValue();
-            }
-            return Long.valueOf(((Object)super.getValue()).toString());
-        }
-    }
+    public List<Real.RealIP> getRealsIp();
+
+    public void setRealsIp(List<Real.RealIP> realsIp);
+
+    public Vip addReal(String name, String ip);
+
+    public String getCache();
+
+    public void setCache(String cache);
+
+    public String getMethod();
+
+    public void setMethod(String method);
+
+    public String getPersistence();
+
 }
-

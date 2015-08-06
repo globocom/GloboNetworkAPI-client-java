@@ -5,6 +5,7 @@ import com.globo.globonetwork.client.http.HttpJSONRequestProcessor;
 import com.globo.globonetwork.client.model.Pool;
 import com.globo.globonetwork.client.model.Real;
 import com.google.api.client.json.GenericJson;
+import com.newrelic.api.agent.NewRelic;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,14 +22,16 @@ public class PoolAPI extends BaseJsonAPI<Pool>{
      * @param defaultLimit - client python is called maxcom
      * @throws GloboNetworkException
      */
-    public void save(Long id, String identifier, Integer defaultPort, Long environment, String lbmethod,
+    public Pool save(Long id, String identifier, Integer defaultPort, Long environment, String lbmethod,
                      String healthcheckType, String healthcheckExpect, String healthcheckRequest, Integer defaultLimit,
                      List<Real.RealIP> realIps, List<String> equipNames, List<Long> idEquips, List<Integer> priorities,
                      List <Long> weights,  List<Integer> realPorts, List<Long> idPoolMembers ) throws GloboNetworkException {
-
+        NewRelic.setTransactionName(null, "/globonetwork/pools/save");
 
         GenericJson serverPool = new GenericJson();
-        serverPool.set("id", "");
+        if (id != null ){
+            serverPool.set("id", id);
+        }
         serverPool.set("environment", environment);
         serverPool.set("identifier", identifier );
         serverPool.set("default_port", defaultPort);
@@ -57,14 +60,15 @@ public class PoolAPI extends BaseJsonAPI<Pool>{
         serverPool.set("weight", weights);
 
 
-        getTransport().post("/api/pools/save/", serverPool, GenericJson.class);
+        GenericJson json = getTransport().post("/api/pools/save/", serverPool, GenericJson.class);
+
+        return new Pool(Long.valueOf(json.get("pool").toString()));
     }
 
-
-
     public List<Pool> listByEnvVip(Long envVipId) throws GloboNetworkException, IOException {
-        String uri = "/api/pools/list/by/environment/vip/" + envVipId.toString() + "/";
+        NewRelic.setTransactionName(null, "/globonetwork/pools/listByEnvVip");
 
+        String uri = "/api/pools/list/by/environment/vip/" + envVipId.toString() + "/";
         String result = getTransport().get(uri);
 
         Pool.PoolList list = HttpJSONRequestProcessor.parse(result, Pool.PoolList.class);

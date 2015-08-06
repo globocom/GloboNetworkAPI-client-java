@@ -147,7 +147,7 @@ public abstract class RequestProcessor {
 	}
 	
 	public VipAPI getVipAPI() {
-		return new VipAPI(this);
+		return new VipAPI(this, null);
 	}
 
 	public OptionVipAPI getOptionVipAPI() { return new OptionVipAPI(this); }

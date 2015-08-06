@@ -1,0 +1,21 @@
+{
+  "rule_rollback": null,
+  "ambiente": "HMG-123",
+  "finalidade": "Homologacao - 123",
+  "ip": 33333,
+  "filter_valid": true,
+  "filter_rollback": null,
+  "l7_filter": null,
+  "applied_l7_datetime": null,
+  "host": "daniel.com.br",
+  "areanegocio": "time-123",
+  "healthcheck_expect": null,
+  "rule": null,
+  "ipv6": null,
+  "rule_applied": null,
+  "cliente": "user-321",
+  "vip_ports_to_pools": [],
+  "id": 11111,
+  "filter_applied": null,
+  "nome_servico": "service_name_123"
+}

@@ -18,6 +18,8 @@ package com.globo.globonetwork.client.api;
 
 import static org.junit.Assert.*;
 
+import com.globo.globonetwork.client.model.Vip;
+import com.globo.globonetwork.client.model.VipXml;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -33,7 +35,6 @@ import com.globo.globonetwork.client.TestRequestProcessor.HttpMethod;
 import com.globo.globonetwork.client.exception.GloboNetworkException;
 import com.globo.globonetwork.client.model.GloboNetworkRoot;
 import com.globo.globonetwork.client.model.Real.RealIP;
-import com.globo.globonetwork.client.model.Vip;
 
 @RunWith(JUnit4.class)
 public class VipAPITest {
@@ -230,7 +231,7 @@ public class VipAPITest {
 	
 	@Test
 	public void testBasicVipObjectSerialization() {
-	    Vip vip = new Vip();
+	    VipXml vip = new VipXml();
 	    vip.setPersistence("(nenhum)");
 	    vip.setMethod("least-conn");
 	    vip.setMaxConn(5);
@@ -246,7 +247,7 @@ public class VipAPITest {
 	    vip.setBusinessArea("cloud");
 	    vip.addReal("vm_xpto", "10.20.30.40");
 	    
-	    GloboNetworkRoot<Vip> gnroot = new GloboNetworkRoot<Vip>();
+	    GloboNetworkRoot<VipXml> gnroot = new GloboNetworkRoot<VipXml>();
 	    gnroot.getObjectList().add(vip);
 	    gnroot.set("vip", vip);
 	    

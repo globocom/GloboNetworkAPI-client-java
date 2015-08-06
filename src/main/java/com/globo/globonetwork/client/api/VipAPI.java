@@ -1,5 +1,10 @@
 package com.globo.globonetwork.client.api;
 
+import com.globo.globonetwork.client.http.HttpJSONRequestProcessor;
+import com.globo.globonetwork.client.model.Vip;
+import com.globo.globonetwork.client.model.VipJson;
+import com.globo.globonetwork.client.model.VipPoolMap;
+import com.globo.globonetwork.client.model.VipXml;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -9,8 +14,7 @@ import com.globo.globonetwork.client.exception.GloboNetworkErrorCodeException;
 import com.globo.globonetwork.client.exception.GloboNetworkException;
 import com.globo.globonetwork.client.model.GloboNetworkRoot;
 import com.globo.globonetwork.client.model.Real.RealIP;
-import com.globo.globonetwork.client.model.Vip;
-import com.globo.globonetwork.client.model.Vip.VipRequest;
+import com.globo.globonetwork.client.model.VipXml.VipRequest;
 import com.google.api.client.http.ByteArrayContent;
 import com.google.api.client.http.GenericUrl;
 import com.google.api.client.http.HttpContent;
@@ -27,14 +31,18 @@ import com.google.api.client.util.ArrayMap;
 import com.google.api.client.xml.GenericXml;
 import com.newrelic.api.agent.NewRelic;
 import com.newrelic.api.agent.Trace;
+import java.util.Map;
 
-public class VipAPI extends BaseXmlAPI<Vip> {
+public class VipAPI extends BaseXmlAPI<VipXml> {
 
     static final JsonFactory JSON_FACTORY = new JacksonFactory();
     static final JsonObjectParser parser = new JsonObjectParser(JSON_FACTORY);
 
-    public VipAPI(RequestProcessor transport) {
+    private HttpJSONRequestProcessor jsonRequestProcessor;
+
+    public VipAPI(RequestProcessor transport, HttpJSONRequestProcessor jsonRequestProcessor) {
         super(transport);
+        this.jsonRequestProcessor = jsonRequestProcessor;
     }
 
     @Trace
@@ -42,7 +50,7 @@ public class VipAPI extends BaseXmlAPI<Vip> {
         NewRelic.setTransactionName(null, "/globonetwork/getVipById");
 
         try {
-            GloboNetworkRoot<Vip> globoNetworkRoot = this.get("/requestvip/getbyid/" + vipId + "/");
+            GloboNetworkRoot<VipXml> globoNetworkRoot = this.get("/requestvip/getbyid/" + vipId + "/");
             if (globoNetworkRoot == null) {
                 // Problems reading the XML
                 throw new GloboNetworkException("Invalid XML response");
@@ -63,6 +71,61 @@ public class VipAPI extends BaseXmlAPI<Vip> {
         }
     }
 
+
+    public Vip save(Long ipv4Id,
+                    Long ipv6Id,
+                    String finality,
+                    String client,
+                    String environment,
+                    String cache,
+                    String persistence,
+                    Integer timeout,
+                    String host,
+                    String areanegocio,
+                    String nome_servico,
+                    String l7_filter,
+                    List<VipPoolMap> vipPortsToPools,
+                    Long rule_id,
+                    Long pk) throws GloboNetworkException {
+        NewRelic.setTransactionName(null, "/globonetwork/vip/save/");
+
+        GenericJson json = new GenericJson();
+
+        json.set("ip", ipv4Id);
+        json.set("ipv6", ipv6Id);
+        json.set("finalidade",  finality);
+        json.set("cliente",  client);
+        json.set("ambiente",  environment);
+        json.set("cache",  cache);
+        json.set("timeout",  timeout);
+        json.set("persistencia",  persistence);
+        json.set("timeout",  timeout.toString());
+        json.set("host",  host);
+        json.set("areanegocio",  areanegocio);
+        json.set("nome_servico",  nome_servico);
+        json.set("l7_filter",  l7_filter);
+        json.set("rule",  rule_id);
+
+        if ( vipPortsToPools == null ){
+            vipPortsToPools = new ArrayList<VipPoolMap>();
+        }
+
+        json.set("vip_ports_to_pools", vipPortsToPools);
+
+
+        String uri = "/api/vip/request/save/";
+
+        VipJson vip;
+        if (pk != null){
+            vip = (VipJson) jsonRequestProcessor.put(uri + pk.toString(), json, VipJson.class);
+        } else {
+            vip = (VipJson) jsonRequestProcessor.post(uri, json, VipJson.class);
+        }
+
+        return vip;
+    }
+
+
     @Trace
     public List<Vip> getByIp(String ip) throws GloboNetworkException {
         NewRelic.setTransactionName(null, "/globonetwork/getVipByIp");
@@ -76,7 +139,7 @@ public class VipAPI extends BaseXmlAPI<Vip> {
         data.set("asorting_cols", "");
         data.set("searchable_columns", "");
         
-        GloboNetworkRoot<Vip> payload = new GloboNetworkRoot<Vip>();
+        GloboNetworkRoot<VipXml> payload = new GloboNetworkRoot<VipXml>();
         payload.set("vip", data);
 
         List<Vip> result = new ArrayList<Vip>();
@@ -115,7 +178,7 @@ public class VipAPI extends BaseXmlAPI<Vip> {
 
         NewRelic.setTransactionName(null, "/globonetwork/addVip");
 
-        Vip vip = new Vip();
+        VipXml vip = new VipXml();
         vip.setIpv4Id(ipv4Id);
         vip.setIpv6Id(ipv6Id);
         vip.setExpectedHealthcheckId(expectedHealthcheckId);
@@ -139,7 +202,7 @@ public class VipAPI extends BaseXmlAPI<Vip> {
         vip.setServicePorts(ports);
         vip.setRuleId(ruleId);
 
-        GloboNetworkRoot<Vip> payload = new GloboNetworkRoot<Vip>();
+        GloboNetworkRoot<VipXml> payload = new GloboNetworkRoot<VipXml>();
         payload.getObjectList().add(vip);
         payload.set("vip", vip);
 
@@ -164,7 +227,7 @@ public class VipAPI extends BaseXmlAPI<Vip> {
 
         NewRelic.setTransactionName(null, "/globonetwork/alterVip");
 
-        Vip vip = new Vip();
+        VipXml vip = new VipXml();
         vip.setId(vipId);
         vip.setIpv4Id(ipv4Id);
         vip.setIpv6Id(ipv6Id);
@@ -191,7 +254,7 @@ public class VipAPI extends BaseXmlAPI<Vip> {
         vip.setServicePorts(ports);
         vip.setRuleId(ruleId);
 
-        GloboNetworkRoot<Vip> payload = new GloboNetworkRoot<Vip>();
+        GloboNetworkRoot<VipXml> payload = new GloboNetworkRoot<VipXml>();
         payload.getObjectList().add(vip);
         payload.set("vip", vip);
 
@@ -202,10 +265,10 @@ public class VipAPI extends BaseXmlAPI<Vip> {
     public void create(Long vipId) throws GloboNetworkException {
         NewRelic.setTransactionName(null, "/globonetwork/createVip");
 
-        Vip vip = new Vip();
+        VipXml vip = new VipXml();
         vip.set("id_vip", vipId);
 
-        GloboNetworkRoot<Vip> payload = new GloboNetworkRoot<Vip>();
+        GloboNetworkRoot<VipXml> payload = new GloboNetworkRoot<VipXml>();
         payload.getObjectList().add(vip);
         payload.set("vip", vip);
 
@@ -233,10 +296,10 @@ public class VipAPI extends BaseXmlAPI<Vip> {
     public void removeScriptVip(Long vipId) throws GloboNetworkException {
         NewRelic.setTransactionName(null, "/globonetwork/removeVip");
 
-        Vip vip = new Vip();
+        VipXml vip = new VipXml();
         vip.set("id_vip", vipId);
 
-        GloboNetworkRoot<Vip> payload = new GloboNetworkRoot<Vip>();
+        GloboNetworkRoot<VipXml> payload = new GloboNetworkRoot<VipXml>();
         payload.getObjectList().add(vip);
         payload.set("vip", vip);
 
@@ -314,7 +377,7 @@ public class VipAPI extends BaseXmlAPI<Vip> {
     }
 
     private void performRealOperation(Long vipId, Long ipId, Long equipId, Integer vipPort, Integer realPort, String operation, String networkVersion) throws GloboNetworkException {
-        Vip vip = new Vip();
+        VipXml vip = new VipXml();
         vip.set("vip_id", vipId);
         vip.set("ip_id", ipId);
         vip.set("equip_id", equipId);
@@ -323,7 +386,7 @@ public class VipAPI extends BaseXmlAPI<Vip> {
         vip.set("operation", operation);
         vip.set("network_version", networkVersion);
 
-        GloboNetworkRoot<Vip> payload = new GloboNetworkRoot<Vip>();
+        GloboNetworkRoot<VipXml> payload = new GloboNetworkRoot<VipXml>();
         payload.getObjectList().add(vip);
         payload.set("vip", vip);
 
@@ -334,12 +397,12 @@ public class VipAPI extends BaseXmlAPI<Vip> {
     public void alterHealthcheck(Long vipId, String healthcheckType, String healthcheck, Long expectedHealthcheckId) throws GloboNetworkException {
         NewRelic.setTransactionName(null, "/globonetwork/alterHealthcheck");
 
-        Vip vip = new Vip();
+        VipXml vip = new VipXml();
         vip.setHealthcheckType(healthcheckType);
         vip.setHealthcheck(healthcheck);
         vip.setExpectedHealthcheckId(expectedHealthcheckId);
         
-        GloboNetworkRoot<Vip> payload = new GloboNetworkRoot<Vip>();
+        GloboNetworkRoot<VipXml> payload = new GloboNetworkRoot<VipXml>();
         payload.getObjectList().add(vip);
         payload.set("vip", vip);
 
@@ -350,10 +413,10 @@ public class VipAPI extends BaseXmlAPI<Vip> {
     public void alterPersistence(Long vipId, String persistence) throws GloboNetworkException {
         NewRelic.setTransactionName(null, "/globonetwork/alterPersistence");
 
-        Vip vip = new Vip();
+        VipXml vip = new VipXml();
         vip.setPersistence(persistence);
         
-        GloboNetworkRoot<Vip> payload = new GloboNetworkRoot<Vip>();
+        GloboNetworkRoot<VipXml> payload = new GloboNetworkRoot<VipXml>();
         payload.getObjectList().add(vip);
         payload.set("vip", vip);
 
