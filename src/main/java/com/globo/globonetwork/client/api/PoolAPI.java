@@ -94,8 +94,7 @@ public class PoolAPI extends BaseJsonAPI<Pool>{
     }
 
     public GenericJson remove(List<Long> ids) throws GloboNetworkException {
-        NewRelic.setTransactionName(null, "/globonetwork/pools/listByEnvVip");
-
+        NewRelic.setTransactionName(null, "/globonetwork/pools/removeById");
 
         String uri = "/api/pools/remove/";
         GenericJson body = new GenericJson();
@@ -106,9 +105,15 @@ public class PoolAPI extends BaseJsonAPI<Pool>{
         return output;
     }
 
-    public GenericJson delete(List<Long> ids ) throws  GloboNetworkException {
-        NewRelic.setTransactionName(null, "/globonetwork/pools/listByEnvVip");
+    public GenericJson remove(Long id) throws  GloboNetworkException {
+        NewRelic.setTransactionName(null, "/globonetwork/pools/removeById");
+        List<Long> ids = new ArrayList<Long>();
+        ids.add(id);
+        return this.remove(ids);
+    }
 
+    public GenericJson delete(List<Long> ids) throws  GloboNetworkException {
+        NewRelic.setTransactionName(null, "/globonetwork/pools/deleteByIds");
 
         String uri = "/api/pools/delete/";
         GenericJson body = new GenericJson();
@@ -118,4 +123,13 @@ public class PoolAPI extends BaseJsonAPI<Pool>{
 
         return output;
     }
+
+    public GenericJson delete(Long id) throws  GloboNetworkException {
+        NewRelic.setTransactionName(null, "/globonetwork/pools/deleteById");
+        List<Long> ids = new ArrayList<Long>();
+        ids.add(id);
+        return this.delete(ids);
+    }
+
+
 }
