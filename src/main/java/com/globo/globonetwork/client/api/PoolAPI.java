@@ -92,4 +92,30 @@ public class PoolAPI extends BaseJsonAPI<Pool>{
             throw new GloboNetworkException("GloboNetworkAPI error parse: " + e.getMessage(), e);
         }
     }
+
+    public GenericJson remove(List<Long> ids) throws GloboNetworkException {
+        NewRelic.setTransactionName(null, "/globonetwork/pools/listByEnvVip");
+
+
+        String uri = "/api/pools/remove/";
+        GenericJson body = new GenericJson();
+        body.set("ids", ids);
+
+        GenericJson output = getTransport().post(uri, body, GenericJson.class);
+
+        return output;
+    }
+
+    public GenericJson delete(List<Long> ids ) throws  GloboNetworkException {
+        NewRelic.setTransactionName(null, "/globonetwork/pools/listByEnvVip");
+
+
+        String uri = "/api/pools/delete/";
+        GenericJson body = new GenericJson();
+        body.set("ids", ids);
+
+        GenericJson output = getTransport().post(uri, body, GenericJson.class);
+
+        return output;
+    }
 }
