@@ -31,7 +31,6 @@ import com.google.api.client.util.ArrayMap;
 import com.google.api.client.xml.GenericXml;
 import com.newrelic.api.agent.NewRelic;
 import com.newrelic.api.agent.Trace;
-import java.util.Map;
 
 public class VipAPI extends BaseXmlAPI<VipXml> {
 
@@ -45,7 +44,11 @@ public class VipAPI extends BaseXmlAPI<VipXml> {
         this.jsonRequestProcessor = jsonRequestProcessor;
     }
 
+    /**
+        @see VipAPI#getByPk(Long)
+     */
     @Trace
+    @Deprecated
     public Vip getById(Long vipId) throws GloboNetworkException {
         NewRelic.setTransactionName(null, "/globonetwork/getVipById");
 
@@ -69,6 +72,17 @@ public class VipAPI extends BaseXmlAPI<VipXml> {
 
             throw ex;
         }
+    }
+
+    @Trace
+    public Vip getByPk(Long vipId) throws GloboNetworkException {
+        NewRelic.setTransactionName(null, "/globonetwork/vip/getByPk/");
+
+        String uri = "/api/vip/request/get/"+ vipId.toString() + "/";
+
+        Vip vip = (Vip) jsonRequestProcessor.get(uri, VipJson.class);
+
+        return vip;
     }
 
 

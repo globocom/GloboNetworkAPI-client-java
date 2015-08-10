@@ -93,4 +93,6 @@ public interface Vip {
 
     public String getPersistence();
 
+    public List<Pool> getPools();
+
 }

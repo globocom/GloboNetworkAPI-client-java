@@ -153,6 +153,11 @@ public class VipXml extends GenericXml implements Vip {
         return persistence;
     }
 
+    @Override
+    public List<Pool> getPools() {
+        return null;
+    }
+
     public Long getId() {
         return id;
     }

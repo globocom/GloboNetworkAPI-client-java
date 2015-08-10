@@ -33,12 +33,40 @@ public class VipJson extends GenericJson implements Vip{
     @Key("nome_servico")
     private String serviceName;
 
-    private Integer timeout;
+    @Key("timeout")
+    private String timeout;
+
+    @Key("metodo_bal")
     private String method;
 
     private List<String> ips;
-    private Boolean created;
+
+    @Key("vip_criado")
+    private Integer created;
+
+    @Key("persistencia")
     private String persistence;
+
+    @Key("cache")
+    private String cache;
+
+    @Key("maxcon")
+    private String maxconn;
+
+    @Key("healthcheck_type")
+    private String healthcheckType;
+
+    @Key("healthcheck")
+    private String healthcheck;
+
+    @Key("id_healthcheck_expect")
+    private Long healthcheckExpectedId;
+
+    @Key("validado")
+    private Integer validated;
+
+    @Key("pools")
+    private List<Pool> pools;
 
     @Override
     public Long getId() {
@@ -72,22 +100,22 @@ public class VipJson extends GenericJson implements Vip{
 
     @Override
     public Boolean getCreated() {
-        return created;
+        return created == 1;
     }
 
     @Override
     public void setCreated(Boolean created) {
-        this.created = created;
+        this.created = (created ? 1 : 0);
     }
 
     @Override
     public Boolean getValidated() {
-        return null;
+        return validated != 0;
     }
 
     @Override
     public void setValidated(Boolean validated) {
-
+        this.validated = (validated ? 1 : 0);
     }
 
     @Override
@@ -97,32 +125,32 @@ public class VipJson extends GenericJson implements Vip{
 
     @Override
     public String getHealthcheckType() {
-        return null;
+        return healthcheckType;
     }
 
     @Override
     public void setHealthcheckType(String healthcheckType) {
-
+        this.healthcheckType = healthcheckType;
     }
 
     @Override
     public String getHealthcheck() {
-        return null;
+        return healthcheck;
     }
 
     @Override
     public void setHealthcheck(String healthcheck) {
-
+        this.healthcheck = healthcheck;
     }
 
     @Override
     public Integer getMaxConn() {
-        return null;
+        return Integer.valueOf(maxconn);
     }
 
     @Override
     public void setMaxConn(Integer maxConn) {
-
+        this.maxconn = (maxConn != null ? maxConn.toString() : "0");
     }
 
     @Override
@@ -162,12 +190,12 @@ public class VipJson extends GenericJson implements Vip{
 
     @Override
     public Long getExpectedHealthcheckId() {
-        return null;
+        return healthcheckExpectedId;
     }
 
     @Override
     public void setExpectedHealthcheckId(Long expectedHealthcheckId) {
-
+        this.healthcheckExpectedId = expectedHealthcheckId;
     }
 
     @Override
@@ -252,12 +280,12 @@ public class VipJson extends GenericJson implements Vip{
 
     @Override
     public Integer getTimeout() {
-        return timeout;
+        return Integer.valueOf(timeout);
     }
 
     @Override
     public void setTimeout(Integer timeout) {
-        this.timeout = timeout;
+        this.timeout = timeout != null ? timeout.toString() : "0";
     }
 
     @Override
@@ -297,12 +325,12 @@ public class VipJson extends GenericJson implements Vip{
 
     @Override
     public String getCache() {
-        return null;
+        return cache;
     }
 
     @Override
     public void setCache(String cache) {
-
+        this.cache = cache;
     }
 
     @Override
@@ -318,6 +346,11 @@ public class VipJson extends GenericJson implements Vip{
 
     @Override
     public String getPersistence() {
-        return null;
+        return persistence;
+    }
+
+    @Override
+    public List<Pool> getPools() {
+        return pools;
     }
 }

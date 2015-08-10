@@ -14,7 +14,14 @@
   "ipv6": null,
   "rule_applied": null,
   "cliente": "user-321",
-  "vip_ports_to_pools": [],
+  "vip_ports_to_pools": [
+    {
+      "server_pool": 12466,
+      "id": 12466,
+      "port_vip": 80,
+      "requisicao_vip": 11021
+    }
+  ],
   "id": 11111,
   "filter_applied": null,
   "nome_servico": "service_name_123"

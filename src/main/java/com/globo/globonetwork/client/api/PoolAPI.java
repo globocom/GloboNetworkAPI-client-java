@@ -19,11 +19,10 @@ public class PoolAPI extends BaseJsonAPI<Pool>{
     /**
      *
      * @param lbmethod -  client python is called balancing
-     * @param defaultLimit - client python is called maxcom
      * @throws GloboNetworkException
      */
     public Pool save(Long id, String identifier, Integer defaultPort, Long environment, String lbmethod,
-                     String healthcheckType, String healthcheckExpect, String healthcheckRequest, Integer defaultLimit,
+                     String healthcheckType, String healthcheckExpect, String healthcheckRequest, Integer maxconn,
                      List<Real.RealIP> realIps, List<String> equipNames, List<Long> idEquips, List<Integer> priorities,
                      List <Long> weights,  List<Integer> realPorts, List<Long> idPoolMembers ) throws GloboNetworkException {
         NewRelic.setTransactionName(null, "/globonetwork/pools/save");
@@ -36,7 +35,7 @@ public class PoolAPI extends BaseJsonAPI<Pool>{
         serverPool.set("identifier", identifier );
         serverPool.set("default_port", defaultPort);
         serverPool.set("balancing", lbmethod);  // field name is different in globoNetworkAPI: balacing
-        serverPool.set("maxcom", defaultLimit);  // field name is different in globoNetworkAPI: maxconn
+        serverPool.set("maxcom", maxconn);  // field name is different in globoNetworkAPI: maxconn
 
 
         serverPool.set("healthcheck_type", healthcheckType);
@@ -65,17 +64,32 @@ public class PoolAPI extends BaseJsonAPI<Pool>{
         return new Pool(Long.valueOf(json.get("pool").toString()));
     }
 
-    public List<Pool> listByEnvVip(Long envVipId) throws GloboNetworkException, IOException {
-        NewRelic.setTransactionName(null, "/globonetwork/pools/listByEnvVip");
+    public GenericJson getByPk(Long id) throws GloboNetworkException {
+        NewRelic.setTransactionName(null, "/globonetwork/pools/getByPk");
 
-        String uri = "/api/pools/list/by/environment/vip/" + envVipId.toString() + "/";
-        String result = getTransport().get(uri);
+        try {
+            String uri = "/api/pools/getbypk/" + id.toString() + "/";
+            String result = getTransport().get(uri);
 
-        Pool.PoolList list = HttpJSONRequestProcessor.parse(result, Pool.PoolList.class);
+            Pool pool = HttpJSONRequestProcessor.parse(result, Pool.class);
 
-        return list;
+            return pool;
+        }catch (IOException e) {
+            throw new GloboNetworkException("GloboNetworkAPI error parse: " + e.getMessage(), e);
+        }
     }
 
+    public List<Pool> listByEnvVip(Long envVipId) throws GloboNetworkException {
+        NewRelic.setTransactionName(null, "/globonetwork/pools/listByEnvVip");
 
+        try {
+            String uri = "/api/pools/list/by/environment/vip/" + envVipId.toString() + "/";
+            String result = getTransport().get(uri);
 
+            Pool.PoolList list = HttpJSONRequestProcessor.parse(result, Pool.PoolList.class);
+            return list;
+        }catch (IOException e) {
+            throw new GloboNetworkException("GloboNetworkAPI error parse: " + e.getMessage(), e);
+        }
+    }
 }
