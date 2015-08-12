@@ -24,7 +24,7 @@ public class PoolAPI extends BaseJsonAPI<Pool>{
     public Pool save(Long id, String identifier, Integer defaultPort, Long environment, String lbmethod,
                      String healthcheckType, String healthcheckExpect, String healthcheckRequest, Integer maxconn,
                      List<Real.RealIP> realIps, List<String> equipNames, List<Long> idEquips, List<Integer> priorities,
-                     List <Long> weights,  List<Integer> realPorts, List<Long> idPoolMembers ) throws GloboNetworkException {
+                     List <Long> weights,  List<Integer> realPorts, List<Long> idPoolMembers, String serviceDownAction, String healthcheckDestination) throws GloboNetworkException {
         NewRelic.setTransactionName(null, "/globonetwork/pools/save");
 
         GenericJson serverPool = new GenericJson();
@@ -36,12 +36,16 @@ public class PoolAPI extends BaseJsonAPI<Pool>{
         serverPool.set("default_port", defaultPort);
         serverPool.set("balancing", lbmethod);  // field name is different in globoNetworkAPI: balacing
         serverPool.set("maxcom", maxconn);  // field name is different in globoNetworkAPI: maxconn
-
+        serverPool.set("servicedownaction", serviceDownAction);
 
         serverPool.set("healthcheck_type", healthcheckType);
         serverPool.set("healthcheck_expect", healthcheckExpect);
         serverPool.set("healthcheck_request", healthcheckRequest);
-
+        if(healthcheckDestination != null){
+            serverPool.set("heathcheck_destination", "*:" + healthcheckDestination);
+        }else{
+            serverPool.set("heathcheck_destination", "*:*");
+        }
 
         serverPool.set("id_pool_member", idPoolMembers);
         List<GenericJson> realIpsApi = new ArrayList<GenericJson>();
