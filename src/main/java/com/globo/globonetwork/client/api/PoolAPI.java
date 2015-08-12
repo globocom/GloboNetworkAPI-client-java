@@ -36,15 +36,17 @@ public class PoolAPI extends BaseJsonAPI<Pool>{
         serverPool.set("default_port", defaultPort);
         serverPool.set("balancing", lbmethod);  // field name is different in globoNetworkAPI: balacing
         serverPool.set("maxcom", maxconn);  // field name is different in globoNetworkAPI: maxconn
-        serverPool.set("servicedownaction", serviceDownAction);
+        if(serviceDownAction != null) {
+            serverPool.set("service-down-action", serviceDownAction);
+        }
 
         serverPool.set("healthcheck_type", healthcheckType);
         serverPool.set("healthcheck_expect", healthcheckExpect);
         serverPool.set("healthcheck_request", healthcheckRequest);
         if(healthcheckDestination != null){
-            serverPool.set("heathcheck_destination", "*:" + healthcheckDestination);
+            serverPool.set("healthcheck_destination", "*:" + healthcheckDestination);
         }else{
-            serverPool.set("heathcheck_destination", "*:*");
+            serverPool.set("healthcheck_destination", "*:*");
         }
 
         serverPool.set("id_pool_member", idPoolMembers);
