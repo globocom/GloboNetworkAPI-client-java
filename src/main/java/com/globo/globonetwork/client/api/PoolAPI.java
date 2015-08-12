@@ -6,6 +6,7 @@ import com.globo.globonetwork.client.model.Pool;
 import com.globo.globonetwork.client.model.Real;
 import com.google.api.client.json.GenericJson;
 import com.newrelic.api.agent.NewRelic;
+import com.newrelic.api.agent.Trace;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,6 +22,7 @@ public class PoolAPI extends BaseJsonAPI<Pool>{
      * @param lbmethod -  client python is called balancing
      * @throws GloboNetworkException
      */
+    @Trace(dispatcher = true)
     public Pool save(Long id, String identifier, Integer defaultPort, Long environment, String lbmethod,
                      String healthcheckType, String healthcheckExpect, String healthcheckRequest, Integer maxconn,
                      List<Real.RealIP> realIps, List<String> equipNames, List<Long> idEquips, List<Integer> priorities,
@@ -70,6 +72,7 @@ public class PoolAPI extends BaseJsonAPI<Pool>{
         return new Pool(Long.valueOf(json.get("pool").toString()));
     }
 
+    @Trace(dispatcher = true)
     public GenericJson getByPk(Long id) throws GloboNetworkException {
         NewRelic.setTransactionName(null, "/globonetwork/pools/getByPk");
 
@@ -85,6 +88,7 @@ public class PoolAPI extends BaseJsonAPI<Pool>{
         }
     }
 
+    @Trace(dispatcher = true)
     public List<Pool> listByEnvVip(Long envVipId) throws GloboNetworkException {
         NewRelic.setTransactionName(null, "/globonetwork/pools/listByEnvVip");
 
@@ -99,8 +103,9 @@ public class PoolAPI extends BaseJsonAPI<Pool>{
         }
     }
 
+    @Trace(dispatcher = true)
     public GenericJson remove(List<Long> ids) throws GloboNetworkException {
-        NewRelic.setTransactionName(null, "/globonetwork/pools/removeById");
+        NewRelic.setTransactionName(null, "/globonetwork/pools/listByEnvVip");
 
         String uri = "/api/pools/remove/";
         GenericJson body = new GenericJson();
@@ -111,6 +116,7 @@ public class PoolAPI extends BaseJsonAPI<Pool>{
         return output;
     }
 
+    @Trace(dispatcher = true)
     public GenericJson remove(Long id) throws  GloboNetworkException {
         NewRelic.setTransactionName(null, "/globonetwork/pools/removeById");
         List<Long> ids = new ArrayList<Long>();
@@ -118,6 +124,7 @@ public class PoolAPI extends BaseJsonAPI<Pool>{
         return this.remove(ids);
     }
 
+    @Trace(dispatcher = true)
     public GenericJson delete(List<Long> ids) throws  GloboNetworkException {
         NewRelic.setTransactionName(null, "/globonetwork/pools/deleteByIds");
 
@@ -130,6 +137,7 @@ public class PoolAPI extends BaseJsonAPI<Pool>{
         return output;
     }
 
+    @Trace(dispatcher = true)
     public GenericJson delete(Long id) throws  GloboNetworkException {
         NewRelic.setTransactionName(null, "/globonetwork/pools/deleteById");
         List<Long> ids = new ArrayList<Long>();

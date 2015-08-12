@@ -103,5 +103,17 @@ public class Pool extends GenericJson {
     public static class PoolList extends ArrayList<Pool> {
 
     }
+    public static class PoolSave extends GenericJson {
+        @Key("server_pool")
+        private Pool pool;
+
+        public Pool getPool() {
+            return pool;
+        }
+
+        public void setPool(Pool pool) {
+            this.pool = pool;
+        }
+    }
 
 }

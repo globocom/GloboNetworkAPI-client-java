@@ -2,6 +2,7 @@ package com.globo.globonetwork.client.model;
 
 import com.google.api.client.json.GenericJson;
 import com.google.api.client.util.Key;
+import java.util.Objects;
 
 public class VipPoolMap extends GenericJson {
 
@@ -62,5 +63,20 @@ public class VipPoolMap extends GenericJson {
 
     public void setPort(Integer port) {
         this.port = port;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        VipPoolMap that = (VipPoolMap) o;
+        return Objects.equals(poolId, that.poolId) &&
+                Objects.equals(port, that.port);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(poolId, port);
     }
 }

@@ -74,7 +74,7 @@ public class VipAPI extends BaseXmlAPI<VipXml> {
         }
     }
 
-    @Trace
+    @Trace(dispatcher = true)
     public Vip getByPk(Long vipId) throws GloboNetworkException {
         NewRelic.setTransactionName(null, "/globonetwork/vip/getByPk/");
 
@@ -86,6 +86,7 @@ public class VipAPI extends BaseXmlAPI<VipXml> {
     }
 
 
+    @Trace(dispatcher = true)
     public Vip save(Long ipv4Id,
                     Long ipv6Id,
                     String finality,
@@ -95,11 +96,11 @@ public class VipAPI extends BaseXmlAPI<VipXml> {
                     String persistence,
                     Integer timeout,
                     String host,
-                    String areanegocio,
-                    String nome_servico,
-                    String l7_filter,
+                    String businessArea,
+                    String serviceName,
+                    String l7Filter,
                     List<VipPoolMap> vipPortsToPools,
-                    Long rule_id,
+                    Long ruleId,
                     Long pk) throws GloboNetworkException {
         NewRelic.setTransactionName(null, "/globonetwork/vip/save/");
 
@@ -115,10 +116,10 @@ public class VipAPI extends BaseXmlAPI<VipXml> {
         json.set("persistencia",  persistence);
         json.set("timeout",  timeout.toString());
         json.set("host",  host);
-        json.set("areanegocio",  areanegocio);
-        json.set("nome_servico",  nome_servico);
-        json.set("l7_filter",  l7_filter);
-        json.set("rule",  rule_id);
+        json.set("areanegocio",  businessArea);
+        json.set("nome_servico",  serviceName);
+        json.set("l7_filter",  l7Filter);
+        json.set("rule",  ruleId);
 
         if ( vipPortsToPools == null ){
             vipPortsToPools = new ArrayList<VipPoolMap>();
