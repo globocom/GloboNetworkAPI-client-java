@@ -1,5 +1,6 @@
 package com.globo.globonetwork.client.api;
 
+import com.globo.globonetwork.client.api.pool.PoolTransformer;
 import com.globo.globonetwork.client.exception.GloboNetworkException;
 import com.globo.globonetwork.client.http.HttpJSONRequestProcessor;
 import com.globo.globonetwork.client.model.Pool;
@@ -10,9 +11,11 @@ import com.newrelic.api.agent.Trace;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class PoolAPI extends BaseJsonAPI<Pool>{
-
+    private static final Logger LOGGER = LoggerFactory.getLogger(PoolAPI.class);
     public PoolAPI(HttpJSONRequestProcessor processor) {
         super(processor);
     }
@@ -29,44 +32,13 @@ public class PoolAPI extends BaseJsonAPI<Pool>{
                      List <Long> weights,  List<Integer> realPorts, List<Long> idPoolMembers, String serviceDownAction, String healthcheckDestination) throws GloboNetworkException {
         NewRelic.setTransactionName(null, "/globonetwork/pools/save");
 
-        GenericJson serverPool = new GenericJson();
-        if (id != null ){
-            serverPool.set("id", id);
-        }
-        serverPool.set("environment", environment);
-        serverPool.set("identifier", identifier );
-        serverPool.set("default_port", defaultPort);
-        serverPool.set("balancing", lbmethod);  // field name is different in globoNetworkAPI: balacing
-        serverPool.set("maxcom", maxconn);  // field name is different in globoNetworkAPI: maxconn
-        if(serviceDownAction != null) {
-            serverPool.set("service-down-action", serviceDownAction);
-        }
 
-        serverPool.set("healthcheck_type", healthcheckType);
-        serverPool.set("healthcheck_expect", healthcheckExpect);
-        serverPool.set("healthcheck_request", healthcheckRequest);
-        if(healthcheckDestination != null){
-            serverPool.set("healthcheck_destination", "*:" + healthcheckDestination);
-        }else{
-            serverPool.set("healthcheck_destination", "*:*");
-        }
+        GenericJson serverPool = PoolTransformer.saveJsonFrom(id, identifier, defaultPort, environment, lbmethod,
+                                                              healthcheckType, healthcheckExpect, healthcheckRequest, maxconn,
+                                                              realIps, equipNames, idEquips, priorities,
+                                                              weights, realPorts, idPoolMembers, serviceDownAction, healthcheckDestination);
 
-        serverPool.set("id_pool_member", idPoolMembers);
-        List<GenericJson> realIpsApi = new ArrayList<GenericJson>();
-        for (Real.RealIP realIP : realIps) {
-            GenericJson json = new GenericJson();
-            json.set("id", realIP.getIpId());
-            json.set("ip", realIP.getRealIp());
-            realIpsApi.add(json);
-        }
-        serverPool.set("ip_list_full", realIpsApi);
-        serverPool.set("priorities", priorities);
-        serverPool.set("ports_reals", realPorts);
-        serverPool.set("nome_equips", equipNames);
-        serverPool.set("id_equips", idEquips);
-        serverPool.set("weight", weights);
-
-
+        LOGGER.debug("POST POOL: " + serverPool.toString());
         GenericJson json = getTransport().post("/api/pools/save/", serverPool, GenericJson.class);
 
         return new Pool(Long.valueOf(json.get("pool").toString()));

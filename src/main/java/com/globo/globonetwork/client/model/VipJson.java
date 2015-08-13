@@ -68,6 +68,9 @@ public class VipJson extends GenericJson implements Vip{
     @Key("pools")
     private List<Pool> pools;
 
+    private List<Real.RealIP> realsIp;
+    private String ipv4Description;
+
     @Override
     public Long getId() {
         return id;
@@ -90,12 +93,12 @@ public class VipJson extends GenericJson implements Vip{
 
     @Override
     public String getIpv4Description() {
-        return null;
+        return ipv4Description;
     }
 
     @Override
     public void setIpv4Description(String ipv4Description) {
-
+        this.ipv4Description = ipv4Description;
     }
 
     @Override
@@ -310,12 +313,12 @@ public class VipJson extends GenericJson implements Vip{
 
     @Override
     public List<Real.RealIP> getRealsIp() {
-        return null;
+        return realsIp;
     }
 
     @Override
     public void setRealsIp(List<Real.RealIP> realsIp) {
-
+        this.realsIp = realsIp;
     }
 
     @Override
