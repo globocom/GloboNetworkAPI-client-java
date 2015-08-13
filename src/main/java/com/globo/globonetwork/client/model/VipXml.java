@@ -157,6 +157,7 @@ public class VipXml extends GenericXml implements Vip {
     public List<Pool> getPools() {
         return null;
     }
+    public void setPools(List<Pool> pool) {}
 
     public Long getId() {
         return id;

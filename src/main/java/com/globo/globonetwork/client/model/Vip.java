@@ -95,4 +95,6 @@ public interface Vip {
 
     public List<Pool> getPools();
 
+    public void setPools(List<Pool> pools);
+
 }

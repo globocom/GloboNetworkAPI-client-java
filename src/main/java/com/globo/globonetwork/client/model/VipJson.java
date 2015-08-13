@@ -353,4 +353,8 @@ public class VipJson extends GenericJson implements Vip{
     public List<Pool> getPools() {
         return pools;
     }
+
+    public void setPools(List<Pool> pools) {
+        this.pools = pools;
+    }
 }
