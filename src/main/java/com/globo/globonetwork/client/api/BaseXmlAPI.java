@@ -28,11 +28,11 @@ import com.google.api.client.util.ArrayMap;
 import com.google.api.client.util.FieldInfo;
 import com.google.api.client.xml.GenericXml;
 
-public class BaseAPI<T> {
+public class BaseXmlAPI<T> {
 	
 	private final RequestProcessor transport;
 	
-	public BaseAPI(RequestProcessor transport) {
+	public BaseXmlAPI(RequestProcessor transport) {
 		this.transport = transport;
 	}
 	

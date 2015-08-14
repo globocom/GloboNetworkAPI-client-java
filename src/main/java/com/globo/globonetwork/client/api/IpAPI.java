@@ -31,7 +31,7 @@ import com.google.api.client.xml.GenericXml;
 import com.newrelic.api.agent.NewRelic;
 import com.newrelic.api.agent.Trace;
 
-public class IpAPI extends BaseAPI<Ip> {
+public class IpAPI extends BaseXmlAPI<Ip> {
 	
 	public IpAPI(RequestProcessor transport) {
 		super(transport);

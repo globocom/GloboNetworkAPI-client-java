@@ -21,6 +21,7 @@ import java.util.List;
 
 import com.google.api.client.util.Key;
 import com.google.api.client.xml.GenericXml;
+import java.util.Objects;
 
 public class Real extends GenericXml {
 
@@ -106,6 +107,32 @@ public class Real extends GenericXml {
 		
 		public String superName() {
 			return super.name;
+		}
+
+
+		public RealIP(Long ipId, Integer realPort, String realIp, Integer vipPort) {
+			super.name = "real";
+			this.ipId = ipId;
+			this.realPort = realPort;
+			this.realIp = realIp;
+			this.vipPort = vipPort;
+		}
+
+		@Override
+		public boolean equals(Object o) {
+			if (this == o) return true;
+			if (o == null || getClass() != o.getClass()) return false;
+
+			RealIP realIP = (RealIP) o;
+			return Objects.equals(ipId, realIP.ipId) &&
+					Objects.equals(realPort, realIP.realPort) &&
+					Objects.equals(realIp, realIP.realIp) &&
+					Objects.equals(vipPort, realIP.vipPort);
+		}
+
+		@Override
+		public int hashCode() {
+			return Objects.hash( ipId, realPort, realIp, vipPort);
 		}
 	}
 }

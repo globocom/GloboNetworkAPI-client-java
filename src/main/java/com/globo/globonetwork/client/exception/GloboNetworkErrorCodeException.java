@@ -29,6 +29,11 @@ public class GloboNetworkErrorCodeException extends GloboNetworkException {
 		this.code = code;
 		this.description = description;
 	}
+	public GloboNetworkErrorCodeException(int code, String description, Throwable e) {
+		super(code + ":" + description, e);
+		this.code = code;
+		this.description = description;
+	}
 
 	public int getCode() {
 		return code;

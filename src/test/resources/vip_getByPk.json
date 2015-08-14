@@ -1,0 +1,51 @@
+{
+  "persistencia": "(nenhum)",
+  "metodo_bal": "least-conn",
+  "id": 123,
+  "maxcon": "0",
+  "cache": "(nenhum)",
+  "ambiente": "Hmg API",
+  "vip_criado": 1,
+  "healthcheck": "GET /healthcheck.html HTTP/1.0 Host:teste.globo.com",
+  "id_ip": 101106,
+  "healthcheck_type": "HTTP",
+  "id_healthcheck_expect": 2,
+  "host": "teste.globo.com",
+  "l7_filter": null,
+  "validado": 1,
+  "finalidade": "Homologacao",
+  "rule_id": null,
+  "id_ipv6": null,
+  "nome_servico": "teste.globo.com",
+  "timeout": "5",
+  "pools": [
+    {
+      "lb_method": "least-conn",
+      "server_pool_members": [],
+      "healthcheck": 452,
+      "pool_created": true,
+      "id": 123,
+      "environment": 121,
+      "port_vip_id": 5555,
+      "default_port": 80,
+      "default_limit": 0,
+      "identifier": "VIP-1_pool_80",
+      "port_vip": 80
+    },
+    {
+      "lb_method": "rrrrr",
+      "server_pool_members": [],
+      "healthcheck": 452,
+      "pool_created": false,
+      "id": 345,
+      "environment": 121,
+      "port_vip_id": 4444,
+      "default_port": 8080,
+      "default_limit": 0,
+      "identifier": "VIP-2_pool_8080",
+      "port_vip": 8080
+    }
+  ],
+  "cliente": "Usuario Interno",
+  "areanegocio": "negocio_123"
+}

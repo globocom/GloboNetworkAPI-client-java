@@ -1,0 +1,28 @@
+{
+  "rule_rollback": null,
+  "ambiente": "Homologacao BE-TESTE API",
+  "finalidade": "Homologacao",
+  "ip": 101778,
+  "filter_valid": true,
+  "filter_rollback": null,
+  "l7_filter": null,
+  "applied_l7_datetime": null,
+  "host": "teste-vip-daniel.lb.globoi.com",
+  "areanegocio": "time-evolucao",
+  "healthcheck_expect": null,
+  "rule": null,
+  "ipv6": null,
+  "rule_applied": null,
+  "cliente": "Usuario Interno",
+  "vip_ports_to_pools": [
+    {
+      "server_pool": 12464,
+      "id": null,
+      "port_vip": 80,
+      "requisicao_vip": null
+    }
+  ],
+  "id": "11019",
+  "filter_applied": null,
+  "nome_servico": "teste-vip-daniel.lb.globoi.com"
+}

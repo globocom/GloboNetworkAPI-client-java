@@ -44,9 +44,9 @@ import com.google.api.client.xml.XmlNamespaceDictionary;
 import com.google.api.client.xml.XmlObjectParser;
 
 public class HttpXMLRequestProcessor extends RequestProcessor {
-	
-	private static final Logger LOGGER = LoggerFactory.getLogger(RequestProcessor.class);
-	
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(HttpXMLRequestProcessor.class);
+
 	private static int DEFAULT_READ_TIMEOUT = 2*60000;
 	private static int DEFAULT_CONNECT_TIMEOUT = 1*60000;
 	private static int DEFAULT_NUMBER_OF_RETRIES = 0;
