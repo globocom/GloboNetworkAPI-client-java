@@ -4,11 +4,15 @@ import com.globo.globonetwork.client.api.pool.PoolTransformer;
 import com.globo.globonetwork.client.exception.GloboNetworkException;
 import com.globo.globonetwork.client.http.HttpJSONRequestProcessor;
 import com.globo.globonetwork.client.model.Pool;
+import com.globo.globonetwork.client.model.PoolOption;
 import com.globo.globonetwork.client.model.Real;
 import com.google.api.client.json.GenericJson;
+import com.google.api.client.util.ArrayMap;
 import com.newrelic.api.agent.NewRelic;
 import com.newrelic.api.agent.Trace;
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.List;
 import org.slf4j.Logger;
@@ -117,5 +121,18 @@ public class PoolAPI extends BaseJsonAPI<Pool>{
         return this.delete(ids);
     }
 
+    @Trace(dispatcher = true)
+    public List<PoolOption> listPoolOptions(Long networkEnvironmentId, String type) throws GloboNetworkException, IOException{
+        NewRelic.setTransactionName(null, "/globonetwork/pools/listPoolOptions");
 
+        String uri = "/api/pools/environment_options/?option_type=" + type + "&environment_id=" + networkEnvironmentId;
+        String output = getTransport().get(uri);
+        List<GenericJson> result = Arrays.asList(HttpJSONRequestProcessor.parse(output, GenericJson[].class));
+        List<PoolOption> poolOptions = new ArrayList<PoolOption>();
+        for(GenericJson genericJson : result){
+            ArrayMap option = (ArrayMap) genericJson.get("option");
+            poolOptions.add(new PoolOption(((BigDecimal)option.get("id")).longValue(), option.get("name").toString()));
+        }
+        return poolOptions;
+    }
 }
