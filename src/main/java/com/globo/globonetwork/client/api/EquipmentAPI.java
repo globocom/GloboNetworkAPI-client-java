@@ -30,7 +30,7 @@ public class EquipmentAPI extends BaseXmlAPI<Equipment> {
 		super(transport);
 	}
 
-	@Trace
+	@Trace(dispatcher = true)
 	public Equipment listByName(String equipmentName) throws GloboNetworkException {
 		NewRelic.setTransactionName(null, "/globonetwork/listEquipmentByName");
 
@@ -52,7 +52,7 @@ public class EquipmentAPI extends BaseXmlAPI<Equipment> {
 		}
 	}
 
-	@Trace
+	@Trace(dispatcher = true)
 	public Equipment insert(String name, Long equipmentTypeId, Long modelId, Long groupId) throws GloboNetworkException {
 		NewRelic.setTransactionName(null, "/globonetwork/insertEquipment");
 
@@ -69,14 +69,14 @@ public class EquipmentAPI extends BaseXmlAPI<Equipment> {
 		return globoNetworkRoot.getFirstObject();
 	}
 
-	@Trace
+	@Trace(dispatcher = true)
 	public void delete(Long equipmentId) throws GloboNetworkException {
 		NewRelic.setTransactionName(null, "/globonetwork/deleteEquipment");
 
 		this.delete("/equipamento/" + equipmentId + "/");
 	}
 
-	@Trace
+	@Trace(dispatcher = true)
 	public void removeIP(Long equipId, Long idIp, boolean isIpv6) throws GloboNetworkException {
 		NewRelic.setTransactionName(null, "/globonetwork/removeIpFromEquipment");
 

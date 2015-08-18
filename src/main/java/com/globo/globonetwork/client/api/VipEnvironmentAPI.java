@@ -17,7 +17,7 @@ public class VipEnvironmentAPI extends BaseXmlAPI<VipEnvironment> {
 		super(transport);
 	}
 
-	@Trace
+	@Trace(dispatcher = true)
 	public List<VipEnvironment> listAll() throws GloboNetworkException {
 		NewRelic.setTransactionName(null, "/globonetwork/listVipEnvironments");
 
@@ -32,7 +32,7 @@ public class VipEnvironmentAPI extends BaseXmlAPI<VipEnvironment> {
 	}
 
 
-	@Trace
+	@Trace(dispatcher = true)
 	public VipEnvironment search(Long environmentVipId, String finality, String client, String environment) throws GloboNetworkException {
 		NewRelic.setTransactionName(null, "/globonetwork/searchVipEnvironments");
 		

@@ -33,7 +33,7 @@ public class NetworkAPI extends BaseXmlAPI<Network> {
         super(transport);
     }
 
-    @Trace
+    @Trace(dispatcher = true)
     public Network addNetwork(Long vlanId, Long networkTypeId, Long vipEnvironmentId, boolean isIpv6) throws GloboNetworkException {
         NewRelic.setTransactionName(null, "/globonetwork/addNetwork");
 
@@ -57,7 +57,7 @@ public class NetworkAPI extends BaseXmlAPI<Network> {
         return (isIpv6 ? vlan.getIpv6Networks().get(vlan.getIpv6Networks().size() - 1) : vlan.getIpv4Networks().get(vlan.getIpv4Networks().size() - 1));
     }
 
-    @Trace
+    @Trace(dispatcher = true)
     public void createNetworks(Long networkId, Long vlanId, boolean isv6) throws GloboNetworkException {
         NewRelic.setTransactionName(null, "/globonetwork/createNetwork");
 
@@ -72,7 +72,7 @@ public class NetworkAPI extends BaseXmlAPI<Network> {
         this.getTransport().put("/network/create/", globoNetworkRoot, (isv6 ? IPv6Network.class : IPv4Network.class));
     }
 
-    @Trace
+    @Trace(dispatcher = true)
     public Network getNetwork(Long networkId, boolean isv6) throws GloboNetworkException {
         NewRelic.setTransactionName(null, "/globonetwork/getNetwork");
 

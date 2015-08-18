@@ -23,7 +23,7 @@ public class OptionVipAPI extends BaseXmlAPI<OptionVip> {
         super(transport);
     }
 
-    @Trace
+    @Trace(dispatcher = true)
     public List<OptionVip> listCacheGroups(Long envId) throws GloboNetworkException {
         NewRelic.setTransactionName(null, "/globonetwork/listCacheGroups");
 

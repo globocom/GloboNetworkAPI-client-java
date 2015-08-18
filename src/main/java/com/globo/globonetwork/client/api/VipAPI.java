@@ -47,7 +47,7 @@ public class VipAPI extends BaseXmlAPI<VipXml> {
     /**
         @see VipAPI#getByPk(Long)
      */
-    @Trace
+    @Trace(dispatcher = true)
     @Deprecated
     public Vip getById(Long vipId) throws GloboNetworkException {
         NewRelic.setTransactionName(null, "/globonetwork/getVipById");
@@ -141,7 +141,7 @@ public class VipAPI extends BaseXmlAPI<VipXml> {
     }
 
 
-    @Trace
+    @Trace(dispatcher = true)
     public List<Vip> getByIp(String ip) throws GloboNetworkException {
         NewRelic.setTransactionName(null, "/globonetwork/getVipByIp");
 
@@ -179,14 +179,14 @@ public class VipAPI extends BaseXmlAPI<VipXml> {
         return result;
     }
 
-    @Trace
+    @Trace(dispatcher = true)
     public void validate(Long vipId) throws GloboNetworkException {
         NewRelic.setTransactionName(null, "/globonetwork/validateVip");
 
         this.get("/vip/validate/" + vipId + "/");
     }
 
-    @Trace
+    @Trace(dispatcher = true)
     public Vip add(Long ipv4Id, Long ipv6Id, Long expectedHealthcheckId, String finality, String client, String environment, String cache, String balancingMethod,
             String persistence, String healthcheckType, String healthcheck, Integer timeout, String host, Integer maxConn, String businessArea, String serviceName,
             String l7Filter, List<RealIP> realsIp, List<Integer> realsPriorities, List<Integer> realsWeights, List<String> ports, Long ruleId) throws GloboNetworkException {
@@ -235,7 +235,7 @@ public class VipAPI extends BaseXmlAPI<VipXml> {
         return this.getById(vipRequest.getId());
     }
 
-    @Trace
+    @Trace(dispatcher = true)
     public void alter(Long vipId, Long ipv4Id, Long ipv6Id, Long expectedHealthcheckId, Boolean validated, Boolean created, String finality, String client, String environment, 
             String cache, String balancingMethod, String persistence, String healthcheckType, String healthcheck, Integer timeout, String host, Integer maxConn, String businessArea, String serviceName,
             String l7Filter, List<RealIP> realsIp, List<Integer> realsPriorities, List<Integer> realsWeights, List<String> ports, Long ruleId) throws GloboNetworkException {
@@ -276,7 +276,7 @@ public class VipAPI extends BaseXmlAPI<VipXml> {
         this.put("/requestvip/" + vipId + "/", payload);
     }
 
-    @Trace
+    @Trace(dispatcher = true)
     public void create(Long vipId) throws GloboNetworkException {
         NewRelic.setTransactionName(null, "/globonetwork/createVip");
 
@@ -291,7 +291,7 @@ public class VipAPI extends BaseXmlAPI<VipXml> {
     }
 
     // remove VIP from NetworkAPI DB
-    @Trace
+    @Trace(dispatcher = true)
     public void removeVip(Long vipId) throws GloboNetworkException {
         NewRelic.setTransactionName(null, "/globonetwork/deleteVip");
 
@@ -307,7 +307,7 @@ public class VipAPI extends BaseXmlAPI<VipXml> {
     }
 
     // remove VIP from network device removeScriptVip
-    @Trace
+    @Trace(dispatcher = true)
     public void removeScriptVip(Long vipId) throws GloboNetworkException {
         NewRelic.setTransactionName(null, "/globonetwork/removeVip");
 
@@ -321,70 +321,70 @@ public class VipAPI extends BaseXmlAPI<VipXml> {
         this.post("/vip/remove/", payload);
     }
 
-    @Trace
+    @Trace(dispatcher = true)
     public void addReal(Long vipId, Long ipId, Long equipId, Integer vipPort, Integer realPort) throws GloboNetworkException {
         NewRelic.setTransactionName(null, "/globonetwork/addReal");
 
         this.performRealOperation(vipId, ipId, equipId, vipPort, realPort, "add", "v4");
     }
 
-    @Trace
+    @Trace(dispatcher = true)
     public void enableReal(Long vipId, Long ipId, Long equipId, Integer vipPort, Integer realPort) throws GloboNetworkException {
         NewRelic.setTransactionName(null, "/globonetwork/enableReal");
 
         this.performRealOperation(vipId, ipId, equipId, vipPort, realPort, "ena", "v4");
     }
 
-    @Trace
+    @Trace(dispatcher = true)
     public void disableReal(Long vipId, Long ipId, Long equipId, Integer vipPort, Integer realPort) throws GloboNetworkException {
         NewRelic.setTransactionName(null, "/globonetwork/disableReal");
 
         this.performRealOperation(vipId, ipId, equipId, vipPort, realPort, "dis", "v4");
     }
 
-    @Trace
+    @Trace(dispatcher = true)
     public void checkReal(Long vipId, Long ipId, Long equipId, Integer vipPort, Integer realPort) throws GloboNetworkException {
         NewRelic.setTransactionName(null, "/globonetwork/checkReal");
 
         this.performRealOperation(vipId, ipId, equipId, vipPort, realPort, "chk", "v4");
     }
 
-    @Trace
+    @Trace(dispatcher = true)
     public void removeReal(Long vipId, Long ipId, Long equipId, Integer vipPort, Integer realPort) throws GloboNetworkException {
         NewRelic.setTransactionName(null, "/globonetwork/removeReal");
 
         this.performRealOperation(vipId, ipId, equipId, vipPort, realPort, "del", "v4");
     }
 
-    @Trace
+    @Trace(dispatcher = true)
     public void addRealIpv6(Long vipId, Long ipId, Long equipId, Integer vipPort, Integer realPort) throws GloboNetworkException {
         NewRelic.setTransactionName(null, "/globonetwork/addRealIpv6");
 
         this.performRealOperation(vipId, ipId, equipId, vipPort, realPort, "add", "v6");
     }
 
-    @Trace
+    @Trace(dispatcher = true)
     public void enableRealIpv6(Long vipId, Long ipId, Long equipId, Integer vipPort, Integer realPort) throws GloboNetworkException {
         NewRelic.setTransactionName(null, "/globonetwork/enableRealIpv6");
 
         this.performRealOperation(vipId, ipId, equipId, vipPort, realPort, "ena", "v6");
     }
 
-    @Trace
+    @Trace(dispatcher = true)
     public void disableRealIpv6(Long vipId, Long ipId, Long equipId, Integer vipPort, Integer realPort) throws GloboNetworkException {
         NewRelic.setTransactionName(null, "/globonetwork/disableRealIpv6");
 
         this.performRealOperation(vipId, ipId, equipId, vipPort, realPort, "dis", "v6");
     }
 
-    @Trace
+    @Trace(dispatcher = true)
     public void checkRealIpv6(Long vipId, Long ipId, Long equipId, Integer vipPort, Integer realPort) throws GloboNetworkException {
         NewRelic.setTransactionName(null, "/globonetwork/checkRealIpv6");
 
         this.performRealOperation(vipId, ipId, equipId, vipPort, realPort, "chk", "v6");
     }
 
-    @Trace
+    @Trace(dispatcher = true)
     public void removeRealIpv6(Long vipId, Long ipId, Long equipId, Integer vipPort, Integer realPort) throws GloboNetworkException {
         NewRelic.setTransactionName(null, "/globonetwork/removeRealIpv6");
 
@@ -408,7 +408,7 @@ public class VipAPI extends BaseXmlAPI<VipXml> {
         this.post("/vip/real/", payload);
     }
 
-    @Trace
+    @Trace(dispatcher = true)
     public void alterHealthcheck(Long vipId, String healthcheckType, String healthcheck, Long expectedHealthcheckId) throws GloboNetworkException {
         NewRelic.setTransactionName(null, "/globonetwork/alterHealthcheck");
 
@@ -424,7 +424,7 @@ public class VipAPI extends BaseXmlAPI<VipXml> {
         this.put("/vip/" + vipId + "/healthcheck/", payload);
     }
 
-    @Trace
+    @Trace(dispatcher = true)
     public void alterPersistence(Long vipId, String persistence) throws GloboNetworkException {
         NewRelic.setTransactionName(null, "/globonetwork/alterPersistence");
 

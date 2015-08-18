@@ -34,7 +34,7 @@ public class VlanAPI extends BaseXmlAPI<Vlan> {
 		super(transport);
 	}
 
-	@Trace
+	@Trace(dispatcher = true)
 	public List<Vlan> listByEnvironment(Long environmentId) throws GloboNetworkException {
 		NewRelic.setTransactionName(null, "/globonetwork/listVlanByEnvironment");
 
@@ -48,7 +48,7 @@ public class VlanAPI extends BaseXmlAPI<Vlan> {
 		return globoNetworkRoot.getObjectList();
 	}
 
-	@Trace
+	@Trace(dispatcher = true)
 	public Vlan allocateWithoutNetwork(Long environmentId, String name, String description) throws GloboNetworkException {
 		NewRelic.setTransactionName(null, "/globonetwork/allocateVlanWithoutNetwork");
 
@@ -76,7 +76,7 @@ public class VlanAPI extends BaseXmlAPI<Vlan> {
 		}
 	}
 
-	@Trace
+	@Trace(dispatcher = true)
 	public Vlan getById(Long vlanId) throws GloboNetworkException {
 		NewRelic.setTransactionName(null, "/globonetwork/getVlanById");
 
@@ -103,14 +103,14 @@ public class VlanAPI extends BaseXmlAPI<Vlan> {
 		}
 	}
 
-	@Trace
+	@Trace(dispatcher = true)
 	public void remove(Long vlanId) throws GloboNetworkException {
 		NewRelic.setTransactionName(null, "/globonetwork/removeVlan");
 
 		this.delete("/vlan/" + vlanId + "/remove/");
 	}
 
-	@Trace
+	@Trace(dispatcher = true)
 	public void deallocate(Long vlanId) throws GloboNetworkException {
 		NewRelic.setTransactionName(null, "/globonetwork/deallocateVlan");
 

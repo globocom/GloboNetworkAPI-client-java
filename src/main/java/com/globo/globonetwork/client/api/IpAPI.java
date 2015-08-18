@@ -37,7 +37,7 @@ public class IpAPI extends BaseXmlAPI<Ip> {
 		super(transport);
 	}
 
-	@Trace
+	@Trace(dispatcher = true)
 	public Ip getIp(Long idIp, Boolean isIpv6)  throws GloboNetworkException {
 		NewRelic.setTransactionName(null, "/globonetwork/getIp");
 
@@ -57,7 +57,7 @@ public class IpAPI extends BaseXmlAPI<Ip> {
 		return ip;
 	}
 
-	@Trace
+	@Trace(dispatcher = true)
 	public Ip findByIpAndEnvironment(String ip, Long idEnvironment, Boolean isIpv6) throws GloboNetworkException {
 		NewRelic.setTransactionName(null, "/globonetwork/findByIpAndEnvironment");
 
@@ -108,7 +108,7 @@ public class IpAPI extends BaseXmlAPI<Ip> {
 		return globoNetworkRoot.getFirstObject();
 	}
 
-	@Trace
+	@Trace(dispatcher = true)
 	public Ip saveIp(String ipAddress, Long equipId, String nicDescription, Long networkId, Boolean isIpv6) throws GloboNetworkException {
 		NewRelic.setTransactionName(null, "/globonetwork/findByIpAndEnvironment");
 
@@ -134,7 +134,7 @@ public class IpAPI extends BaseXmlAPI<Ip> {
 		return globoNetworkRoot.getFirstObject(); 
 	}
 
-	@Trace
+	@Trace(dispatcher = true)
 	public void deleteIp(Long idIp, Boolean isIpv6) throws GloboNetworkException {
 		NewRelic.setTransactionName(null, "/globonetwork/deleteIp");
 
@@ -142,7 +142,7 @@ public class IpAPI extends BaseXmlAPI<Ip> {
 		this.getTransport().get(uri, GenericXml.class);
 	}
 
-	@Trace
+	@Trace(dispatcher = true)
 	public void assocIp(Long idIp, Long equipId, Long networkId, Boolean isIpv6) throws GloboNetworkException {
 		NewRelic.setTransactionName(null, "/globonetwork/assocIp");
 
@@ -159,7 +159,7 @@ public class IpAPI extends BaseXmlAPI<Ip> {
 		this.getTransport().post(uri, globoNetworkRootPayload, isIpv6 ? Ipv6.class : Ipv4.class);
 	}
 
-	@Trace
+	@Trace(dispatcher = true)
 	public List<Ip> findIpsByEquipment(Long equipId) throws GloboNetworkException {
 		NewRelic.setTransactionName(null, "/globonetwork/findIpsByEquipment");
 
@@ -226,7 +226,7 @@ public class IpAPI extends BaseXmlAPI<Ip> {
 		return ips;
 	}
 
-    @Trace
+    @Trace(dispatcher = true)
     public Ip getAvailableIpForVip(long environmentVip, String name, Boolean isIpv6) throws GloboNetworkException {
 		NewRelic.setTransactionName(null, "/globonetwork/getAvailableIpForVip");
 
@@ -257,7 +257,7 @@ public class IpAPI extends BaseXmlAPI<Ip> {
      * @return
      * @throws GloboNetworkException
      */
-	@Trace
+	@Trace(dispatcher = true)
     public Ip checkVipIp(String ip, long environmentVipId, Boolean isIpv6) throws GloboNetworkException {
 		NewRelic.setTransactionName(null, "/globonetwork/checkVipIp");
 

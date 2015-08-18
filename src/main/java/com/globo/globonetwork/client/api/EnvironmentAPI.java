@@ -32,7 +32,7 @@ public class EnvironmentAPI extends BaseXmlAPI<Environment> {
 		super(transport);
 	}
 
-	@Trace
+	@Trace(dispatcher = true)
 	public List<Environment> listAll() throws GloboNetworkException {
 		NewRelic.setTransactionName(null, "/globonetwork/listEnvironments");
 
