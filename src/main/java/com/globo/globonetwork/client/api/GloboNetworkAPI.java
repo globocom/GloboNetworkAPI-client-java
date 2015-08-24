@@ -30,6 +30,10 @@ public class GloboNetworkAPI {
         return new NetworkAPI(xmlAPI);
     }
 
+    public NetworkJsonAPI getNetworkJsonAPI() {
+        return new NetworkJsonAPI(jsonAPI);
+    }
+
     public EnvironmentAPI getEnvironmentAPI() {
         return new EnvironmentAPI(xmlAPI);
     }
