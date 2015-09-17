@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import sun.net.www.content.text.Generic;
 
 public class PoolAPI extends BaseJsonAPI<Pool>{
     private static final Logger LOGGER = LoggerFactory.getLogger(PoolAPI.class);
@@ -64,20 +65,6 @@ public class PoolAPI extends BaseJsonAPI<Pool>{
         }
     }
 
-    @Trace(dispatcher = true)
-    public List<Pool> listByEnvVip(Long envVipId) throws GloboNetworkException {
-        NewRelic.setTransactionName(null, "/globonetwork/pools/listByEnvVip");
-
-        try {
-            String uri = "/api/pools/list/by/environment/vip/" + envVipId.toString() + "/";
-            String result = getTransport().get(uri);
-
-            Pool.PoolList list = HttpJSONRequestProcessor.parse(result, Pool.PoolList.class);
-            return list;
-        }catch (IOException e) {
-            throw new GloboNetworkException("GloboNetworkAPI error parse: " + e.getMessage(), e);
-        }
-    }
 
     @Trace(dispatcher = true)
     public GenericJson remove(List<Long> ids) throws GloboNetworkException {
@@ -134,5 +121,24 @@ public class PoolAPI extends BaseJsonAPI<Pool>{
             poolOptions.add(new PoolOption(((BigDecimal)option.get("id")).longValue(), option.get("name").toString()));
         }
         return poolOptions;
+    }
+
+    @Trace(dispatcher = true)
+    public List<Pool> listAllByReqVip(Long idVip) throws GloboNetworkException {
+        NewRelic.setTransactionName(null, "/globonetwork/pools/poolListByReqVip");
+
+        try {
+            String uri = "/api/pools/pool_list_by_reqvip/";
+
+            GenericJson data = new GenericJson();
+            data.set("id_vip", idVip);
+
+            String result = getTransport().post(uri, data);
+            Pool.PoolList poolList = HttpJSONRequestProcessor.parse(result, Pool.PoolList.class);
+
+            return poolList.getPools();
+        } catch (Exception e) {
+            throw new GloboNetworkException("Error trying to list pools in networkApi. cause: " + e.getMessage(), e);
+        }
     }
 }

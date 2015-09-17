@@ -2,6 +2,7 @@ package com.globo.globonetwork.client.http;
 
 import com.globo.globonetwork.client.exception.GloboNetworkErrorCodeException;
 import com.globo.globonetwork.client.exception.GloboNetworkException;
+import com.globo.globonetwork.client.model.Pool;
 import com.google.api.client.http.GenericUrl;
 import com.google.api.client.http.HttpContent;
 import com.google.api.client.http.HttpRequest;
@@ -16,9 +17,14 @@ import com.google.api.client.json.GenericJson;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.JsonObjectParser;
 import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.client.util.ArrayMap;
+import com.google.api.client.util.Key;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.math.BigDecimal;
 import java.nio.charset.Charset;
 import java.util.Date;
 import java.util.List;
@@ -164,6 +170,18 @@ public class HttpJSONRequestProcessor {
         }
     }
 
+    public String post(String suffixUrl, Object payload) throws GloboNetworkException {
+        try {
+            GenericUrl url = buildUrl(suffixUrl);
+            HttpRequest request = this.buildRequest("POST", url, payload);
+            HttpResponse response = this.performRequest(request);
+
+            return response.parseAsString();
+        } catch (IOException e) {
+            throw new GloboNetworkException("IOError: " + e, e);
+        }
+    }
+
     public <T extends GenericJson> GenericJson post(String suffixUrl, Object payload, Class<T> dataType) throws GloboNetworkException {
         try {
             GenericUrl url = buildUrl(suffixUrl);
@@ -250,6 +268,27 @@ public class HttpJSONRequestProcessor {
         return new JsonObjectParser(jsonFactory).parseAndClose(stream, DEFAULT_CHARSET, dataType);
     }
 
+    public static <T extends GenericJson> void fillFieldsObject(Class clazz, T obj, ArrayMap json) {
+        for (Field field : clazz.getDeclaredFields()) {
+            try {
+                String name = field.getName();
+                String keyValue = clazz.getDeclaredField(name).getAnnotation(Key.class).value();
+                String setName = "set" + name.substring(0,1).toUpperCase() + name.substring(1);
+                Method method = clazz.getDeclaredMethod(setName, field.getType());
+                Object value = json.get(keyValue);
+                if ( value  != null){
+                    if ( value instanceof BigDecimal) {
+                        value = Long.valueOf(value.toString());
+                    } else if ( !(value instanceof String || value instanceof Integer || value instanceof Long) ) {
+                        value = null;
+                    }
+                    method.invoke(obj,  value);
+                }
+            } catch (Exception e) {
+                throw new RuntimeException("error get field= " + field.getName() + " in json: " + json.toString() , e);
+            }
+        }
+    }
 
     public String getUsername() {
         return username;

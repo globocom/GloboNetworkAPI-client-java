@@ -1,0 +1,39 @@
+{
+  "pools": [
+    {
+      "lb_method": "least-conn",
+      "healthcheck": {
+        "healthcheck_type": "HTTP",
+        "destination": "*:*",
+        "healthcheck_expect": "200 OK",
+        "identifier": "",
+        "id": 383,
+        "healthcheck_request": "GET /healthcheck.html"
+      },
+      "pool_created": true,
+      "environment": "FE_BE",
+      "maxcom": 0,
+      "default_port": 80,
+      "identifier": "VIP_pool_80",
+      "id": 11
+    },
+    {
+      "lb_method": "least-conn",
+      "healthcheck": {
+        "healthcheck_type": "TCP",
+        "destination": "*:*",
+        "healthcheck_expect": null,
+        "identifier": "",
+        "id": 383,
+        "healthcheck_request": ""
+      },
+      "pool_created": true,
+      "environment": "FE_BALANCER",
+      "maxcom": 0,
+      "default_port": 8080,
+      "identifier": "VIP_pool_8080",
+      "id": 12
+    }
+  ],
+  "total": 2
+}

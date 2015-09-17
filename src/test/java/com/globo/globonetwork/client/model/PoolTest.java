@@ -10,7 +10,7 @@ import org.junit.Test;
 public class PoolTest extends TestCase {
 
 
-    public static final String POOL_LIST_BY_ENV_VIP_JSON = "pool_listByEnvVip.json";
+    public static final String POOL_LIST_ALL_BY_VIP_JSON = "pool_listAllByReq.json";
 
     @Before
     public void setUp() {
@@ -19,26 +19,38 @@ public class PoolTest extends TestCase {
 
     @Test
     public void testListByEnvVipId() throws IOException {
-        InputStream jsonStream = getSample(POOL_LIST_BY_ENV_VIP_JSON);
+        InputStream jsonStream = getSample(POOL_LIST_ALL_BY_VIP_JSON);
 
         Pool.PoolList pools = HttpJSONRequestProcessor.parse(jsonStream, Pool.PoolList.class);
-        assertEquals(2, pools.size());
+        assertEquals(2, pools.getPools().size());
 
-        Pool serverPool1 = pools.get(0);
-        assertEquals((Long)11111l, serverPool1.getId());
-        assertEquals("DANIEL", serverPool1.getIdentifier());
+        Pool serverPool1 = pools.getPools().get(0);
+        assertEquals((Long)11l, serverPool1.getId());
+        assertEquals("VIP_pool_80", serverPool1.getIdentifier());
         assertEquals(80, serverPool1.getDefaultPort());
-        assertEquals(false, serverPool1.isPoolCreated());
-        assertEquals((Long)121l, serverPool1.getEnvironment());
-        assertEquals((Long)33l, serverPool1.getHealthcheck());
+        assertEquals(true, serverPool1.isPoolCreated());
+        assertEquals("FE_BE", serverPool1.getEnvironment().getName());
 
-        Pool serverPool2 = pools.get(1);
-        assertEquals((Long)22222l, serverPool2.getId());
-        assertEquals("DANIEL_2", serverPool2.getIdentifier());
-        assertEquals(81, serverPool2.getDefaultPort());
+        Pool.Healthcheck healthcheck = serverPool1.getHealthcheck();
+
+        assertEquals("*:*", healthcheck.getDestination());
+        assertEquals("GET /healthcheck.html", healthcheck.getHealthcheckRequest());
+        assertEquals("HTTP", healthcheck.getHealthcheckType());
+        assertEquals("200 OK", healthcheck.getExpectedHealthcheck());
+
+        Pool serverPool2 = pools.getPools().get(1);
+        assertEquals((Long)12l, serverPool2.getId());
+        assertEquals("VIP_pool_8080", serverPool2.getIdentifier());
+        assertEquals(8080, serverPool2.getDefaultPort());
         assertEquals(true, serverPool2.isPoolCreated());
-        assertEquals((Long)121l, serverPool2.getEnvironment());
-        assertEquals((Long)43l, serverPool2.getHealthcheck());
+        assertEquals("FE_BALANCER", serverPool2.getEnvironment().getName());
+
+        Pool.Healthcheck healthcheck2 = serverPool2.getHealthcheck();
+
+        assertEquals("*:*", healthcheck2.getDestination());
+        assertEquals("", healthcheck2.getHealthcheckRequest());
+        assertEquals("TCP", healthcheck2.getHealthcheckType());
+        assertEquals(null, healthcheck2.getExpectedHealthcheck());
     }
 
 
