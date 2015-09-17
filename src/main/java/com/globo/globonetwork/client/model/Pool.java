@@ -4,13 +4,8 @@ import com.globo.globonetwork.client.http.HttpJSONRequestProcessor;
 import com.google.api.client.json.GenericJson;
 import com.google.api.client.util.ArrayMap;
 import com.google.api.client.util.Key;
-import java.lang.reflect.Array;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
-import sun.jvm.hotspot.HelloWorld;
 
 public class Pool extends GenericJson {
 
