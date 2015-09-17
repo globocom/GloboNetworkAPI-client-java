@@ -29,6 +29,7 @@ public class PoolTest extends TestCase {
         assertEquals("VIP_pool_80", serverPool1.getIdentifier());
         assertEquals(80, serverPool1.getDefaultPort());
         assertEquals(true, serverPool1.isPoolCreated());
+        assertEquals((Integer) 0, serverPool1.getMaxconn());
         assertEquals("FE_BE", serverPool1.getEnvironment().getName());
 
         Pool.Healthcheck healthcheck = serverPool1.getHealthcheck();
@@ -43,6 +44,7 @@ public class PoolTest extends TestCase {
         assertEquals("VIP_pool_8080", serverPool2.getIdentifier());
         assertEquals(8080, serverPool2.getDefaultPort());
         assertEquals(true, serverPool2.isPoolCreated());
+        assertEquals((Integer)3, serverPool2.getMaxconn());
         assertEquals("FE_BALANCER", serverPool2.getEnvironment().getName());
 
         Pool.Healthcheck healthcheck2 = serverPool2.getHealthcheck();

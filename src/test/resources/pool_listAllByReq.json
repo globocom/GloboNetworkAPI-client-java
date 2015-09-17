@@ -29,7 +29,7 @@
       },
       "pool_created": true,
       "environment": "FE_BALANCER",
-      "maxcom": 0,
+      "maxcom": 3,
       "default_port": 8080,
       "identifier": "VIP_pool_8080",
       "id": 12
