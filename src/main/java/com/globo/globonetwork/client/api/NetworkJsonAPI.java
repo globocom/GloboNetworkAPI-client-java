@@ -18,6 +18,7 @@ package com.globo.globonetwork.client.api;
 
 import com.globo.globonetwork.client.exception.GloboNetworkException;
 import com.globo.globonetwork.client.http.HttpJSONRequestProcessor;
+import com.globo.globonetwork.client.model.IPv6Network;
 import com.globo.globonetwork.client.model.IPv4Network;
 import com.globo.globonetwork.client.model.Network;
 import com.google.api.client.json.GenericJson;
@@ -74,5 +75,12 @@ public class NetworkJsonAPI extends BaseJsonAPI<Network> {
         }
 
         return networks;
+    }
+
+    @Trace(dispatcher = true)
+    public void createNetworks(Long networkId, boolean isv6) throws GloboNetworkException {
+        NewRelic.setTransactionName(null, "/globonetwork/createNetwork");
+        String uriPrefix = isv6 ? "/api/networkv6/" : "/api/networkv4/";
+        getTransport().post(uriPrefix + networkId + "/equipments/", null);
     }
 }
