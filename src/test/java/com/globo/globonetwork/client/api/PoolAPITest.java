@@ -95,7 +95,7 @@ public class PoolAPITest extends TestCase {
         assertEquals(8080, pool.getDefaultPort());
         assertEquals("least-conn", pool.getLbMethod());
         assertTrue(pool.isPoolCreated());
-        assertEquals(90, pool.getDefaultLimit());
+        assertEquals((Integer)90, pool.getMaxconn());
 
         Pool.Healthcheck healthcheck = pool.getHealthcheck();
         assertEquals((Long)1l, healthcheck.getId());

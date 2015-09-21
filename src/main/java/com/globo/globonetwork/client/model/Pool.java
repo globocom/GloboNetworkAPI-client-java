@@ -19,7 +19,7 @@ public class Pool extends GenericJson {
     private int defaultPort;
 
     @Key("default_limit")
-    private int defaultLimit;
+    private Integer defaultLimit;
 
     @Key("identifier")
     private String identifier;
@@ -43,6 +43,9 @@ public class Pool extends GenericJson {
     }
 
     public Integer getMaxconn() {
+        if ( maxconn == null && defaultLimit != null ){
+            return this.defaultLimit;
+        }
         return maxconn;
     }
 
