@@ -240,6 +240,19 @@ public class Pool extends GenericJson {
             this.destination = destination;
         }
     }
+    public static class PoolResponse extends GenericJson {
+        @Key("server_pool")
+        private Pool pool;
+
+        public Pool getPool() {
+            return pool;
+        }
+
+        public void setPool(Pool pool) {
+            this.pool = pool;
+        }
+    }
+
 
     public static class PoolSave extends GenericJson {
         @Key("server_pool")
