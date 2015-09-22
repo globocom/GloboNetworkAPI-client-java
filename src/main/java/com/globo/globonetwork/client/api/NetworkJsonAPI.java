@@ -83,4 +83,11 @@ public class NetworkJsonAPI extends BaseJsonAPI<Network> {
         String uriPrefix = isv6 ? "/api/networkv6/" : "/api/networkv4/";
         getTransport().post(uriPrefix + networkId + "/equipments/", null);
     }
+
+    @Trace
+    public void removeNetwork(Long networkId, boolean isv6) throws GloboNetworkException {
+        NewRelic.setTransactionName(null, "/globonetwork/removeNetwork");
+        String uriPrefix = isv6 ? "/api/networkv6/" : "/api/networkv4/";
+        getTransport().delete(uriPrefix + networkId + "/equipments/", GenericJson.class);
+    }
 }
