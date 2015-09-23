@@ -50,16 +50,16 @@ public class PoolAPI extends BaseJsonAPI<Pool>{
     }
 
     @Trace(dispatcher = true)
-    public Pool getByPk(Long id) throws GloboNetworkException {
+    public Pool.PoolResponse getByPk(Long id) throws GloboNetworkException {
         NewRelic.setTransactionName(null, "/globonetwork/pools/getByPk");
 
         try {
             String uri = "/api/pools/getbypk/" + id.toString() + "/";
             String result = getTransport().get(uri);
 
-            Pool pool = HttpJSONRequestProcessor.parse(result, Pool.PoolResponse.class).getPool();
+            Pool.PoolResponse poolResponse = HttpJSONRequestProcessor.parse(result, Pool.PoolResponse.class);
 
-            return pool;
+            return poolResponse;
         }catch (IOException e) {
             throw new GloboNetworkException("GloboNetworkAPI error parse: " + e.getMessage(), e);
         }

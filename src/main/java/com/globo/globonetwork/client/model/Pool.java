@@ -27,19 +27,22 @@ public class Pool extends GenericJson {
     @Key("pool_created")
     private Boolean poolCreated;
 
-    private Environment environment;
-
-
-    private Healthcheck healthcheck;
+    @Key("servicedownaction")
+    private ServiceDownAction serviceDownAction;
 
     @Key("maxcom")
     private Integer maxconn;
 
-    public Pool(Long id) {
-        this.id = id;
-    }
+    private Environment environment;
+    private Healthcheck healthcheck;
+
     public Pool() {
 
+    }
+
+
+    public Pool(Long id) {
+        this.id = id;
     }
 
     public Integer getMaxconn() {
@@ -109,6 +112,18 @@ public class Pool extends GenericJson {
         this.poolCreated = poolCreated;
     }
 
+    public void setDefaultLimit(Integer defaultLimit) {
+        this.defaultLimit = defaultLimit;
+    }
+
+    public ServiceDownAction getServiceDownAction() {
+        return serviceDownAction;
+    }
+
+    public void setServiceDownAction(ServiceDownAction serviceDownAction) {
+        this.serviceDownAction = serviceDownAction;
+    }
+
     public Environment getEnvironment() {
         if ( environment == null ) {
             this.environment = new Environment();
@@ -168,6 +183,7 @@ public class Pool extends GenericJson {
         @Key("id")
         private Long id;
 
+        @Key("name")
         private String name;
 
         public Long getId() {
@@ -247,6 +263,9 @@ public class Pool extends GenericJson {
         @Key("server_pool")
         private Pool pool;
 
+        @Key("server_pool_members")
+        private List<PoolMember> poolMembers;
+
         public Pool getPool() {
             return pool;
         }
@@ -254,8 +273,166 @@ public class Pool extends GenericJson {
         public void setPool(Pool pool) {
             this.pool = pool;
         }
+
+        public List<PoolMember> getPoolMembers() {
+            return poolMembers;
+        }
+
+        public void setPoolMembers(List<PoolMember> poolMembers) {
+            this.poolMembers = poolMembers;
+        }
     }
 
+    public static class PoolMember extends GenericJson {
+        @Key("id")
+        private Long id;
+
+        @Key("port_real")
+        private Integer portReal;
+
+        @Key("weight")
+        private Integer weight;
+
+        @Key("priority")
+        private Integer priority;
+
+        @Key("equipment_name")
+        private String equipmentName;
+
+        @Key("equipment_id")
+        private Long equipmentId;
+
+        @Key("ip")
+        private Ip ip;
+
+
+        public Integer getWeight() {
+            return weight;
+        }
+
+        public void setWeight(Integer weight) {
+            this.weight = weight;
+        }
+
+        public Integer getPriority() {
+            return priority;
+        }
+
+        public void setPriority(Integer priority) {
+            this.priority = priority;
+        }
+
+        public Ip getIp() {
+            return ip;
+        }
+
+        public void setIp(Ip ip) {
+            this.ip = ip;
+        }
+
+        public Long getId() {
+            return id;
+        }
+
+        public void setId(Long id) {
+            this.id = id;
+        }
+
+        public Integer getPortReal() {
+            return portReal;
+        }
+
+        public void setPortReal(Integer portReal) {
+            this.portReal = portReal;
+        }
+
+        public String getEquipmentName() {
+            return equipmentName;
+        }
+
+        public void setEquipmentName(String equipmentName) {
+            this.equipmentName = equipmentName;
+        }
+
+        public Long getEquipmentId() {
+            return equipmentId;
+        }
+
+        public void setEquipmentId(Long equipmentId) {
+            this.equipmentId = equipmentId;
+        }
+
+        public String getIpFormated() {
+            if (ip != null ) {
+                return ip.getIpFormated();
+            }
+            return null;
+        }
+
+        public Long getIpId() {
+            if (ip != null ) {
+                return ip.getId();
+            }
+            return null;
+        }
+
+    }
+    public static class ServiceDownAction extends GenericJson {
+        @Key("id")
+        private Long id;
+        @Key("type")
+        private String type;
+        @Key("name")
+        private String name;
+
+        public Long getId() {
+            return id;
+        }
+
+        public void setId(Long id) {
+            this.id = id;
+        }
+
+        public String getType() {
+            return type;
+        }
+
+        public void setType(String type) {
+            this.type = type;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+    }
+
+    public static class Ip extends GenericJson {
+        @Key("id")
+        private Long id;
+
+        @Key("ip_formated")
+        private String ipFormated;
+
+        public String getIpFormated() {
+            return ipFormated;
+        }
+
+        public void setIpFormated(String ipFormated) {
+            this.ipFormated = ipFormated;
+        }
+
+        public Long getId() {
+            return id;
+        }
+
+        public void setId(Long id) {
+            this.id = id;
+        }
+    }
 
     public static class PoolSave extends GenericJson {
         @Key("server_pool")

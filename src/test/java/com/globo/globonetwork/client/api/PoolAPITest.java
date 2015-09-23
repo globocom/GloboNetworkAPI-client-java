@@ -88,20 +88,20 @@ public class PoolAPITest extends TestCase {
 
         PoolAPI api = new PoolAPI(mock);
 
-        Pool pool = api.getByPk(123l);
+        Pool pool = api.getByPk(123l).getPool();
 
         assertNotNull(pool);
-        assertEquals((Long)119999l, pool.getId());
+        assertEquals((Long)171l, pool.getId());
         assertEquals(8080, pool.getDefaultPort());
         assertEquals("least-conn", pool.getLbMethod());
         assertTrue(pool.isPoolCreated());
-        assertEquals((Integer)90, pool.getMaxconn());
+        assertEquals((Integer)8, pool.getMaxconn());
 
         Pool.Healthcheck healthcheck = pool.getHealthcheck();
-        assertEquals((Long)1l, healthcheck.getId());
+        assertEquals((Long)101l, healthcheck.getId());
         assertEquals("HTTP", healthcheck.getHealthcheckType());
-        assertEquals("/health", healthcheck.getHealthcheckRequest());
-        assertEquals("OK", healthcheck.getExpectedHealthcheck());
+        assertEquals("GET /heal.html", healthcheck.getHealthcheckRequest());
+        assertEquals("WORKING", healthcheck.getExpectedHealthcheck());
         assertEquals("*:*", healthcheck.getDestination());
     }
 
@@ -120,7 +120,7 @@ public class PoolAPITest extends TestCase {
 
         try {
 
-            Pool pool = api.getByPk(123l);
+            Pool pool = api.getByPk(123l).getPool();
             fail("should be failed");
         } catch (GloboNetworkErrorCodeException e) {
             assertEquals(404, e.getCode());

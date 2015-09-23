@@ -1,76 +1,77 @@
 {
-  "default_limit" : 0,
-  "default_port" : 0,
-  "server_pool" : {
-    "id" : 119999,
-    "identifier" : "teste_marcus",
-    "default_port" : 8080,
-    "default_limit" : 90,
-    "healthcheck" : {
-      "id" : 1,
-      "identifier" : "",
-      "healthcheck_type" : "HTTP",
-      "healthcheck_request" : "/health",
-      "healthcheck_expect" : "OK",
-      "destination" : "*:*"
+  "server_pool": {
+    "lb_method": "least-conn",
+    "healthcheck": {
+      "healthcheck_type": "HTTP",
+      "destination": "*:*",
+      "healthcheck_expect": "WORKING",
+      "identifier": "",
+      "id": 101,
+      "healthcheck_request": "GET /heal.html"
     },
-    "servicedownaction" : {
-      "id" : 5,
-      "type" : "ServiceDownAction",
-      "name" : "none"
+    "pool_created": true,
+    "environment": {
+      "ipv6_template": null,
+      "divisao_dc": 1,
+      "ipv4_template": null,
+      "ambiente_logico": 93,
+      "filter": null,
+      "min_num_vlan_1": null,
+      "min_num_vlan_2": null,
+      "link": null,
+      "vrf": null,
+      "acl_path": null,
+      "max_num_vlan_1": null,
+      "max_num_vlan_2": null,
+      "id": 2009,
+      "grupo_l3": 52
     },
-    "environment" : {
-      "id" : 121,
-      "grupo_l3" : 52,
-      "ambiente_logico" : 93,
-      "divisao_dc" : 1,
-      "filter" : null,
-      "acl_path" : null,
-      "ipv4_template" : null,
-      "ipv6_template" : null,
-      "link" : null,
-      "min_num_vlan_1" : null,
-      "max_num_vlan_1" : null,
-      "min_num_vlan_2" : null,
-      "max_num_vlan_2" : null,
-      "vrf" : null
+    "servicedownaction": {
+      "type": "ServiceDownAction",
+      "id": 5,
+      "name": "none"
     },
-    "pool_created" : true,
-    "lb_method" : "least-conn"
+    "default_port": 8080,
+    "default_limit": 8,
+    "identifier": "ACS_POOL_1",
+    "id": 171
   },
-  "server_pool_members" : [ {
-    "id" : 21169,
-    "server_pool" : {
-      "id" : 11900,
-      "identifier" : "teste_marcus",
-      "healthcheck" : 1,
-      "servicedownaction" : 5,
-      "default_port" : 8080,
-      "default_limit" : 0,
-      "pool_created" : true,
-      "environment" : 121,
-      "lb_method" : "least-conn"
-    },
-    "identifier" : "L-BA293F93-F0A5-4034-9376-D3CE6F6AE169",
-    "ipv6" : null,
-    "ip" : {
-      "ip_formated" : "10.170.11.6",
-      "id" : 55423,
-      "oct4" : 6,
-      "oct3" : 11,
-      "oct2" : 170,
-      "oct1" : 10,
-      "descricao" : null,
-      "networkipv4" : 4484
-    },
-    "priority" : 0,
-    "weight" : 0,
-    "limit" : 500,
-    "port_real" : 8080,
-    "healthcheck" : null,
-    "member_status" : 1,
-    "last_status_update" : "2015-06-17T10:43:24",
-    "last_status_update_formated" : "17/06/2015 10:43:24",
-    "equipment_name" : "L-BA293F93-F0A5-4034-9376-D3CE6F6AE169"
-  } ]
+  "server_pool_members": [
+    {
+      "port_real": 8080,
+      "last_status_update_formated": null,
+      "weight": 23,
+      "last_status_update": null,
+      "ip": {
+        "oct4": 212,
+        "oct2": 170,
+        "oct3": 0,
+        "oct1": 10,
+        "ip_formated": "10.1.1.1",
+        "networkipv4": 16660,
+        "id": 1001,
+        "descricao": null
+      },
+      "equipment_name": "VM_EQP_NAME",
+      "equipment_id": 159,
+      "server_pool": {
+        "lb_method": "least-conn",
+        "healthcheck": 674,
+        "pool_created": true,
+        "environment": 121,
+        "servicedownaction": 5,
+        "default_port": 8080,
+        "default_limit": 0,
+        "identifier": "ACS_POOL_lucaslbpool.globoi.com_1442953997316",
+        "id": 12915
+      },
+      "priority": 9,
+      "healthcheck": null,
+      "limit": 0,
+      "member_status": 0,
+      "ipv6": null,
+      "identifier": "VM-0ED2B041-08C8-4575-BE74-B511209BDC3B",
+      "id": 131313
+    }
+  ]
 }
