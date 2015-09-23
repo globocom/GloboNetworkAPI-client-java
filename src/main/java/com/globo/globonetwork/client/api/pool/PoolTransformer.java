@@ -30,10 +30,10 @@ public class PoolTransformer {
         serverPool.set("healthcheck_type", healthcheckType);
         serverPool.set("healthcheck_expect", healthcheckExpect);
         serverPool.set("healthcheck_request", healthcheckRequest);
-        if(healthcheckDestination != null){
-            serverPool.set("healthcheck_destination", "*:" + healthcheckDestination);
-        }else{
+        if(healthcheckDestination == null || healthcheckDestination.equals("*:*")){
             serverPool.set("healthcheck_destination", "*:*");
+        }else{
+            serverPool.set("healthcheck_destination", "*:" + healthcheckDestination);
         }
 
         serverPool.set("id_pool_member", idPoolMembers);

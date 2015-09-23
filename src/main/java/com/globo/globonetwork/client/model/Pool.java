@@ -150,14 +150,14 @@ public class Pool extends GenericJson {
         Object obj = this.get("healthcheck");
         if ( this.healthcheck == null ) {
             this.healthcheck = new Healthcheck();
-        }
 
-        if (obj instanceof BigDecimal){
-            this.healthcheck.setId(((BigDecimal)obj).longValue());
-        } else if (obj instanceof ArrayMap) {
-            ArrayMap healthObj = (ArrayMap) obj;
+            if (obj instanceof BigDecimal) {
+                this.healthcheck.setId(((BigDecimal) obj).longValue());
+            } else if (obj instanceof ArrayMap) {
+                ArrayMap healthObj = (ArrayMap) obj;
 
-            HttpJSONRequestProcessor.fillFieldsObject(Healthcheck.class, this.healthcheck, healthObj);
+                HttpJSONRequestProcessor.fillFieldsObject(Healthcheck.class, this.healthcheck, healthObj);
+            }
         }
         return healthcheck;
     }
