@@ -27,14 +27,14 @@ public class Pool extends GenericJson {
     @Key("pool_created")
     private Boolean poolCreated;
 
-    @Key("servicedownaction")
-    private ServiceDownAction serviceDownAction;
 
     @Key("maxcom")
     private Integer maxconn;
 
     private Environment environment;
+
     private Healthcheck healthcheck;
+    private ServiceDownAction serviceDownAction;
 
     public Pool() {
 
@@ -116,10 +116,6 @@ public class Pool extends GenericJson {
         this.defaultLimit = defaultLimit;
     }
 
-    public ServiceDownAction getServiceDownAction() {
-        return serviceDownAction;
-    }
-
     public void setServiceDownAction(ServiceDownAction serviceDownAction) {
         this.serviceDownAction = serviceDownAction;
     }
@@ -160,6 +156,22 @@ public class Pool extends GenericJson {
             }
         }
         return healthcheck;
+    }
+
+    public ServiceDownAction getServiceDownAction() {
+        Object obj = this.get("servicedownaction");
+        if ( this.serviceDownAction == null ) {
+            this.serviceDownAction = new ServiceDownAction();
+
+            if (obj instanceof BigDecimal) {
+                this.serviceDownAction.setId(((BigDecimal) obj).longValue());
+            } else if (obj instanceof ArrayMap) {
+                ArrayMap serviceDownObj = (ArrayMap) obj;
+
+                HttpJSONRequestProcessor.fillFieldsObject(ServiceDownAction.class, this.serviceDownAction, serviceDownObj);
+            }
+        }
+        return serviceDownAction;
     }
 
     public void setHealthcheck(Healthcheck healthcheck) {

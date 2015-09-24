@@ -30,7 +30,8 @@
       "default_port": 80,
       "default_limit": 0,
       "identifier": "VIP-1_pool_80",
-      "port_vip": 80
+      "port_vip": 80,
+      "servicedownaction": 6
     },
     {
       "lb_method": "rrrrr",
@@ -43,7 +44,8 @@
       "default_port": 8080,
       "default_limit": 0,
       "identifier": "VIP-2_pool_8080",
-      "port_vip": 8080
+      "port_vip": 8080,
+      "servicedownaction": 5
     }
   ],
   "cliente": "Usuario Interno",
