@@ -70,6 +70,7 @@ public class PoolTest extends TestCase {
         assertEquals("ACS_POOL_1", pool.getIdentifier() );
         assertEquals(8080, pool.getDefaultPort());
         assertEquals((Integer)8, pool.getMaxconn());
+        assertEquals(0, pool.getVipPort());
 
         //healthcheck
         Pool.Healthcheck healthcheck = pool.getHealthcheck();

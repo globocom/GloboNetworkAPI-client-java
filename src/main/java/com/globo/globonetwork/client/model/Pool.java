@@ -18,6 +18,9 @@ public class Pool extends GenericJson {
     @Key("default_port")
     private int defaultPort;
 
+    @Key("vip_port")
+    private int vipPort;
+
     @Key("default_limit")
     private Integer defaultLimit;
 
@@ -118,6 +121,14 @@ public class Pool extends GenericJson {
 
     public void setServiceDownAction(ServiceDownAction serviceDownAction) {
         this.serviceDownAction = serviceDownAction;
+    }
+
+    public int getVipPort() {
+        return vipPort;
+    }
+
+    public void setVipPort(int vipPort) {
+        this.vipPort = vipPort;
     }
 
     public Environment getEnvironment() {

@@ -60,6 +60,7 @@ public class VipJsonTest extends TestCase {
         assertEquals(true, pool1.isPoolCreated());
         assertEquals((Long)121l, pool1.getEnvironment().getId());
         assertEquals(80, pool1.getDefaultPort());
+        assertEquals(8080, pool1.getVipPort());
         assertEquals(0, pool1.getDefaultLimit());
         assertEquals((Long)6l, pool1.getServiceDownAction().getId());
 
@@ -70,6 +71,9 @@ public class VipJsonTest extends TestCase {
         assertEquals("VIP-2_pool_8080", pool2.getIdentifier());
         assertEquals(false, pool2.isPoolCreated());
         assertEquals((Long)5l, pool2.getServiceDownAction().getId());
+
+        assertEquals(443, pool2.getDefaultPort());
+        assertEquals(8443, pool2.getVipPort());
     }
 
 
