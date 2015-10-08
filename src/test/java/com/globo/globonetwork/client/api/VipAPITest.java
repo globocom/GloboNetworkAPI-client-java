@@ -17,8 +17,13 @@
 package com.globo.globonetwork.client.api;
 
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
+import com.globo.globonetwork.client.exception.GloboNetworkErrorCodeException;
+import com.globo.globonetwork.client.http.HttpJSONRequestProcessor;
 import com.globo.globonetwork.client.model.Vip;
+import com.globo.globonetwork.client.model.VipJson;
 import com.globo.globonetwork.client.model.VipXml;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -273,4 +278,37 @@ public class VipAPITest {
 	            gnroot.toString());
 	    
 	}
+
+    @Test
+    public void testGetByPk() throws GloboNetworkException {
+        VipJson vipJson = new VipJson();
+        vipJson.setId(123l);
+
+        HttpJSONRequestProcessor mock = mock(HttpJSONRequestProcessor.class);
+        when(mock.get("/api/vip/request/get/123/", VipJson.class)).thenReturn(vipJson);
+
+        VipAPI vipAPI = new VipAPI(null, mock);
+        Vip vip = vipAPI.getByPk(123l);
+        assertNotNull(vip);
+        assertEquals((Long)123l, vip.getId());
+    }
+
+    @Test
+    public void testGetByPkNotFound() throws GloboNetworkException {
+        HttpJSONRequestProcessor mock = mock(HttpJSONRequestProcessor.class);
+        when(mock.get("/api/vip/request/get/123/", VipJson.class)).thenThrow(new GloboNetworkErrorCodeException(404, ""));
+
+        VipAPI vipAPI = new VipAPI(null, mock);
+        Vip vip = vipAPI.getByPk(123l);
+        assertNull(vip);
+    }
+
+    @Test(expected = GloboNetworkErrorCodeException.class)
+    public void testGetByPkServerError() throws GloboNetworkException {
+        HttpJSONRequestProcessor mock = mock(HttpJSONRequestProcessor.class);
+        when(mock.get("/api/vip/request/get/123/", VipJson.class)).thenThrow(new GloboNetworkErrorCodeException(500, ""));
+
+        VipAPI vipAPI = new VipAPI(null, mock);
+        vipAPI.getByPk(123l);
+    }
 }

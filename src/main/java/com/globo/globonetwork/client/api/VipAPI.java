@@ -5,6 +5,7 @@ import com.globo.globonetwork.client.model.Vip;
 import com.globo.globonetwork.client.model.VipJson;
 import com.globo.globonetwork.client.model.VipPoolMap;
 import com.globo.globonetwork.client.model.VipXml;
+import com.google.api.client.http.HttpStatusCodes;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -77,12 +78,19 @@ public class VipAPI extends BaseXmlAPI<VipXml> {
     @Trace(dispatcher = true)
     public Vip getByPk(Long vipId) throws GloboNetworkException {
         NewRelic.setTransactionName(null, "/globonetwork/vip/getByPk/");
+        try {
+            String uri = "/api/vip/request/get/" + vipId.toString() + "/";
 
-        String uri = "/api/vip/request/get/"+ vipId.toString() + "/";
+            Vip vip = (Vip) jsonRequestProcessor.get(uri, VipJson.class);
 
-        Vip vip = (Vip) jsonRequestProcessor.get(uri, VipJson.class);
+            return vip;
+        }catch (GloboNetworkErrorCodeException e) {
 
-        return vip;
+            if ( e.getCode() == HttpStatusCodes.STATUS_CODE_NOT_FOUND) {
+                return null;
+            }
+            throw e;
+        }
     }
 
 
