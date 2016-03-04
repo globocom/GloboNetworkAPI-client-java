@@ -51,7 +51,7 @@ public abstract class RequestProcessor {
 
 	public abstract <T extends GenericXml> GloboNetworkRoot<T> delete(String suffixUrl, Class<T> dataClass) throws GloboNetworkException;
 	
-	protected <T extends GenericXml> GloboNetworkRoot<T> readXML(String inputContent, Class<T> dataClass) throws GloboNetworkException {
+	public <T extends GenericXml> GloboNetworkRoot<T> readXML(String inputContent, Class<T> dataClass) throws GloboNetworkException {
 		Reader in = new StringReader(inputContent);
 		
 		try {

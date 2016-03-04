@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<networkapi versao="1.0">
+    <healthcheck_expect>
+        <expect_string>WORKING</expect_string>
+        <id>1</id>
+    </healthcheck_expect>
+    <healthcheck_expect>
+        <expect_string>OK</expect_string>
+        <id>2</id>
+    </healthcheck_expect>
+</networkapi>

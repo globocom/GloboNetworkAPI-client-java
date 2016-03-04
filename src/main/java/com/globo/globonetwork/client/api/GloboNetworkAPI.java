@@ -52,6 +52,9 @@ public class GloboNetworkAPI {
     public VipEnvironmentAPI getVipEnvironmentAPI() {
         return new VipEnvironmentAPI(xmlAPI);
     }
+    public ExpectHealthcheckAPI getExpectHealthcheckAPI() {
+        return new ExpectHealthcheckAPI(xmlAPI);
+    }
 
 
     public void setConnectTimeout(Integer connectTimeout) {
