@@ -34,13 +34,17 @@ public class NetworkAPI extends BaseXmlAPI<Network> {
     }
 
     @Trace(dispatcher = true)
-    public Network addNetwork(Long vlanId, Long networkTypeId, Long vipEnvironmentId, boolean isIpv6) throws GloboNetworkException {
+    public Network addNetwork(Long vlanId, Long networkTypeId, Long vipEnvironmentId, boolean isIpv6, Long subnet) throws GloboNetworkException {
         NewRelic.setTransactionName(null, "/globonetwork/addNetwork");
 
         Network network = Network.initNetwork(isIpv6);
         network.set("id_vlan", vlanId);
         network.set("id_tipo_rede", networkTypeId);
         network.set("id_ambiente_vip", vipEnvironmentId);
+
+        if (subnet != null){
+            network.set("prefix", subnet.toString());
+        }
 
         GloboNetworkRoot<Network> globoNetworkRoot = new GloboNetworkRoot<Network>();
         globoNetworkRoot.getObjectList().add(network);

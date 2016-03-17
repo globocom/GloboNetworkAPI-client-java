@@ -94,7 +94,7 @@ public class CloudstackLayer2FlowTest {
 		assertEquals(allocatedVlan.getDescription(), vlanDescription);
 		
 		// Step 2: Add a network to the allocated VLAN
-		Network addedNetwork = this.netAPI.addNetwork(allocatedVlan.getId(), networkTypeId, environmentId, false);
+		Network addedNetwork = this.netAPI.addNetwork(allocatedVlan.getId(), networkTypeId, environmentId, false, null);
 		
 		assertNotNull(addedNetwork);
 		assertEquals(addedNetwork.getNetworkTypeId(), networkTypeId);

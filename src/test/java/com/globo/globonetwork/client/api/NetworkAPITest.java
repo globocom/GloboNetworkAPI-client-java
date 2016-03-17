@@ -17,7 +17,12 @@
 package com.globo.globonetwork.client.api;
 
 import static org.junit.Assert.*;
+import static org.mockito.Matchers.anyObject;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
+import com.globo.globonetwork.client.http.HttpXMLRequestProcessor;
+import com.google.api.client.xml.GenericXml;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -55,7 +60,7 @@ public class NetworkAPITest {
 				"<?xml version='1.0' encoding='utf-8'?><networkapi>" +
 				"<vlan><acl_file_name>TESTEOKAMA2.txt</acl_file_name><ativada>True</ativada><acl_valida>False</acl_valida><nome>TESTEOKAMA2</nome><acl_file_name_v6></acl_file_name_v6><redeipv6/><acl_valida_v6>False</acl_valida_v6><id>2532</id><num_vlan>24</num_vlan><redeipv4><mask_oct1>255</mask_oct1><mask_oct2>255</mask_oct2><mask_oct3>255</mask_oct3><mask_oct4>0</mask_oct4><oct4>0</oct4><vlan>2532</vlan><oct2>170</oct2><oct3>17</oct3><oct1>10</oct1><broadcast>10.170.17.255</broadcast><ambient_vip/><active>True</active><network_type>6</network_type><id>1766</id><block>24</block></redeipv4><ambiente>120</ambiente><descricao>testeokama2</descricao></vlan></networkapi>");
 
-		Network network = this.netApi.addNetwork(vlanId, networkTypeId, vipEnvironmentId, false);
+		Network network = this.netApi.addNetwork(vlanId, networkTypeId, vipEnvironmentId, false, null);
 		
 		assertNotNull(network);
 		assertEquals(networkTypeId, network.getNetworkTypeId());
