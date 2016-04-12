@@ -1,0 +1,84 @@
+{
+  "server_pools": [
+    {
+      "id": 123,
+      "identifier": "ACS_POOL_teste.com_v3",
+      "default_port": 8080,
+      "environment": 111,
+      "servicedownaction": {
+        "id": 5,
+        "name": "none"
+      },
+      "lb_method": "least-conn",
+      "healthcheck": {
+        "identifier": "HTTP_GET /ginda.html HTTP/1.0\\r\\nHost: teste.com\\r\\n\\r\\n_ALIVE!",
+        "healthcheck_type": "HTTP",
+        "healthcheck_request": "GET /ginda.html HTTP/1.0\\r\\nHost: teste.com\\r\\n\\r\\n",
+        "healthcheck_expect": "ALIVE!",
+        "destination": "*:*"
+      },
+      "default_limit": 30,
+      "server_pool_members": [
+        {
+          "id": 321,
+          "identifier": "L-TESTE-2",
+          "ipv6": null,
+          "ip": {
+            "ip_formated": "10.0.0.2",
+            "id": 2
+          },
+          "priority": 50,
+          "equipment": {
+            "id": 333,
+            "name": "L-TESTE-2"
+          },
+          "weight": 23,
+          "limit": 93,
+          "port_real": 8080,
+          "member_status": 0
+        }
+      ],
+      "pool_created": true
+    },
+    {
+      "id": 987,
+      "identifier": "ACS_POOL_teste.com_v3_1",
+      "default_port": 8443,
+      "environment": 111,
+      "servicedownaction": {
+        "id": 5,
+        "name": "none"
+      },
+      "lb_method": "least-conn",
+      "healthcheck": {
+        "identifier": "HTTP_GET /ginda.html HTTP/1.0\\r\\nHost: teste.com\\r\\n\\r\\n_ALIVE!",
+        "healthcheck_type": "HTTP",
+        "healthcheck_request": "GET /ginda.html HTTP/1.0\\r\\nHost: teste.com\\r\\n\\r\\n",
+        "healthcheck_expect": "ALIVE!",
+        "destination": "*:*"
+      },
+      "default_limit": 30,
+      "server_pool_members": [
+        {
+          "id": 456,
+          "identifier": "L-TESTE",
+          "ipv6": null,
+          "ip": {
+            "ip_formated": "10.0.0.2",
+            "id": 2
+          },
+          "priority": 0,
+          "equipment": {
+            "id": 122,
+            "name": "L-TESTE"
+          },
+          "weight": 0,
+          "limit": 0,
+          "port_real": 8443,
+          "member_status": 0
+        }
+      ],
+      "pool_created": true
+    }
+  ]
+}

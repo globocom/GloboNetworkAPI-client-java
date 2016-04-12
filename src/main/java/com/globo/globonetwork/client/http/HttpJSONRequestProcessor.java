@@ -122,11 +122,18 @@ public class HttpJSONRequestProcessor {
 
         } catch (HttpResponseException httpException) {
             int  httpStatusCode = httpException.getStatusCode();
-            String description;
+            String description = "";
             try {
                 InputStream stream = new ByteArrayInputStream(httpException.getContent().getBytes(DEFAULT_CHARSET));
                 GenericJson json = new JsonObjectParser(JSON_FACTORY).parseAndClose(stream, DEFAULT_CHARSET, GenericJson.class);
-                description = (String)json.get(FIELD_MESSAGE_ERROR);
+                Object message = json.get(FIELD_MESSAGE_ERROR);
+
+                if ( message instanceof String ){
+                    description = (String) message;
+                } else if (message != null){
+                    description = message.toString();
+                }
+
             } catch (IOException e1) {
                 description = httpException.getContent();
             }
@@ -174,6 +181,18 @@ public class HttpJSONRequestProcessor {
         try {
             GenericUrl url = buildUrl(suffixUrl);
             HttpRequest request = this.buildRequest("POST", url, payload);
+            HttpResponse response = this.performRequest(request);
+
+            return response.parseAsString();
+        } catch (IOException e) {
+            throw new GloboNetworkException("IOError: " + e, e);
+        }
+    }
+
+    public String put(String suffixUrl, Object payload) throws GloboNetworkException {
+        try {
+            GenericUrl url = buildUrl(suffixUrl);
+            HttpRequest request = this.buildRequest("PUT", url, payload);
             HttpResponse response = this.performRequest(request);
 
             return response.parseAsString();
