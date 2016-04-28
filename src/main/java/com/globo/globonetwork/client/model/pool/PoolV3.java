@@ -4,12 +4,16 @@ import com.google.api.client.json.GenericJson;
 import com.google.api.client.util.Data;
 import com.google.api.client.util.Key;
 import com.google.api.client.util.NullValue;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
 
 public class PoolV3 extends GenericJson {
+
+    static final SimpleDateFormat formatter = new SimpleDateFormat("ddMMYYYY");
 
     @Key("id")
     @NullValue
@@ -199,6 +203,7 @@ public class PoolV3 extends GenericJson {
                 builder.append("_").append(expectedHealthcheck);
             }
 
+            builder.append("_").append(formatter.format(new Date()));
             this.identifier = builder.toString();
         }
 
