@@ -287,7 +287,7 @@ public class PoolV3 extends GenericJson {
         @Key("limit")
         private Integer limit = 0;
 
-        private static final Integer MEMBER_STATUS_ACTIVE = 7;
+        private static final Integer MEMBER_STATUS_ACTIVE = 2;
 
         @Key("member_status")
         private Integer memberStatus = MEMBER_STATUS_ACTIVE;
