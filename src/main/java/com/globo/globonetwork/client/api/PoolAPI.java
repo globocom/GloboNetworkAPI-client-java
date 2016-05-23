@@ -58,16 +58,13 @@ public class PoolAPI extends BaseJsonAPI<Pool>{
     public Pool.PoolResponse getByPk(Long id) throws GloboNetworkException {
         NewRelic.setTransactionName(null, "/globonetwork/pools/getByPk");
 
-        try {
-            String uri = "/api/pools/getbypk/" + id.toString() + "/";
-            String result = getTransport().get(uri);
 
-            Pool.PoolResponse poolResponse = HttpJSONRequestProcessor.parse(result, Pool.PoolResponse.class);
+        String uri = "/api/pools/getbypk/" + id.toString() + "/";
+        String result = getTransport().get(uri);
 
-            return poolResponse;
-        }catch (IOException e) {
-            throw new GloboNetworkException("GloboNetworkAPI error parse: " + e.getMessage(), e);
-        }
+        Pool.PoolResponse poolResponse = HttpJSONRequestProcessor.parse(result, Pool.PoolResponse.class);
+
+        return poolResponse;
     }
 
 
@@ -147,19 +144,15 @@ public class PoolAPI extends BaseJsonAPI<Pool>{
 
     @Trace(dispatcher = true)
     public List<PoolV3> getByIdsV3(List<Long> ids) throws GloboNetworkException {
-        try{
-            NewRelic.setTransactionName(null, "/globonetwork/pools/getByIdV3");
+        NewRelic.setTransactionName(null, "/globonetwork/pools/getByIdV3");
 
-            String idsJoin = Joiner.on(IDS_SEPARATOR).join(ids);
-            String uri = "/api/v3/pool/" + idsJoin + "/";
-            String result = getTransport().get(uri);
+        String idsJoin = Joiner.on(IDS_SEPARATOR).join(ids);
+        String uri = "/api/v3/pool/" + idsJoin + "/";
+        String result = getTransport().get(uri);
 
-            PoolV3Response poolResponse = HttpJSONRequestProcessor.parse(result, PoolV3Response.class);
+        PoolV3Response poolResponse = HttpJSONRequestProcessor.parse(result, PoolV3Response.class);
 
-            return poolResponse.getPools();
-        }catch (IOException e) {
-            throw new GloboNetworkException("GloboNetworkAPI error parse: " + e.getMessage(), e);
-        }
+        return poolResponse.getPools();
     }
 
     /**
@@ -209,16 +202,12 @@ public class PoolAPI extends BaseJsonAPI<Pool>{
 
         String result = getTransport().post(uri, poolRequest);
 
-        try {
-            ArrayList<ArrayMap> parse = HttpJSONRequestProcessor.parse(result, ArrayList.class);
+        ArrayList<ArrayMap> parse = HttpJSONRequestProcessor.parse(result, ArrayList.class);
 
-            pool.setId(((BigDecimal) parse.get(0).get("id")).longValue());
-            poolSaved = pool;
+        pool.setId(((BigDecimal) parse.get(0).get("id")).longValue());
+        poolSaved = pool;
 
-            return poolSaved;
-        } catch (IOException e) {
-            throw new GloboNetworkException("Error trying parse result: " + result, e);
-        }
+        return poolSaved;
     }
 
     /**

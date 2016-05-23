@@ -2,31 +2,27 @@ package com.globo.globonetwork.client.http;
 
 
 import com.globo.globonetwork.client.exception.GloboNetworkException;
-import com.globo.globonetwork.client.model.Pool;
 import com.google.api.client.http.GenericUrl;
+import com.google.api.client.http.HttpMethods;
 import com.google.api.client.http.HttpRequest;
-import com.google.api.client.http.HttpResponse;
+import com.google.api.client.http.HttpRequestFactory;
 import com.google.api.client.http.HttpResponseException;
-import com.google.api.client.http.HttpTransport;
 import com.google.api.client.http.LowLevelHttpRequest;
 import com.google.api.client.http.LowLevelHttpResponse;
 import com.google.api.client.json.GenericJson;
-import com.google.api.client.json.Json;
-import com.google.api.client.json.JsonFactory;
-import com.google.api.client.json.JsonObjectParser;
-import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.client.testing.http.HttpTesting;
 import com.google.api.client.testing.http.MockHttpTransport;
 import com.google.api.client.testing.http.MockLowLevelHttpRequest;
 import com.google.api.client.testing.http.MockLowLevelHttpResponse;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.charset.Charset;
 import junit.framework.TestCase;
 import org.junit.Before;
 import org.junit.Test;
-import static org.mockito.Mockito.when;
+
 import static org.mockito.Mockito.mock;
+
+
 
 
 public class HttpJSONRequestProcessorTest extends TestCase {
@@ -50,17 +46,14 @@ public class HttpJSONRequestProcessorTest extends TestCase {
 
     @Test
     public void testPerformRequest_status_200() throws GloboNetworkException {
-        HttpRequest request = createMockRequest("{\"pool\":\"1233\"}", 200);
+        createMockFactory("{\"pool\":\"1233\"}", 200);
 
         try {
-            HttpResponse response = rp.performRequest(request);
+            Response response = rp.performRequest(HttpTesting.SIMPLE_GENERIC_URL, HttpMethods.GET, null);
 
-            assertEquals(200, response.getStatusCode());
-            assertTrue(response.parseAsString().contains("1233"));
+            assertEquals(200, response.statusCode);
+            assertTrue(response.content.contains("1233"));
         }catch (GloboNetworkException e ) {
-            e.printStackTrace();
-            fail("should not fail: " + e.getMessage());
-        } catch (IOException e) {
             e.printStackTrace();
             fail("should not fail: " + e.getMessage());
         }
@@ -68,10 +61,10 @@ public class HttpJSONRequestProcessorTest extends TestCase {
 
     @Test
     public void testPerformRequest_status_404() throws GloboNetworkException {
-        HttpRequest request = createMockRequest("{\"detail\": \"Pool Does Not Exist.\"}", 404);
+        createMockFactory("{\"detail\": \"Pool Does Not Exist.\"}", 404);
 
         try {
-            HttpResponse response = rp.performRequest(request);
+            Response response = rp.performRequest(HttpTesting.SIMPLE_GENERIC_URL, HttpMethods.GET, null );
             fail("should fail GloboNetworkException");
         }catch (GloboNetworkException e ) {
             assertTrue(e.getCause() instanceof HttpResponseException);
@@ -86,10 +79,10 @@ public class HttpJSONRequestProcessorTest extends TestCase {
 
     @Test
     public void testPerformRequest_status_500() throws GloboNetworkException {
-        HttpRequest request = createMockRequest("{\"detail\": \"Invalid id for Pool.\"}", 500);
+        createMockFactory("{\"detail\": \"Invalid id for Pool.\"}", 500);
 
         try {
-            HttpResponse response = rp.performRequest(request);
+            Response response = rp.performRequest(HttpTesting.SIMPLE_GENERIC_URL, HttpMethods.GET, null);
             fail("should fail GloboNetworkException");
         }catch (GloboNetworkException e ) {
             assertTrue(e.getCause() instanceof HttpResponseException);
@@ -103,12 +96,12 @@ public class HttpJSONRequestProcessorTest extends TestCase {
     }
 
 
-    public static HttpRequest createMockRequest(final String content, final int statusCode) {
+    public void createMockFactory(final String content, final int statusCode) {
         try {
             MockHttpTransport transport = new MockHttpTransport() {
                 @Override
                 public LowLevelHttpRequest buildRequest(String method, String url) throws IOException {
-                    return new MockLowLevelHttpRequest() {
+                    LowLevelHttpRequest request = new MockLowLevelHttpRequest() {
                         @Override
                         public LowLevelHttpResponse execute() throws IOException {
                             MockLowLevelHttpResponse response = new MockLowLevelHttpResponse();
@@ -118,12 +111,14 @@ public class HttpJSONRequestProcessorTest extends TestCase {
                             return response;
                         }
                     };
+                    return request;
                 }
             };
-            HttpRequest request = transport.createRequestFactory().buildGetRequest(HttpTesting.SIMPLE_GENERIC_URL);
-            JsonFactory JSON_FACTORY = new JacksonFactory();
-            request.setParser(new JsonObjectParser(JSON_FACTORY));
-            return request;
+            HttpRequestFactory requestFactory = transport.createRequestFactory();
+            rp.setRequestFactory(requestFactory);
+
+
+
         }catch (Exception e ) {
             e.printStackTrace();
             throw new RuntimeException("error creating mock httpRequest: " , e);

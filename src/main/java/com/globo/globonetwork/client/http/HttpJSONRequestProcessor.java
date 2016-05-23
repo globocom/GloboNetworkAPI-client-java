@@ -5,6 +5,7 @@ import com.globo.globonetwork.client.exception.GloboNetworkException;
 import com.globo.globonetwork.client.model.Pool;
 import com.google.api.client.http.GenericUrl;
 import com.google.api.client.http.HttpContent;
+import com.google.api.client.http.HttpMethods;
 import com.google.api.client.http.HttpRequest;
 import com.google.api.client.http.HttpRequestFactory;
 import com.google.api.client.http.HttpRequestInitializer;
@@ -18,10 +19,15 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.JsonObjectParser;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.client.util.ArrayMap;
+import com.google.api.client.util.IOUtils;
 import com.google.api.client.util.Key;
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.StringWriter;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
@@ -63,7 +69,7 @@ public class HttpJSONRequestProcessor {
         this.password = password;
     }
 
-    private HttpRequestFactory getRequestFactory() {
+    protected HttpRequestFactory getRequestFactory() {
         if (this.requestFactory == null) {
             synchronized (this) {
                 this.requestFactory = HTTP_TRANSPORT.createRequestFactory(new HttpRequestInitializer() {
@@ -78,53 +84,57 @@ public class HttpJSONRequestProcessor {
         }
         return this.requestFactory;
     }
-
+    protected void setRequestFactory(HttpRequestFactory factory) {
+        this.requestFactory = factory;
+    }
     protected HttpRequest buildRequest(String method, GenericUrl url, Object payload) throws IOException {
         HttpRequest request;
 
         // Preparing content for POST and PUT
         HttpContent content = null;
         if (payload != null) {
-//            content = ByteArrayContent.fromString(null, payload.toString());
             content = new JsonHttpContent(new JacksonFactory(), payload);
         }
 
-        if(method == "POST") {
-            request = getRequestFactory().buildPostRequest(url, content);
-        } else {
-            request = createRequest(method, url, content);
-        }
+        HttpRequestFactory requestFactory = this.getRequestFactory();
+        request = requestFactory.buildRequest(method, url, content);
 
         request.getHeaders().setBasicAuthentication(this.username, this.password);
         request.setLoggingEnabled(true);
 
         return request;
     }
-    protected HttpRequest createRequest(String method, GenericUrl url, HttpContent content) throws IOException {
-        return this.getRequestFactory().buildRequest(method, url, content);
-    }
 
-    protected HttpResponse performHttpRequest(HttpRequest request) throws IOException {
-        LOGGER.debug("Calling GloboNetwork: " + request.getRequestMethod() + " " + request.getUrl() + " " + request.getContent());
+    protected Response performRequest(GenericUrl url, String method, Object payload) throws GloboNetworkException {
         Long startTime = new Date().getTime();
-        HttpResponse response = request.execute();
-        Long responseTime = new Date().getTime() - startTime;
-        LOGGER.debug("Response in " + responseTime + " from GloboNetwork: " + response.getStatusCode() + " " + response.getStatusMessage());
-        return response;
-    }
 
-    protected HttpResponse performRequest(HttpRequest request) throws GloboNetworkException {
-
-        HttpResponse httpResponse;
         try {
-            httpResponse = this.performHttpRequest(request);
-            return httpResponse;
+            HttpRequest request = this.buildRequest(method, url, payload);
 
+            if ( LOGGER.isDebugEnabled()) {
+                ByteArrayOutputStream output = new ByteArrayOutputStream();
+                request.getContent().writeTo(output);
+                String content = output.toString();
+                LOGGER.debug("[GloboNetworkAPI request] " + request.getRequestMethod() + " URL:" + request.getUrl() + " Content:" + content);
+            }
+
+            HttpResponse response = request.execute();
+
+            Response helper = new Response(response);
+            Long responseTime = new Date().getTime() - startTime;
+
+            LOGGER.debug("[GloboNetworkAPI response] ResponseTime: " + responseTime + "ms " + method +  " URL:" + request.getUrl() + " StatusCode: "+ helper.statusCode +" Content: " +  helper.content );
+
+            return helper;
         } catch (HttpResponseException httpException) {
             int  httpStatusCode = httpException.getStatusCode();
+
             String description = "";
             try {
-                InputStream stream = new ByteArrayInputStream(httpException.getContent().getBytes(DEFAULT_CHARSET));
+                String content = httpException.getContent();
+                Long responseTime = new Date().getTime() - startTime;
+                LOGGER.debug("[GloboNetworkAPI response] ResponseTime: " + responseTime + "ms " + method +  " URL:" + url + " StatusCode: "+ httpException.getStatusCode() +" Content: " +  content );
+                InputStream stream = new ByteArrayInputStream(content.getBytes(DEFAULT_CHARSET));
                 GenericJson json = new JsonObjectParser(JSON_FACTORY).parseAndClose(stream, DEFAULT_CHARSET, GenericJson.class);
                 Object message = json.get(FIELD_MESSAGE_ERROR);
 
@@ -156,89 +166,53 @@ public class HttpJSONRequestProcessor {
     }
 
     public <T extends GenericJson> GenericJson get(String suffixUrl, Class<T> dataType) throws GloboNetworkException {
-        try {
-            GenericUrl url = buildUrl(suffixUrl);
-            HttpRequest request = this.buildRequest("GET", url, null);
-            HttpResponse response = this.performRequest(request);
-            return response.parseAs(dataType);
-        } catch (IOException e) {
-            throw new GloboNetworkException("IOError: " + e, e);
-        }
+        Response response = this.performRequest(buildUrl(suffixUrl), HttpMethods.GET, null);
+
+        return parse(response.content, dataType);
     }
 
     public String get(String suffixUrl) throws GloboNetworkException {
-        try {
-            GenericUrl url = buildUrl(suffixUrl);
-            HttpRequest request = this.buildRequest("GET", url, null);
-            HttpResponse response = this.performRequest(request);
-            return response.parseAsString();
-        } catch (IOException e) {
-            throw new GloboNetworkException("IOError: " + e, e);
-        }
+
+        Response response = this.performRequest(buildUrl(suffixUrl), HttpMethods.GET, null);
+        return response.content;
     }
 
     public String post(String suffixUrl, Object payload) throws GloboNetworkException {
-        try {
-            GenericUrl url = buildUrl(suffixUrl);
-            HttpRequest request = this.buildRequest("POST", url, payload);
-            HttpResponse response = this.performRequest(request);
-
-            return response.parseAsString();
-        } catch (IOException e) {
-            throw new GloboNetworkException("IOError: " + e, e);
-        }
+        Response response = this.performRequest(buildUrl(suffixUrl), HttpMethods.POST, payload);
+        return response.content;
     }
 
     public String put(String suffixUrl, Object payload) throws GloboNetworkException {
-        try {
-            GenericUrl url = buildUrl(suffixUrl);
-            HttpRequest request = this.buildRequest("PUT", url, payload);
-            HttpResponse response = this.performRequest(request);
-
-            return response.parseAsString();
-        } catch (IOException e) {
-            throw new GloboNetworkException("IOError: " + e, e);
-        }
+        Response response = this.performRequest(buildUrl(suffixUrl), HttpMethods.PUT, payload);
+        return response.content;
     }
 
     public <T extends GenericJson> GenericJson post(String suffixUrl, Object payload, Class<T> dataType) throws GloboNetworkException {
-        try {
-            GenericUrl url = buildUrl(suffixUrl);
-            HttpRequest request = this.buildRequest("POST", url, payload);
-            HttpResponse response = this.performRequest(request);
+        Response response = this.performRequest(buildUrl(suffixUrl), HttpMethods.GET, null);
 
-
-            String output = response.parseAsString();
-
-            if ( output.isEmpty()) {
-                return new GenericJson();
-            }
-            return parse(output, dataType);
-        } catch (IOException e) {
-            throw new GloboNetworkException("IOError: " + e, e);
+        if (response.content == null || response.content.isEmpty()){
+            return new GenericJson();
         }
+
+        return parse(response.content, dataType);
     }
 
     public <T extends GenericJson> GenericJson put(String suffixUrl, Object payload, Class<T> dataType) throws GloboNetworkException {
-        try {
-            GenericUrl url = buildUrl(suffixUrl);
-            HttpRequest request = this.buildRequest("PUT", url, payload);
-            HttpResponse response = this.performRequest(request);
-            return response.parseAs(dataType);
-        } catch (IOException e) {
-            throw new GloboNetworkException("IOError: " + e, e);
+        Response response = this.performRequest(buildUrl(suffixUrl), HttpMethods.PUT, payload);
+
+        if (response.content == null || response.content.isEmpty()){
+            return new GenericJson();
         }
+        return parse(response.content, dataType);
     }
 
     public <T extends GenericJson> GenericJson delete(String suffixUrl, Class<T> dataType) throws GloboNetworkException {
-        try {
-            GenericUrl url = buildUrl(suffixUrl);
-            HttpRequest request = this.buildRequest("DELETE", url, null);
-            HttpResponse response = this.performRequest(request);
-            return response.parseAs(dataType);
-        } catch (IOException e) {
-            throw new GloboNetworkException("IOError: " + e, e);
+        Response response = this.performRequest(buildUrl(suffixUrl), HttpMethods.DELETE, null);
+
+        if (response.content == null || response.content.isEmpty()){
+            return new GenericJson();
         }
+        return parse(response.content, dataType);
     }
 
     private void checkIfNotInitialized() {
@@ -279,12 +253,16 @@ public class HttpJSONRequestProcessor {
         return new JsonObjectParser(jsonFactory).parseAndClose(stream, DEFAULT_CHARSET, dataType);
     }
 
-    public static <T> T parse(String output, Class<T> dataType) throws IOException {
+    public static <T> T parse(String output, Class<T> dataType) throws GloboNetworkException {
+        try {
+            InputStream stream = new ByteArrayInputStream(output.getBytes(DEFAULT_CHARSET));
 
-        InputStream stream = new ByteArrayInputStream(output.getBytes(DEFAULT_CHARSET));
+            com.google.api.client.json.JsonFactory jsonFactory = new JacksonFactory();
+            return new JsonObjectParser(jsonFactory).parseAndClose(stream, DEFAULT_CHARSET, dataType);
 
-        com.google.api.client.json.JsonFactory jsonFactory = new JacksonFactory();
-        return new JsonObjectParser(jsonFactory).parseAndClose(stream, DEFAULT_CHARSET, dataType);
+        } catch (IOException e) {
+            throw new GloboNetworkException("IOError trying to parse : " + output + " to " + dataType + e, e);
+        }
     }
 
     public static <T extends GenericJson> void fillFieldsObject(Class clazz, T obj, ArrayMap json) {
@@ -316,4 +294,5 @@ public class HttpJSONRequestProcessor {
     public String getPassword() {
         return password;
     }
+
 }
