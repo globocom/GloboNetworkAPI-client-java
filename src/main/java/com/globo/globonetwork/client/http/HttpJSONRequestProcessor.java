@@ -110,47 +110,44 @@ public class HttpJSONRequestProcessor {
 
         try {
             HttpRequest request = this.buildRequest(method, url, payload);
-
-            if ( LOGGER.isDebugEnabled()) {
-                ByteArrayOutputStream output = new ByteArrayOutputStream();
-                request.getContent().writeTo(output);
-                String content = output.toString();
-                LOGGER.debug("[GloboNetworkAPI request] " + request.getRequestMethod() + " URL:" + request.getUrl() + " Content:" + content);
-            }
+            HttpUtil.loggingRequest(request);
 
             HttpResponse response = request.execute();
 
             Response helper = new Response(response);
-            Long responseTime = new Date().getTime() - startTime;
-
-            LOGGER.debug("[GloboNetworkAPI response] ResponseTime: " + responseTime + "ms " + method +  " URL:" + request.getUrl() + " StatusCode: "+ helper.statusCode +" Content: " +  helper.content );
+            HttpUtil.loggingResponse(startTime, request, helper);
 
             return helper;
         } catch (HttpResponseException httpException) {
             int  httpStatusCode = httpException.getStatusCode();
+            String description = getErrorDescription(url, method, startTime, httpException);
 
-            String description = "";
-            try {
-                String content = httpException.getContent();
-                Long responseTime = new Date().getTime() - startTime;
-                LOGGER.debug("[GloboNetworkAPI response] ResponseTime: " + responseTime + "ms " + method +  " URL:" + url + " StatusCode: "+ httpException.getStatusCode() +" Content: " +  content );
-                InputStream stream = new ByteArrayInputStream(content.getBytes(DEFAULT_CHARSET));
-                GenericJson json = new JsonObjectParser(JSON_FACTORY).parseAndClose(stream, DEFAULT_CHARSET, GenericJson.class);
-                Object message = json.get(FIELD_MESSAGE_ERROR);
-
-                if ( message instanceof String ){
-                    description = (String) message;
-                } else if (message != null){
-                    description = message.toString();
-                }
-
-            } catch (IOException e1) {
-                description = httpException.getContent();
-            }
             throw new GloboNetworkErrorCodeException(httpStatusCode, description, httpException);
         } catch (IOException e) {
             throw new GloboNetworkException("IOException: " + e.getMessage(), e );
         }
+    }
+
+    private String getErrorDescription(GenericUrl url, String method, Long startTime, HttpResponseException httpException) {
+        String description = "";
+        try {
+            String content = httpException.getContent();
+            Long responseTime = new Date().getTime() - startTime;
+            LOGGER.debug("[GloboNetworkAPI response] ResponseTime: " + responseTime + "ms " + method +  " URL:" + url + " StatusCode: "+ httpException.getStatusCode() +" Content: " +  content );
+            InputStream stream = new ByteArrayInputStream(content.getBytes(DEFAULT_CHARSET));
+            GenericJson json = new JsonObjectParser(JSON_FACTORY).parseAndClose(stream, DEFAULT_CHARSET, GenericJson.class);
+            Object message = json.get(FIELD_MESSAGE_ERROR);
+
+            if ( message instanceof String ){
+                description = (String) message;
+            } else if (message != null){
+                description = message.toString();
+            }
+
+        } catch (IOException e1) {
+            description = httpException.getContent();
+        }
+        return description;
     }
 
 
@@ -188,7 +185,7 @@ public class HttpJSONRequestProcessor {
     }
 
     public <T extends GenericJson> GenericJson post(String suffixUrl, Object payload, Class<T> dataType) throws GloboNetworkException {
-        Response response = this.performRequest(buildUrl(suffixUrl), HttpMethods.GET, null);
+        Response response = this.performRequest(buildUrl(suffixUrl), HttpMethods.POST, payload);
 
         if (response.content == null || response.content.isEmpty()){
             return new GenericJson();

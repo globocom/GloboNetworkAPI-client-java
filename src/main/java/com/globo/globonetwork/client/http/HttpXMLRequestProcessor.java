@@ -114,9 +114,8 @@ public class HttpXMLRequestProcessor extends RequestProcessor {
 	}
 	
 	protected HttpResponse performHttpRequest(HttpRequest request) throws IOException {
-		LOGGER.debug("Calling GloboNetwork: " + request.getRequestMethod() + " " + request.getUrl() + " " + request.getContent());
+		HttpUtil.loggingRequest(request);
 		HttpResponse response = request.execute();
-		LOGGER.debug("Response from GloboNetwork: " + response.getStatusCode() + " " + response.getStatusMessage());
 		return response;
 	}
 	
@@ -125,15 +124,18 @@ public class HttpXMLRequestProcessor extends RequestProcessor {
 		String responseAsString;
 		Long responseTime = 0L;
 
+		Long startTime = new Date().getTime();
 		try {
-			Long startTime = new Date().getTime();
 			HttpResponse httpResponse = this.performHttpRequest(request);
 			responseTime = new Date().getTime() - startTime;
 			httpStatusCode = httpResponse.getStatusCode();
 			responseAsString = httpResponse.parseAsString();
+
+			HttpUtil.loggingResponse(startTime,request, new Response(httpStatusCode,responseAsString));
 		} catch (HttpResponseException e) {
 			httpStatusCode = e.getStatusCode();
 			responseAsString = e.getContent();
+			HttpUtil.loggingResponse(startTime,request, new Response(httpStatusCode,responseAsString));
 		}
 		
 		handleExceptionIfNeeded(httpStatusCode, responseAsString, responseTime);

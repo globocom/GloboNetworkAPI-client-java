@@ -6,6 +6,10 @@ public class Response {
     int statusCode;
     String content;
 
+    public Response(int statusCode, String content) {
+        this.statusCode = statusCode;
+        this.content = content;
+    }
     public Response(com.google.api.client.http.HttpResponse response) {
         this.statusCode = response.getStatusCode();
         try {
