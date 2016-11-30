@@ -5,6 +5,7 @@ import com.globo.globonetwork.client.exception.GloboNetworkException;
 import com.globo.globonetwork.client.model.Pool;
 import com.google.api.client.http.GenericUrl;
 import com.google.api.client.http.HttpContent;
+import com.google.api.client.http.HttpHeaders;
 import com.google.api.client.http.HttpMethods;
 import com.google.api.client.http.HttpRequest;
 import com.google.api.client.http.HttpRequestFactory;
@@ -112,6 +113,11 @@ public class HttpJSONRequestProcessor {
             HttpRequest request = this.buildRequest(method, url, payload);
             HttpUtil.loggingRequest(request);
 
+            if(method.equals("PATCH")){
+                request.getHeaders().set("X-HTTP-Method-Override", "PATCH");
+                request.setRequestMethod("PUT");
+            }
+
             HttpResponse response = request.execute();
 
             Response helper = new Response(response);
@@ -176,6 +182,10 @@ public class HttpJSONRequestProcessor {
 
     public String post(String suffixUrl, Object payload) throws GloboNetworkException {
         Response response = this.performRequest(buildUrl(suffixUrl), HttpMethods.POST, payload);
+        return response.content;
+    }
+    public String patch(String suffixUrl, Object payload) throws GloboNetworkException {
+        Response response = this.performRequest(buildUrl(suffixUrl), HttpMethods.PATCH, payload);
         return response.content;
     }
 

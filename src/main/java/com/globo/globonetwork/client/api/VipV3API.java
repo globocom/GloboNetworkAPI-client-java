@@ -40,6 +40,17 @@ public class VipV3API {
     }
 
     @Trace(dispatcher = true)
+    public void updatePersistence(Long id, Long persistenceId) throws GloboNetworkException {
+        NewRelic.setTransactionName(null, "/globonetwork/v3/updatePersistence/");
+        VipV3 vip = new VipV3();
+        vip.setId(id);
+        VipV3.VipOptions options = new VipV3.VipOptions();
+        options.setPersistenceId(persistenceId);
+        vip.setOptions(options);
+        requestProcessor.patch("/api/v3/vip-request/deploy/" + id + "/", new VipV3.VipV3Response(vip));
+    }
+
+    @Trace(dispatcher = true)
     public void deploy(Long id) throws GloboNetworkException {
         NewRelic.setTransactionName(null, "/globonetwork/v3/deployVip/");
         requestProcessor.post("/api/v3/vip-request/deploy/" + id + "/", GenericJson.class);

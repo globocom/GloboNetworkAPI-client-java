@@ -67,6 +67,18 @@ public class VipV3APITest extends TestCase {
         verify(processor).delete(eq("/api/v3/vip-request/deploy/1/"), eq(GenericJson.class));
     }
 
+    public void testUpdatePersistence() throws GloboNetworkException {
+        api.updatePersistence(1L, 5L);
+
+        VipV3 expectedVip = new VipV3();
+        expectedVip.setId(1L);
+        VipV3.VipOptions options = new VipV3.VipOptions();
+        options.setPersistenceId(5L);
+        expectedVip.setOptions(options);
+
+        verify(processor).patch(eq("/api/v3/vip-request/deploy/1/"), eq(new VipV3.VipV3Response(expectedVip)));
+    }
+
     public void testGetById() throws GloboNetworkException {
         VipV3 mockReturn = buildVip();
         when(processor.get(eq("/api/v3/vip-request/1/"), eq(VipV3.VipV3Response.class))).thenReturn(new VipV3.VipV3Response(mockReturn));
