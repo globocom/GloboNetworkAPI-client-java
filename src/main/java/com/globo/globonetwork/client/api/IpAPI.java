@@ -143,13 +143,16 @@ public class IpAPI extends BaseXmlAPI<Ip> {
 	}
 
 	@Trace(dispatcher = true)
-	public void assocIp(Long idIp, Long equipId, Long networkId, Boolean isIpv6) throws GloboNetworkException {
+	public void assocIp(Long idIp, Long equipId, Long networkId, Boolean isIpv6, String description) throws GloboNetworkException {
 		NewRelic.setTransactionName(null, "/globonetwork/assocIp");
 
 		Ip ip = Ip.createIp(isIpv6);
 		ip.set("id_ip", idIp);
 		ip.set("id_equip", equipId);
 		ip.set("id_net", networkId);
+		if (description != null) {
+			ip.setDescription(description);
+		}
 		
 		GloboNetworkRoot<Ip> globoNetworkRootPayload = new GloboNetworkRoot<Ip>();
 		globoNetworkRootPayload.getObjectList().add(ip);

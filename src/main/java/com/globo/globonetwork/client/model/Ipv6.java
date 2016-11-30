@@ -40,6 +40,8 @@ public class Ipv6 extends Ip {
 	private Long id;
 	@Key("networkipv6")
 	private Long networkId;
+	@Key("descricao")
+	private String description;
 	
 	public Ipv6() {
 		this.name = "ipv6";
@@ -127,5 +129,15 @@ public class Ipv6 extends Ip {
 
 	public void setNetworkId(Long networkId) {
 		this.networkId = networkId;
+	}
+
+	@Override
+	public String getDescription() {
+		return description;
+	}
+
+	@Override
+	public void setDescription(String description) {
+		this.description = description;
 	}
 }

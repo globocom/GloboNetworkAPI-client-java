@@ -51,10 +51,17 @@ public abstract class Ip extends GenericXml {
 	public abstract String getIpString();
 	
 	public abstract Long getNetworkId();
+
+
+	public abstract void setDescription(String description);
+	public abstract String getDescription();
 	
 	public abstract void setNetworkId(Long networkId);
 	
     public static Ip createIp(Boolean isIpv6){
     	return isIpv6 ? new Ipv6() : new Ipv4();
     }
+
+
+
 }

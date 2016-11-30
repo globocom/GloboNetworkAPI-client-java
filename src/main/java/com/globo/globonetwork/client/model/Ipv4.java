@@ -30,7 +30,10 @@ public class Ipv4 extends Ip{
 	private Integer oct4;
 	@Key("networkipv4")
 	private Long networkId;
-	
+
+	@Key("descricao")
+	private String description;
+
 	public Ipv4() {
 		this.name = "ip";
 	}
@@ -73,6 +76,17 @@ public class Ipv4 extends Ip{
 
 	public void setNetworkId(Long networkId) {
 		this.networkId = networkId;
+	}
+
+
+	@Override
+	public String getDescription() {
+		return description;
+	}
+
+	@Override
+	public void setDescription(String description) {
+		this.description = description;
 	}
 
 	public String getIpString() {
