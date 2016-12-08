@@ -330,7 +330,7 @@ public class VipV3 extends GenericJson {
         private Long l7RuleId;
 
         @Key("l7_value")
-        private Long l7Value;
+        private String l7Value;
 
         @Key("order")
         private Integer order;
@@ -338,14 +338,14 @@ public class VipV3 extends GenericJson {
         public Pool() {
         }
 
-        public Pool(Long poolId, Long l7RuleId, Long l7Value) {
+        public Pool(Long poolId, Long l7RuleId, String l7Value) {
             this.poolId = poolId;
             this.l7RuleId = l7RuleId;
             this.l7Value = l7Value;
             this.order = 0;
         }
 
-        public Pool(Long id, Long poolId, Long l7RuleId, Long l7Value, Integer order) {
+        public Pool(Long id, Long poolId, Long l7RuleId, String l7Value, Integer order) {
             this.id = id;
             this.poolId = poolId;
             this.l7RuleId = l7RuleId;
@@ -377,11 +377,11 @@ public class VipV3 extends GenericJson {
             this.l7RuleId = l7RuleId;
         }
 
-        public Long getL7Value() {
+        public String getL7Value() {
             return l7Value;
         }
 
-        public void setL7Value(Long l7Value) {
+        public void setL7Value(String l7Value) {
             this.l7Value = l7Value;
         }
 
