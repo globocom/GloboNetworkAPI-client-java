@@ -16,6 +16,7 @@
 */
 package com.globo.globonetwork.client.http;
 
+import com.google.api.client.http.HttpHeaders;
 import java.io.IOException;
 import java.security.InvalidParameterException;
 import java.util.Date;
@@ -61,6 +62,8 @@ public class HttpXMLRequestProcessor extends RequestProcessor {
 	static final HttpTransport HTTP_TRANSPORT = new NetHttpTransport();
 	private volatile HttpRequestFactory requestFactory;
 
+	private final Map<String, String> headersMap = new HashMap<String, String>();
+
 	public HttpXMLRequestProcessor(String baseUrl, String username, String password) {
 		this.baseUrl = baseUrl;
 		this.username = username;
@@ -76,6 +79,12 @@ public class HttpXMLRequestProcessor extends RequestProcessor {
 			            request.setReadTimeout(HttpXMLRequestProcessor.this.readTimeout);
 			            request.setConnectTimeout(HttpXMLRequestProcessor.this.connectTimeout);
 			            request.setNumberOfRetries(HttpXMLRequestProcessor.this.numberOfRetries);
+
+						HttpHeaders headers = request.getHeaders();
+						for (String key : headersMap.keySet()) {
+							String value = headersMap.get(key);
+							headers.set(key, value);
+						}
 					}
 				});
 			}
@@ -131,11 +140,12 @@ public class HttpXMLRequestProcessor extends RequestProcessor {
 			httpStatusCode = httpResponse.getStatusCode();
 			responseAsString = httpResponse.parseAsString();
 
-			HttpUtil.loggingResponse(startTime,request, new Response(httpStatusCode,responseAsString));
+			HttpUtil.loggingResponse(startTime,request, new Response(httpStatusCode, responseAsString, httpResponse.getHeaders()));
 		} catch (HttpResponseException e) {
 			httpStatusCode = e.getStatusCode();
 			responseAsString = e.getContent();
-			HttpUtil.loggingResponse(startTime,request, new Response(httpStatusCode,responseAsString));
+
+			HttpUtil.loggingResponse(startTime,request, new Response(httpStatusCode, responseAsString, e.getHeaders()));
 		}
 		
 		handleExceptionIfNeeded(httpStatusCode, responseAsString, responseTime);
@@ -236,5 +246,9 @@ public class HttpXMLRequestProcessor extends RequestProcessor {
 
 	public String getPassword() {
 		return password;
+	}
+
+	public void setHeader(String key, String value) {
+		this.headersMap.put(key,value);
 	}
 }

@@ -34,7 +34,9 @@ import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.nio.charset.Charset;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -64,6 +66,8 @@ public class HttpJSONRequestProcessor {
     static final JsonFactory JSON_FACTORY = new JacksonFactory();
     private volatile HttpRequestFactory requestFactory;
 
+    private final Map<String, String> headersMap = new HashMap<String, String>();
+
     public HttpJSONRequestProcessor(String baseUrl, String username, String password) {
         this.baseUrl = baseUrl;
         this.username = username;
@@ -79,6 +83,12 @@ public class HttpJSONRequestProcessor {
                         request.setReadTimeout(HttpJSONRequestProcessor.this.readTimeout);
                         request.setConnectTimeout(HttpJSONRequestProcessor.this.connectTimeout);
                         request.setNumberOfRetries(HttpJSONRequestProcessor.this.numberOfRetries);
+
+                        HttpHeaders headers = request.getHeaders();
+                        for (String key : headersMap.keySet()) {
+                            String value = headersMap.get(key);
+                            headers.set(key, value);
+                        }
                     }
                 });
             }
@@ -139,7 +149,7 @@ public class HttpJSONRequestProcessor {
         try {
             String content = httpException.getContent();
             Long responseTime = new Date().getTime() - startTime;
-            LOGGER.debug("[GloboNetworkAPI response] ResponseTime: " + responseTime + "ms " + method +  " URL:" + url + " StatusCode: "+ httpException.getStatusCode() +" Content: " +  content );
+            LOGGER.debug("[GloboNetworkAPI response] ResponseTime: " + responseTime + "ms " + method + " URL:" + url + " StatusCode: " + httpException.getStatusCode() + " Content: " + content);
             InputStream stream = new ByteArrayInputStream(content.getBytes(DEFAULT_CHARSET));
             GenericJson json = new JsonObjectParser(JSON_FACTORY).parseAndClose(stream, DEFAULT_CHARSET, GenericJson.class);
             Object message = json.get(FIELD_MESSAGE_ERROR);
@@ -302,4 +312,7 @@ public class HttpJSONRequestProcessor {
         return password;
     }
 
+    public void setHeader(String key, String value) {
+        this.headersMap.put(key,value);
+    }
 }

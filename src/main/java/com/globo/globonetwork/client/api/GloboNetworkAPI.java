@@ -3,15 +3,27 @@ package com.globo.globonetwork.client.api;
 
 import com.globo.globonetwork.client.http.HttpJSONRequestProcessor;
 import com.globo.globonetwork.client.http.HttpXMLRequestProcessor;
+import java.util.HashMap;
+import java.util.Map;
 
 public class GloboNetworkAPI {
 
-    HttpJSONRequestProcessor jsonAPI;
-    HttpXMLRequestProcessor xmlAPI;
+    private final HttpJSONRequestProcessor jsonAPI;
+    private final HttpXMLRequestProcessor xmlAPI;
+    private Integer numberOfRetries = 0;
+    private Integer connectTimeout = 1*60000;
+    private Integer readTimeout = 2*60000;;
+
+    public static final String CONTEXT_HEADER = "X-Request-Context";
+    public static final String ID_HEADER = "X-Request-Id";
+    public static final String HEADER_REQUEST_PREFIX = "ACS_";
+
+
+    private String context;
 
     public GloboNetworkAPI(String baseUrl, String username, String password) {
-        this.jsonAPI = new HttpJSONRequestProcessor(baseUrl, username, password);
-        this.xmlAPI = new HttpXMLRequestProcessor(baseUrl, username, password);
+        this.jsonAPI = buildJsonProcessor(baseUrl, username, password);
+        this.xmlAPI = buildXmlProcessor(baseUrl, username, password);
     }
 
     public PoolAPI getPoolAPI() {
@@ -65,17 +77,51 @@ public class GloboNetworkAPI {
     }
 
     public void setConnectTimeout(Integer connectTimeout) {
-        jsonAPI.setConnectTimeout(connectTimeout);
-        xmlAPI.setConnectTimeout(connectTimeout);
+        if (connectTimeout != null) {
+            this.connectTimeout = connectTimeout;
+        }
     }
 
     public void setNumberOfRetries(Integer numberOfRetries) {
-        jsonAPI.setNumberOfRetries(numberOfRetries);
-        xmlAPI.setNumberOfRetries(numberOfRetries);
+        if (numberOfRetries != null) {
+            this.numberOfRetries = numberOfRetries;
+        }
     }
 
     public void setReadTimeout(Integer readTimeout) {
-        jsonAPI.setReadTimeout(readTimeout);
-        xmlAPI.setReadTimeout(readTimeout);
+        if (readTimeout != null) {
+            this.readTimeout = readTimeout;
+        }
+    }
+
+    public HttpJSONRequestProcessor buildJsonProcessor(String baseUrl, String username, String password) {
+        HttpJSONRequestProcessor processor = new HttpJSONRequestProcessor(baseUrl, username, password);
+        processor.setReadTimeout(readTimeout);
+        processor.setNumberOfRetries(numberOfRetries);
+        processor.setConnectTimeout(connectTimeout);
+
+        return processor;
+    }
+
+    public HttpXMLRequestProcessor buildXmlProcessor(String baseUrl, String username, String password) {
+        HttpXMLRequestProcessor processor = new HttpXMLRequestProcessor(baseUrl, username, password);
+        processor.setReadTimeout(readTimeout);
+        processor.setNumberOfRetries(numberOfRetries);
+        processor.setConnectTimeout(connectTimeout);
+
+
+
+        return processor;
+    }
+
+
+    public String getContext() {
+        return context;
+    }
+
+    public void setContext(String context) {
+        this.context = context;
+        jsonAPI.setHeader(CONTEXT_HEADER, HEADER_REQUEST_PREFIX + context);
+        xmlAPI.setHeader(CONTEXT_HEADER, HEADER_REQUEST_PREFIX + context);
     }
 }
