@@ -118,9 +118,9 @@ public class HttpJSONRequestProcessor {
 
     protected Response performRequest(GenericUrl url, String method, Object payload) throws GloboNetworkException {
         Long startTime = new Date().getTime();
-
+        HttpRequest request = null;
         try {
-            HttpRequest request = this.buildRequest(method, url, payload);
+            request = this.buildRequest(method, url, payload);
             HttpUtil.loggingRequest(request);
 
             if(method.equals("PATCH")){
@@ -135,21 +135,22 @@ public class HttpJSONRequestProcessor {
 
             return helper;
         } catch (HttpResponseException httpException) {
-            int  httpStatusCode = httpException.getStatusCode();
-            String description = getErrorDescription(url, method, startTime, httpException);
 
-            throw new GloboNetworkErrorCodeException(httpStatusCode, description, httpException);
+            Response response = new Response(httpException.getStatusCode(), httpException.getContent(), httpException.getHeaders());
+            HttpUtil.loggingResponse(startTime, request, response);
+
+            String description = getErrorDescription(httpException);
+            throw new GloboNetworkErrorCodeException(httpException.getStatusCode(), description, httpException);
         } catch (IOException e) {
             throw new GloboNetworkException("IOException: " + e.getMessage(), e );
         }
     }
 
-    private String getErrorDescription(GenericUrl url, String method, Long startTime, HttpResponseException httpException) {
+    private String getErrorDescription(HttpResponseException httpException) {
         String description = "";
         try {
             String content = httpException.getContent();
-            Long responseTime = new Date().getTime() - startTime;
-            LOGGER.debug("[GloboNetworkAPI response] ResponseTime: " + responseTime + "ms " + method + " URL:" + url + " StatusCode: " + httpException.getStatusCode() + " Content: " + content);
+
             InputStream stream = new ByteArrayInputStream(content.getBytes(DEFAULT_CHARSET));
             GenericJson json = new JsonObjectParser(JSON_FACTORY).parseAndClose(stream, DEFAULT_CHARSET, GenericJson.class);
             Object message = json.get(FIELD_MESSAGE_ERROR);
