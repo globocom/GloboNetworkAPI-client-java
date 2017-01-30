@@ -48,6 +48,7 @@ public class HttpUtil {
             builder.append("[GloboNetworkAPI response] ResponseTime: ")
                     .append(responseTime)
                     .append(" method: ").append(request.getRequestMethod())
+                    .append(" URL: ").append(request.getUrl())
                     .append(" StatusCode: ").append(response.statusCode)
                     .append(" X-Request-Context: ").append(context)
                     .append(" X-Request-Id: ").append(idContext)
