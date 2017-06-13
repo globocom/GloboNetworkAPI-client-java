@@ -54,4 +54,14 @@ public class OptionVipV3API {
         }
         return filteredOptions;
     }
+
+    public OptionVipV3 findOptionsById(Long vipEnvironmentId, Long id) throws GloboNetworkException {
+        List<OptionVipV3> optionsVip = this.listOptions(vipEnvironmentId);
+        for(OptionVipV3 option : optionsVip){
+            if(option.getId().equals(id)){
+                return option;
+            }
+        }
+        return null;
+    }
 }

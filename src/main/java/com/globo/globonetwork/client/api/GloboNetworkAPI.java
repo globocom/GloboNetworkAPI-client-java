@@ -3,8 +3,6 @@ package com.globo.globonetwork.client.api;
 
 import com.globo.globonetwork.client.http.HttpJSONRequestProcessor;
 import com.globo.globonetwork.client.http.HttpXMLRequestProcessor;
-import java.util.HashMap;
-import java.util.Map;
 
 public class GloboNetworkAPI {
 
@@ -28,10 +26,6 @@ public class GloboNetworkAPI {
 
     public PoolAPI getPoolAPI() {
         return new PoolAPI(jsonAPI);
-    }
-
-    public VipAPI getVipAPI() {
-        return new VipAPI(xmlAPI, jsonAPI);
     }
 
     public VlanAPI getVlanAPI() {

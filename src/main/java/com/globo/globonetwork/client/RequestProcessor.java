@@ -19,11 +19,8 @@ package com.globo.globonetwork.client;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
-import java.util.HashMap;
-import java.util.Map;
 
 import com.globo.globonetwork.client.api.*;
-import com.newrelic.api.agent.NewRelic;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -146,10 +143,6 @@ public abstract class RequestProcessor {
 		return new EquipmentAPI(this);
 	}
 	
-	public VipAPI getVipAPI() {
-		return new VipAPI(this, null);
-	}
-
 	public OptionVipAPI getOptionVipAPI() { return new OptionVipAPI(this); }
 	
 	public VipEnvironmentAPI getVipEnvironmentAPI() {
