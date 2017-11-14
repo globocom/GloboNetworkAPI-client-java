@@ -56,7 +56,7 @@ public class PoolAPI extends BaseJsonAPI<Pool>{
         NewRelic.setTransactionName(null, "/globonetwork/pools/getByIdV3");
 
         String idsJoin = Joiner.on(IDS_SEPARATOR).join(ids);
-        String uri = "/api/v3/pool/" + idsJoin + "/";
+        String uri = "/api/v3/pool/" + idsJoin + "/?include=vips";
         String result = getTransport().get(uri);
 
         PoolV3Response poolResponse = HttpJSONRequestProcessor.parse(result, PoolV3Response.class);

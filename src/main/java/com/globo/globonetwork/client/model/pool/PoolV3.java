@@ -1,5 +1,6 @@
 package com.globo.globonetwork.client.model.pool;
 
+import com.globo.globonetwork.client.model.VipV3;
 import com.google.api.client.json.GenericJson;
 import com.google.api.client.util.Data;
 import com.google.api.client.util.Key;
@@ -45,6 +46,9 @@ public class PoolV3 extends GenericJson {
 
     @Key("server_pool_members")
     private List<PoolMember> poolMembers = new ArrayList<PoolMember>();
+
+    @Key("vips")
+    private List<VipV3> vips = new ArrayList<VipV3>();
 
     public PoolV3() {}
     public PoolV3(Long id) {
@@ -141,6 +145,14 @@ public class PoolV3 extends GenericJson {
 
     public void setPoolMembers(List<PoolMember> poolMembers) {
         this.poolMembers = poolMembers;
+    }
+
+    public List<VipV3> getVips() {
+        return vips;
+    }
+
+    public void setVips(List<VipV3> vips) {
+        this.vips = vips;
     }
 
     public static class Environment extends GenericJson {

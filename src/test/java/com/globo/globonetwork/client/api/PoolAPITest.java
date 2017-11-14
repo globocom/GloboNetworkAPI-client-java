@@ -57,7 +57,7 @@ public class PoolAPITest extends TestCase {
     public void testGetByIdV3() throws Exception {
         String sample = getSample(POOL_GET_BY_IDS_V3);
         HttpJSONRequestProcessor mock = mock(HttpJSONRequestProcessor.class);
-        when(mock.get("/api/v3/pool/123;456/")).thenReturn(sample);
+        when(mock.get("/api/v3/pool/123;456/?include=vips")).thenReturn(sample);
 
         PoolAPI api = new PoolAPI(mock);
 
