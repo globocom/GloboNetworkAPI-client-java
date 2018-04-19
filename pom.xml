@@ -49,6 +49,12 @@
       <organization>Globo.com</organization>
       <organizationUrl>https://github.com/lucasirc</organizationUrl>
     </developer>
+    <developer>
+      <name>Igor Fernandes Ribeiro</name>
+      <email>igor.frds@gmail.com</email>
+      <organization>Globo.com</organization>
+      <organizationUrl>https://github.com/igorfernandes</organizationUrl>
+    </developer>
   </developers>
   
   <scm>
@@ -87,8 +93,8 @@
           <artifactId>maven-compiler-plugin</artifactId>
           <version>2.3.2</version>
           <configuration>
-            <source>1.6</source>
-            <target>1.6</target>
+            <source>1.8</source>
+            <target>1.8</target>
           </configuration>
         </plugin>
       <plugin>
