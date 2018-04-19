@@ -44,7 +44,7 @@ public class GloboNetworkRoot<T> extends GenericXml {
 		this.set(elementName, obj);
 	}
 	
-	/**
+	/*
 	 * Return first object in list or <code>null</code> if list is empty
 	 */
 	public T getFirstObject() {

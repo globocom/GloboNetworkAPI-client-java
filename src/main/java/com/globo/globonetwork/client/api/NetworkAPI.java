@@ -73,7 +73,8 @@ public class NetworkAPI extends BaseXmlAPI<Network> {
         globoNetworkRoot.getObjectList().add(network);
         globoNetworkRoot.set("network", network);
 
-        this.getTransport().put("/network/create/", globoNetworkRoot, (isv6 ? IPv6Network.class : IPv4Network.class));
+        Class<? extends GenericXml> clazz = (isv6 ? IPv6Network.class : IPv4Network.class);
+        this.getTransport().put("/network/create/", globoNetworkRoot, clazz);
     }
 
     @Trace(dispatcher = true)

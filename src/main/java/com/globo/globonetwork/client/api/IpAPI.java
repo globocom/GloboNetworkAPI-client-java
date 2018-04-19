@@ -124,7 +124,8 @@ public class IpAPI extends BaseXmlAPI<Ip> {
 		
 		String uri = isIpv6 ? "/ipv6/save/" : "/ipv4/save/";
 		@SuppressWarnings("unchecked")
-		GloboNetworkRoot<Ip> globoNetworkRoot =  (GloboNetworkRoot<Ip>) this.getTransport().post(uri, globoNetworkRootPayload, isIpv6 ? Ipv6.class : Ipv4.class);
+		Class<? extends GenericXml> clazz = getIpClass(isIpv6);
+		GloboNetworkRoot<Ip> globoNetworkRoot =  (GloboNetworkRoot<Ip>) this.getTransport().post(uri, globoNetworkRootPayload, clazz);
 		if (globoNetworkRoot == null) {
 			// Problems reading the XML
 			throw new GloboNetworkException("Invalid XML response");
@@ -159,7 +160,12 @@ public class IpAPI extends BaseXmlAPI<Ip> {
 		globoNetworkRootPayload.set("ip_map", ip);
 		
 		String uri = isIpv6 ? "/ipv6/assoc/" : "/ipv4/assoc/";
-		this.getTransport().post(uri, globoNetworkRootPayload, isIpv6 ? Ipv6.class : Ipv4.class);
+		Class<? extends GenericXml> clazz = getIpClass(isIpv6);
+		this.getTransport().post(uri, globoNetworkRootPayload, clazz);
+	}
+
+	private Class<? extends GenericXml> getIpClass(Boolean isIpv6) {
+		return isIpv6 ? Ipv6.class : Ipv4.class;
 	}
 
 	@Trace(dispatcher = true)
@@ -243,7 +249,8 @@ public class IpAPI extends BaseXmlAPI<Ip> {
         
         String uri = isIpv6 ? "/ip/availableip6/vip/" : "/ip/availableip4/vip/";
         @SuppressWarnings("unchecked")
-		GloboNetworkRoot<Ip> globoNetworkRoot = (GloboNetworkRoot<Ip>) this.getTransport().post(uri + environmentVip + "/", globoNetworkRootPayload, isIpv6? Ipv6.class : Ipv4.class);
+		Class<? extends GenericXml> clazz = getIpClass(isIpv6);
+		GloboNetworkRoot<Ip> globoNetworkRoot = (GloboNetworkRoot<Ip>) this.getTransport().post(uri + environmentVip + "/", globoNetworkRootPayload, clazz);
         if (globoNetworkRoot == null) {
             // Problems reading the XML
             throw new GloboNetworkException("Invalid XML response");
@@ -253,7 +260,7 @@ public class IpAPI extends BaseXmlAPI<Ip> {
         return globoNetworkRoot.getFirstObject();
     }
 
-    /**
+    /*
      * Check if an Ip address(IpV4 or IpV6) can be used to a new vip.
      */
 	@Trace(dispatcher = true)
@@ -270,7 +277,8 @@ public class IpAPI extends BaseXmlAPI<Ip> {
             globoNetworkRootPayload.set("ip_map", ip_map);
             
             @SuppressWarnings("unchecked")
-			GloboNetworkRoot<Ip> globoNetworkRoot = (GloboNetworkRoot<Ip>) this.getTransport().post("/ip/checkvipip/", globoNetworkRootPayload, isIpv6 ? Ipv6.class : Ipv4.class);
+			Class<? extends GenericXml> clazz = getIpClass(isIpv6);
+			GloboNetworkRoot<Ip> globoNetworkRoot = (GloboNetworkRoot<Ip>) this.getTransport().post("/ip/checkvipip/", globoNetworkRootPayload, clazz);
         	if (globoNetworkRoot == null) {
         		// Problems reading the XML
         		throw new GloboNetworkException("Invalid XML response");

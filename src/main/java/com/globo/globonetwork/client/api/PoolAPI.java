@@ -64,7 +64,7 @@ public class PoolAPI extends BaseJsonAPI<Pool>{
         return poolResponse.getPools();
     }
 
-    /**
+    /*
      * getByV3 - PoolV3
      */
     @Trace(dispatcher = true)
@@ -83,7 +83,7 @@ public class PoolAPI extends BaseJsonAPI<Pool>{
     }
 
 
-    /**
+    /*
      * if id is null, will create with post (with {@link #createV3(PoolV3)}, else will update with put ({@link #updateAll(List)}
      */
     public PoolV3 saveV3(PoolV3 pool) throws GloboNetworkException {
@@ -119,9 +119,7 @@ public class PoolAPI extends BaseJsonAPI<Pool>{
         return poolSaved;
     }
 
-    /**
-     *
-     */
+
     @Trace(dispatcher = true)
     public PoolV3 deployV3(PoolV3 pool) throws GloboNetworkException {
         NewRelic.setTransactionName(null, "/globonetwork/pools/deployV3");
@@ -201,9 +199,7 @@ public class PoolAPI extends BaseJsonAPI<Pool>{
         return poolsV3;
     }
 
-    /**
 
-     */
     public PoolV3 save(PoolV3 poolv3) throws GloboNetworkException {
         if (poolv3.getId() == null){
             //create just in bd, it does not need to create in equipment in first creation
