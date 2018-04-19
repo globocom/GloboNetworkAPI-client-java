@@ -46,7 +46,6 @@ public class GloboNetworkRoot<T> extends GenericXml {
 	
 	/**
 	 * Return first object in list or <code>null</code> if list is empty
-	 * @return
 	 */
 	public T getFirstObject() {
 		if (this.getObjectList() == null || this.getObjectList().isEmpty()) {

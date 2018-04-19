@@ -87,10 +87,6 @@ public abstract class RequestProcessor {
 	
 	/**
 	 * Exception treatment for generic calls
-	 * @param statusCode
-	 * @param responseAsString
-	 * @throws IOException
-	 * @throws GloboNetworkException
 	 */
 	protected void handleExceptionIfNeeded(int statusCode, String responseAsString, Long responseTime) throws GloboNetworkException {
 		if (statusCode == 200) {

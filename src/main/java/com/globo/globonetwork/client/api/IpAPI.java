@@ -255,10 +255,6 @@ public class IpAPI extends BaseXmlAPI<Ip> {
 
     /**
      * Check if an Ip address(IpV4 or IpV6) can be used to a new vip.
-     * @param environmentVip
-     * @param name
-     * @return
-     * @throws GloboNetworkException
      */
 	@Trace(dispatcher = true)
     public Ip checkVipIp(String ip, long environmentVipId, Boolean isIpv6) throws GloboNetworkException {
