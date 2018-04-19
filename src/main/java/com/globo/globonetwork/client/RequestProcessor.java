@@ -31,7 +31,6 @@ import com.globo.globonetwork.client.model.GloboNetworkRoot;
 import com.google.api.client.util.Types;
 import com.google.api.client.xml.GenericXml;
 import com.google.api.client.xml.Xml;
-import com.google.api.client.xml.Xml.CustomizeParser;
 import com.google.api.client.xml.XmlNamespaceDictionary;
 import com.google.api.client.xml.XmlObjectParser;
 
