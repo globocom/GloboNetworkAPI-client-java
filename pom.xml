@@ -3,7 +3,7 @@
 
   <groupId>com.globo.globonetwork</groupId>
   <artifactId>globonetwork-client</artifactId>
-  <version>0.0.60</version>
+  <version>0.0.61-SNAPSHOT</version>
   <packaging>jar</packaging>
 
   <name>globonetwork-client</name>
@@ -61,7 +61,7 @@
     <connection>scm:git:git@github.com:globocom/globonetwork-client.git</connection>
     <url>scm:git:git@github.com:globocom/globonetwork-client.git</url>
     <developerConnection>scm:git:git@github.com:globocom/globonetwork-client.git</developerConnection>
-    <tag>0.0.60</tag>
+    <tag>0.0.14</tag>
   </scm>
   
   <properties>
